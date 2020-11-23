@@ -6,7 +6,6 @@ export const App = () => {
     <div className="App">
       <Navbar />
       <Days />
-      <h1>I am app</h1>
     </div>
   );
 };

@@ -1,0 +1,4 @@
+<svg id="_Elements_Toggle_On" data-name="_Elements / Toggle / On" xmlns="http://www.w3.org/2000/svg" width="44" height="20" viewBox="0 0 44 20">
+  <path id="Toggle" d="M0,10A10,10,0,0,1,10,0H34a10,10,0,0,1,0,20H10A10,10,0,0,1,0,10Z" fill="#707070"/>
+  <path id="Position" d="M5,10A5,5,0,1,0,0,5,5,5,0,0,0,5,10Z" transform="translate(29 5)" fill="#fff"/>
+</svg>
