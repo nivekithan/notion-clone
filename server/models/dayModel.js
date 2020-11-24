@@ -6,6 +6,7 @@ const daySchema = mongoose.Schema({
     {
       name: String,
       group_id: mongoose.Schema.Types.ObjectId,
+      tags: [{type: String}]
     },
   ],
 });

@@ -8,13 +8,16 @@ const postNewGroup = (req, res) => {
   DayModel.findOne(
     { _id: process.env.TEST_DB_DAYS_ID },
     function (err, dayDoc) {
+    
       if (err) {
         console.error(err);
+        res.end();
       } else if (dayDoc) {
         // pushes the name and group_id to array in dayDoc
         dayDoc.days.push({
           name: req.body.name,
           group_id: grpQueDoc._id,
+          tags: req.body.tags ? req.body.tags : [],
         });
 
         // figures out the id of the days and saves it in the newly created document
@@ -26,10 +29,12 @@ const postNewGroup = (req, res) => {
         grpQueDoc.save();
         dayDoc.save();
 
+      
         // Usefull for checking if it worked or not in postman
         res.send("It worked");
+      } else {
+        res.send("It should not happen");
       }
-      res.end();
     }
   );
 };

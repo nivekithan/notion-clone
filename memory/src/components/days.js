@@ -1,43 +1,134 @@
 import { useState, useEffect } from "react";
 import { FaToggleOn, FaToggleOff } from "react-icons/fa";
 
-const _renderDayCards = (days) => {
-  let dayCards = [];
+// This element is child element for DayCards Element
+//
+// allows the user to start the test is strict mode or in not in strict strict mode
+// by default it will start in strict mode
 
-  const handleButtonClick = (e, i) => {
+// ----------------------------------------------------------------------------
+const StrictIcon = () => {
+  const [isStrict, setStrict] = useState(true);
+
+  const handleButtonClick = (e) => {
     e.preventDefault();
-    console.dir(e.target.attributes.getNamedItem("data-key").value);
-    console.dir(e.target.attributes);
+    setStrict((strict) => !strict);
   };
+  const iconSize = "32px";
+  return (
+    <button onClick={handleButtonClick} className="mr-6 mt-9 ">
+      {isStrict ? (
+        <FaToggleOn size={iconSize} />
+      ) : (
+        <FaToggleOff size={iconSize} />
+      )}
+    </button>
+  );
+};
+// -----------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------
+const DayTags = ({ tag }) => {
+  const listUtility = [
+    "py-1",
+    "px-4",
+    "bg-red-500",
+    "border",
+    "rounded-3xl",
+    "flex-none",
+    "m-1",
+    "text-sm",
+    "cursor-pointer",
+    "hover:bg-blue-500",
+  ];
 
-  const sectionUtility = ["bg-green-500", "border-2"];
-  const buttonUtility = ["bg-green-500", "text-purple-600"];
+  return <ul className={listUtility.join(" ")}>{tag}</ul>;
+};
 
-  for (let i = 1; i <= days.length; i++) {
-    const cards = (
-      <section className={sectionUtility.join(" ")} key={days[i - 1]._id}>
-        <section className="flex justify-between items-center">
-          <span className="">{days[i - 1].name}</span>
-          <FaToggleOn />
+const DayTagsWrapper = ({ day }) => {
+  // Tailwind Utilites
+
+  const daysTagsUtility = [
+    "mx-6",
+    "mt-9",
+    "flex",
+    "flex-wrap",
+    "justify-start",
+    "items-center",
+  ];
+
+  const dayTags = day.tags.map((tag, index) => {
+    return <DayTags tag={tag} key={index} />;
+  });
+
+  return <li className={daysTagsUtility.join(" ")}>{dayTags}</li>;
+};
+// ---------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------
+
+
+const EditDelteButtons = () => {
+  const sectionUtility = [
+    "flex",
+    "justify-end"
+  ]
+  const buttonUtility = [
+    "w-32",
+    "border-2"
+  ]
+
+  return (
+    <section className={sectionUtility.join(" ")}>
+      <button className={buttonUtility.join(" ")}>Edit</button>
+      <button className={buttonUtility.join(" ")}>Delete</button>
+    </section>
+  );
+};
+
+const Buttons = () => {
+  const sectionUtility = ["mx-6", "mt-9", "flex", "justify-between"];
+
+  return (
+    <section className={sectionUtility.join(" ")}>
+      <button>Delete</button>
+      <EditDelteButtons />
+    </section>
+  );
+};
+
+const DayCards = ({ days }) => {
+  const sectionWrapperUtility = ["bg-green-500", "border-2"];
+  const sectionHeadingUtility = ["flex", "justify-between", "items-center"];
+  const headingNameUtility = ["ml-6", "mt-9", "text-2xl"];
+
+  const dayCards = days.map((day) => {
+    return (
+      <section className={sectionWrapperUtility.join(" ")} key={day._id}>
+        {/*This marks the starting of the header of DayCards */}
+        <section className={sectionHeadingUtility.join(" ")}>
+          <span className={headingNameUtility.join(" ")}>
+            {day.name.charAt(0).toUpperCase() + day.name.slice(1)}
+          </span>
+          <StrictIcon />
         </section>
+        {/* This marks the starting of tags */}
+        <DayTagsWrapper day={day} />
+        {/* This marks the starting of buttons*/}
+        <Buttons />
       </section>
     );
-
-    dayCards.push(cards);
-  }
+  });
 
   return dayCards;
 };
 
 // Renders the days the component
 export const Days = () => {
-  const [renderButtons, setRenderButtons] = useState(null);
+  const [days, setDays] = useState(null);
 
   useEffect(() => {
     (async () => {
       const url = "http://localhost:4000/get/days";
-      const { days } = await (await fetch(url)).json();
-      setRenderButtons(_renderDayCards(days));
+      setDays((await (await fetch(url)).json()).days);
     })();
   }, []);
 
@@ -48,9 +139,10 @@ export const Days = () => {
     "gap-x-4",
     "gap-y-6",
     "h-auto",
+    "mx-32",
   ];
 
-  return (
-    <section className={sectionUtility.join(" ")}>{renderButtons}</section>
-  );
+  const renderDays = days ? <DayCards days={days} /> : null;
+
+  return <section className={sectionUtility.join(" ")}>{renderDays}</section>;
 };
