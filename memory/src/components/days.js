@@ -65,27 +65,20 @@ const DayTagsWrapper = ({ day }) => {
 // ---------------------------------------------------------------------------------
 // ---------------------------------------------------------------------------------
 
-
 const EditDelteButtons = () => {
-  const sectionUtility = [
-    "flex",
-    "justify-end"
-  ]
-  const buttonUtility = [
-    "w-32",
-    "border-2"
-  ]
+  const sectionUtility = ["flex", "space-x-4"];
+  const buttonUtility = ["w-28", "h-12", "border-2"];
 
   return (
     <section className={sectionUtility.join(" ")}>
       <button className={buttonUtility.join(" ")}>Edit</button>
-      <button className={buttonUtility.join(" ")}>Delete</button>
+      <button className={buttonUtility.join(" ")}>Start</button>
     </section>
   );
 };
 
 const Buttons = () => {
-  const sectionUtility = ["mx-6", "mt-9", "flex", "justify-between"];
+  const sectionUtility = ["mx-6", "my-9", "flex", "justify-between"];
 
   return (
     <section className={sectionUtility.join(" ")}>
@@ -120,7 +113,7 @@ const DayCards = ({ days }) => {
 
   return dayCards;
 };
-
+// ---------------------------------------------------------------------------------------------------
 // Renders the days the component
 export const Days = () => {
   const [days, setDays] = useState(null);
@@ -139,7 +132,7 @@ export const Days = () => {
     "gap-x-4",
     "gap-y-6",
     "h-auto",
-    "mx-32",
+    "mx-28",
   ];
 
   const renderDays = days ? <DayCards days={days} /> : null;
