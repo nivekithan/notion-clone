@@ -1,11 +1,19 @@
 import { Navbar } from "./components/navbar";
 import { Days } from "./components/days";
+import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
+import { SlateEditor } from "./editor";
 
 export const App = () => {
   return (
     <div className="App">
-      <Navbar />
-      <Days />
+      <Router>
+        <Navbar />
+        <Switch >
+        <Route path="/" exact component={Days} />
+        <Route path="/editor" exact component={SlateEditor} />
+      </Switch>
+      </Router>
+
     </div>
-  );
+  ); 
 };

@@ -130,12 +130,12 @@ export const Days = () => {
     "grid",
     "grid-cols-3",
     "gap-x-4",
-    "gap-y-6",
+    "gap-y-6",  
     "h-auto",
     "mx-28",
   ];
 
-  const renderDays = days ? <DayCards days={days} /> : null;
+  const renderDays = days ? <DayCards days={days} /> : <h1> I am before</h1>;
 
   return <section className={sectionUtility.join(" ")}>{renderDays}</section>;
 };
