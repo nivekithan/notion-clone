@@ -4,12 +4,13 @@ import {
   Element as SlateElement,
   Transforms,
 } from "slate";
-import { Editable, Slate, withReact } from "slate-react";
+import { Editable, Slate, useSlate, withReact } from "slate-react";
 import { useCallback, useMemo, useState } from "react";
 import isHotKey from "is-hotkey";
 
 import { Leaf } from "./leaf";
-import { MarkButton  } from "./toolbar";
+import { FaBold } from "react-icons/fa";
+// import { MarkButton  } from "./toolbar";
 
 const HOTKEYS = {
   "mod+b": "bold",
@@ -38,10 +39,15 @@ export const SlateEditor = () => {
       }
     }
   };
+
+  const onMarkKeyDown = (e, format, editor) => {
+    e.preventDefault();
+    toggleMark(editor, format);
+  };
   return (
     <Slate editor={editor} value={value} onChange={(n) => setValue(n)}>
       <section>
-        <MarkButton format={'bold'}  />
+        <MarkButton format={"bold"} handleClick={onMarkKeyDown} />
       </section>
       <Editable renderLeaf={renderLeaf} onKeyDown={handleKeyDown} />
     </Slate>
@@ -62,7 +68,7 @@ const isMarkActive = (editor, format) => {
   const marks = Editor.marks(editor);
   return marks ? marks[format] === true : false;
 };
-// --------------------------------------
+// ------------------------------------------------------
 
 // -----------------------------------------------------
 
@@ -101,7 +107,57 @@ const isBlockActive = (editor, format) => {
 };
 
 // ---------------------------
+// ---------------------------
 
+const MarkButton = ({ format }) => {
+  const editor = useSlate();
+
+  const setSelection = () => {
+    Transforms.setSelection(editor, editor.selection);
+  };
+
+  return (
+    <Button
+      format="bold"
+      isActive={isMarkActive(editor, format)}
+      onClick={(e) => {
+        e.preventDefault();
+        toggleMark(editor, format);
+      }}
+      setSelection={setSelection}
+    />
+  );
+};
+
+const Button = ({ isActive, format, onClick, setSelection }) => {
+  const iconColor = isActive ? "red" : "blue";
+  const buttonUtility = [
+    "cursor-pointer",
+    "inline-block",
+    "bg-gray-100",
+    "p-1",
+  ];
+
+  switch (format) {
+    case "bold":
+      return (
+        <button
+          className={buttonUtility.join(" ")}
+          onMouseDown={(e) => {
+            onClick(e);
+            setSelection();
+          }}
+        >
+          <FaBold color={iconColor} />
+        </button>
+      );
+
+    default:
+      return null;
+  }
+};
+
+// -------------------------
 const initalValue = [
   {
     type: "paragraph",
