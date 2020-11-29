@@ -9,7 +9,13 @@ import { useCallback, useMemo, useState } from "react";
 import isHotKey from "is-hotkey";
 
 import { Leaf } from "./leaf";
-import { FaBold } from "react-icons/fa";
+import {
+  FaBold,
+  FaCode,
+  FaHighlighter,
+  FaItalic,
+  FaUnderline,
+} from "react-icons/fa";
 // import { MarkButton  } from "./toolbar";
 
 const HOTKEYS = {
@@ -151,7 +157,55 @@ const Button = ({ isActive, format, onClick, setSelection }) => {
           <FaBold color={iconColor} />
         </button>
       );
+    case "italic":
+      return (
+        <button
+          className={buttonUtility.join(" ")}
+          onMouseDown={(e) => {
+            onClick(e);
+            setSelection();
+          }}
+        >
+          <FaItalic color={iconColor} />
+        </button>
+      );
+    case "code":
+      return (
+        <button
+          className={buttonUtility.join(" ")}
+          onMouseDown={(e) => {
+            onClick(e);
+            setSelection();
+          }}
+        >
+          <FaCode icon={iconColor} />
+        </button>
+      );
+    case "underline":
+      return (
+        <button
+          className={buttonUtility.join(" ")}
+          onMouseDown={(e) => {
+            onClick(e);
+            setSelection();
+          }}
+        >
+          <FaUnderline icon={iconColor} />
+        </button>
+      );
 
+    case "higlight":
+      return (
+        <button
+          className={buttonUtility.join(" ")}
+          onMouseDown={(e) => {
+            onClick(e);
+            setSelection();
+          }}
+        >
+          <FaHighlighter icon={iconColor} />
+        </button>
+      );
     default:
       return null;
   }
