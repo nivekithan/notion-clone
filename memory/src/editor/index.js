@@ -8,33 +8,34 @@ import { Editable, Slate, useSlate, withReact } from "slate-react";
 import { useCallback, useMemo, useState } from "react";
 import isHotKey from "is-hotkey";
 
-import { Leaf } from "./leaf";
+import { Leaf, Element } from "./renderSlate";
 import {
   FaBold,
-  FaCode,
+  FaGripfire,
+  FaHeading,
   FaHighlighter,
   FaItalic,
+  FaListOl,
+  FaListUl,
+  FaQuoteRight,
   FaUnderline,
 } from "react-icons/fa";
-// import { MarkButton  } from "./toolbar";
 
+// ----------------------------------------------------------------------------------------------------------
 const HOTKEYS = {
   "mod+b": "bold",
   "mod+i": "italic",
-  "mod+`": "code",
   "mod+u": "underline",
   "mod+h": "highlight",
 };
 
-const LIST_TYPES = ["numberedList", "unOrderedList"];
-
+const LIST_TYPES = ["numbered-list", "unordered-list"];
+// --------------------------------------------------------------------------------------------------------------
 export const SlateEditor = () => {
   const editor = useMemo(() => withReact(createEditor()), []);
   const [value, setValue] = useState(initalValue);
-  const renderLeaf = useCallback(
-    (props) => <Leaf {...props} editor={editor} />,
-    [editor]
-  );
+  const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
+  const renderElement = useCallback((props) => <Element {...props} />, []);
 
   const handleKeyDown = (e) => {
     for (const hotKey in HOTKEYS) {
@@ -46,20 +47,29 @@ export const SlateEditor = () => {
     }
   };
 
-  const onMarkKeyDown = (e, format, editor) => {
-    e.preventDefault();
-    toggleMark(editor, format);
-  };
   return (
     <Slate editor={editor} value={value} onChange={(n) => setValue(n)}>
       <section>
-        <MarkButton format={"bold"} handleClick={onMarkKeyDown} />
+        <MarkButton format={"bold"} />
+        <MarkButton format={"highlight"} />
+        <MarkButton format={"italic"} />
+        <MarkButton format={"underline"} />
+        <ElementButton format={"heading-1"} />
+        <ElementButton format={"heading-5"} />
+        <ElementButton format={"block-quote"} />
+        <ElementButton format={"numbered-list"} />
+        <ElementButton format={"unordered-list"} />
       </section>
-      <Editable renderLeaf={renderLeaf} onKeyDown={handleKeyDown} />
+      <Editable
+        renderLeaf={renderLeaf}
+        renderElement={renderElement}
+        onKeyDown={handleKeyDown}
+      />
     </Slate>
   );
 };
-// ----------------------------------------
+
+// ----------------------------------------------------------------------------------------------------------
 const toggleMark = (editor, format) => {
   const isActive = isMarkActive(editor, format);
 
@@ -74,9 +84,9 @@ const isMarkActive = (editor, format) => {
   const marks = Editor.marks(editor);
   return marks ? marks[format] === true : false;
 };
-// ------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------
 
-// -----------------------------------------------------
+// --------------------------------------------------------------------------------------------------------------
 
 const toggleBlock = (editor, format) => {
   const isActive = isBlockActive(editor, format);
@@ -90,7 +100,7 @@ const toggleBlock = (editor, format) => {
   });
 
   const newProperties = {
-    type: isActive ? "paragraph" : isList ? "listItem" : format,
+    type: isActive ? "paragraph" : isList ? "list-item" : format,
   };
 
   Transforms.setNodes(editor, newProperties);
@@ -112,8 +122,27 @@ const isBlockActive = (editor, format) => {
   return !!match;
 };
 
-// ---------------------------
-// ---------------------------
+// ------------------------------------------------------------------------------------------------------------------
+
+const ElementButton = ({ format }) => {
+  const editor = useSlate();
+
+  const setSelection = () => {
+    Transforms.setSelection(editor, editor.selection);
+  };
+
+  return (
+    <Button
+      format={format}
+      isActive={isBlockActive(editor, format)}
+      onClick={(e) => {
+        e.preventDefault();
+        toggleBlock(editor, format);
+      }}
+      setSelection={setSelection}
+    />
+  );
+};
 
 const MarkButton = ({ format }) => {
   const editor = useSlate();
@@ -124,7 +153,7 @@ const MarkButton = ({ format }) => {
 
   return (
     <Button
-      format="bold"
+      format={format}
       isActive={isMarkActive(editor, format)}
       onClick={(e) => {
         e.preventDefault();
@@ -134,9 +163,73 @@ const MarkButton = ({ format }) => {
     />
   );
 };
-
+// ------------------------------------------------------------------------------------------------------------------------
 const Button = ({ isActive, format, onClick, setSelection }) => {
   const iconColor = isActive ? "red" : "blue";
+
+  switch (format) {
+    case "bold":
+      return (
+        <ToolButton onClick={onClick} setSelection={setSelection}>
+          <FaBold color={iconColor} />
+        </ToolButton>
+      );
+    case "italic":
+      return (
+        <ToolButton onClick={onClick} setSelection={setSelection}>
+          <FaItalic color={iconColor} />
+        </ToolButton>
+      );
+    case "underline":
+      return (
+        <ToolButton onClick={onClick} setSelection={setSelection}>
+          <FaUnderline color={iconColor} />
+        </ToolButton>
+      );
+
+    case "highlight":
+      return (
+        <ToolButton onClick={onClick} setSelection={setSelection}>
+          <FaHighlighter color={iconColor} />
+        </ToolButton>
+      );
+    case "heading-1":
+      return (
+        <ToolButton onClick={onClick} setSelection={setSelection}>
+          <FaHeading color={iconColor} />
+        </ToolButton>
+      );
+
+    case "heading-5":
+      return (
+        <ToolButton onClick={onClick} setSelection={setSelection}>
+          <FaGripfire color={iconColor} />
+        </ToolButton>
+      );
+    case "block-quote":
+      return (
+        <ToolButton onClick={onClick} setSelection={setSelection}>
+          <FaQuoteRight color={iconColor} />
+        </ToolButton>
+      );
+    case "numbered-list":
+      return (
+        <ToolButton onClick={onClick} setSelection={setSelection}>
+          <FaListOl color={iconColor} />
+        </ToolButton>
+      );
+    case "unordered-list":
+      return (
+        <ToolButton onClick={onClick} setSelection={setSelection}>
+          <FaListUl color={iconColor} />
+        </ToolButton>
+      );
+    default:
+      return null;
+  }
+};
+
+const ToolButton = ({ children, onClick, setSelection }) => {
   const buttonUtility = [
     "cursor-pointer",
     "inline-block",
@@ -144,74 +237,20 @@ const Button = ({ isActive, format, onClick, setSelection }) => {
     "p-1",
   ];
 
-  switch (format) {
-    case "bold":
-      return (
-        <button
-          className={buttonUtility.join(" ")}
-          onMouseDown={(e) => {
-            onClick(e);
-            setSelection();
-          }}
-        >
-          <FaBold color={iconColor} />
-        </button>
-      );
-    case "italic":
-      return (
-        <button
-          className={buttonUtility.join(" ")}
-          onMouseDown={(e) => {
-            onClick(e);
-            setSelection();
-          }}
-        >
-          <FaItalic color={iconColor} />
-        </button>
-      );
-    case "code":
-      return (
-        <button
-          className={buttonUtility.join(" ")}
-          onMouseDown={(e) => {
-            onClick(e);
-            setSelection();
-          }}
-        >
-          <FaCode icon={iconColor} />
-        </button>
-      );
-    case "underline":
-      return (
-        <button
-          className={buttonUtility.join(" ")}
-          onMouseDown={(e) => {
-            onClick(e);
-            setSelection();
-          }}
-        >
-          <FaUnderline icon={iconColor} />
-        </button>
-      );
-
-    case "higlight":
-      return (
-        <button
-          className={buttonUtility.join(" ")}
-          onMouseDown={(e) => {
-            onClick(e);
-            setSelection();
-          }}
-        >
-          <FaHighlighter icon={iconColor} />
-        </button>
-      );
-    default:
-      return null;
-  }
+  return (
+    <button
+      className={buttonUtility.join(" ")}
+      onMouseDown={(e) => {
+        onClick(e);
+        setSelection();
+      }}
+    >
+      {children}
+    </button>
+  );
 };
-
-// -------------------------
+// ---------------------------------------------------------------
+// -----------------------------------------------------------------
 const initalValue = [
   {
     type: "paragraph",
@@ -228,6 +267,28 @@ const initalValue = [
         text: "I am italic and bold",
         italic: true,
         bold: true,
+      },
+    ],
+  },
+  {
+    type: "paragraph",
+    children: [
+      {
+        text: "I am highlighter",
+        highlight: true,
+      },
+      {
+        text: "I am underline",
+        underline: true,
+      },
+      {
+        text: "I am code and underline",
+        underline: true,
+      },
+      {
+        text: "I am highlight and underline",
+        highlight: true,
+        underline: true,
       },
     ],
   },
