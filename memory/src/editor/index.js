@@ -21,6 +21,7 @@ import {
   FaUnderline,
 } from "react-icons/fa";
 
+import {withMath} from "./plugins"
 // ----------------------------------------------------------------------------------------------------------
 const HOTKEYS = {
   "mod+b": "bold",
@@ -32,11 +33,10 @@ const HOTKEYS = {
 const LIST_TYPES = ["numbered-list", "unordered-list"];
 // --------------------------------------------------------------------------------------------------------------
 export const SlateEditor = () => {
-  const editor = useMemo(() => withReact(createEditor()), []);
+  const editor = useMemo(() =>withMath( withReact(createEditor())), []);
   const [value, setValue] = useState(initalValue);
   const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
   const renderElement = useCallback((props) => <Element {...props} />, []);
-
   const handleKeyDown = (e) => {
     for (const hotKey in HOTKEYS) {
       if (isHotKey(hotKey, e)) {
@@ -46,7 +46,7 @@ export const SlateEditor = () => {
       }
     }
   };
-
+  console.log(editor.operations)
   return (
     <Slate editor={editor} value={value} onChange={(n) => setValue(n)}>
       <section>
@@ -292,4 +292,21 @@ const initalValue = [
       },
     ],
   },
+  {
+    type: "inline-math",
+    children: [
+      {
+        text: "I am inline math"
+      }
+    ]
+  },
+  {
+    _id : 1,
+    type: "paragraph",
+    children: [
+      {
+        text: "I am after inline math"
+      }
+    ]
+  }
 ];
