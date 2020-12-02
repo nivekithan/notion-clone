@@ -46,9 +46,9 @@ export const SlateEditor = () => {
       }
     }
   };
-  console.log(editor.operations)
+  console.log(value)
   return (
-    <Slate editor={editor} value={value} onChange={(n) => setValue(n)}>
+    <Slate editor={editor} value={value} onChange={(n) => {console.log(n);setValue(n)}} >
       <section>
         <MarkButton format={"bold"} />
         <MarkButton format={"highlight"} />
@@ -293,10 +293,13 @@ const initalValue = [
     ],
   },
   {
-    type: "inline-math",
+    type: "block-math",
+    _id: 3,
+    void: true,
     children: [
       {
-        text: "I am inline math"
+        text: "I am block math",
+        
       }
     ]
   },
