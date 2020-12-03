@@ -21,7 +21,9 @@ import {
   FaUnderline,
 } from "react-icons/fa";
 
-import {withMath} from "./plugins"
+import { CgMathMinus, CgMathPlus } from "react-icons/cg";
+
+import { withMath } from "./plugins";
 // ----------------------------------------------------------------------------------------------------------
 const HOTKEYS = {
   "mod+b": "bold",
@@ -33,7 +35,7 @@ const HOTKEYS = {
 const LIST_TYPES = ["numbered-list", "unordered-list"];
 // --------------------------------------------------------------------------------------------------------------
 export const SlateEditor = () => {
-  const editor = useMemo(() =>withMath( withReact(createEditor())), []);
+  const editor = useMemo(() => withMath(withReact(createEditor())), []);
   const [value, setValue] = useState(initalValue);
   const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
   const renderElement = useCallback((props) => <Element {...props} />, []);
@@ -46,9 +48,16 @@ export const SlateEditor = () => {
       }
     }
   };
-  console.log(value)
+  console.log(value);
   return (
-    <Slate editor={editor} value={value} onChange={(n) => {console.log(n);setValue(n)}} >
+    <Slate
+      editor={editor}
+      value={value}
+      onChange={(n) => {
+        console.log(n);
+        setValue(n);
+      }}
+    >
       <section>
         <MarkButton format={"bold"} />
         <MarkButton format={"highlight"} />
@@ -59,6 +68,8 @@ export const SlateEditor = () => {
         <ElementButton format={"block-quote"} />
         <ElementButton format={"numbered-list"} />
         <ElementButton format={"unordered-list"} />
+        <ElementButton format={"block-math"} />
+        <ElementButton format={"inline-math"} />
       </section>
       <Editable
         renderLeaf={renderLeaf}
@@ -68,7 +79,6 @@ export const SlateEditor = () => {
     </Slate>
   );
 };
-
 // ----------------------------------------------------------------------------------------------------------
 const toggleMark = (editor, format) => {
   const isActive = isMarkActive(editor, format);
@@ -224,6 +234,18 @@ const Button = ({ isActive, format, onClick, setSelection }) => {
           <FaListUl color={iconColor} />
         </ToolButton>
       );
+    case "block-math":
+      return (
+        <ToolButton onClick={onClick} setSelection={setSelection}>
+          <CgMathPlus color={iconColor} />
+        </ToolButton>
+      );
+    case "inline-math":
+      return (
+        <ToolButton onClick={onClick} setSelection={setSelection}>
+          <CgMathMinus color={iconColor} />
+        </ToolButton>
+      );
     default:
       return null;
   }
@@ -294,21 +316,27 @@ const initalValue = [
   },
   {
     type: "block-math",
-    _id: 3,
     void: true,
     children: [
       {
-        text: "I am block math",
-        
-      }
-    ]
+        text: "\\frac{4}{5}",
+      },
+    ],
   },
   {
-    _id : 1,
     type: "paragraph",
     children: [
       {
-        text: "I am after inline math"
+        text: "I am after inline math",
+      },
+    ],
+  },
+  {
+    type: "inline-math",
+    void: true,
+    children: [
+      {
+        text: "5^{4}"
       }
     ]
   }

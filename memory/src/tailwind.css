@@ -13,4 +13,9 @@
   .highlight {
     background-color: #e5ed09;
   }
+
+  .math-highlight {
+    background-color: hsl(30, 12%, 93%);
+ 
+  }
 }

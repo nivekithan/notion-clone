@@ -2,6 +2,7 @@ import { InlineMath, BlockMath } from "react-katex";
 import { Node, Transforms } from "slate";
 import "katex/dist/katex.min.css";
 import { ReactEditor, useFocused, useSelected, useSlate } from "slate-react";
+
 export const Leaf = ({ attributes, leaf, children }) => {
   const leafUtility = [];
 
@@ -42,25 +43,30 @@ export const Element = ({ attributes, element, children }) => {
       return <li {...attributes}>{children}</li>;
     case "block-math":
       const children_ = Node.string(element);
+      const divUtility = ["flex", "justify-center"];
       return (
-        <div {...attributes}>
-          <BlockMathElement
-            children_={children_}
-            children={children}
+        <div {...attributes} className={divUtility.join(" ")}>
+          <MathElement
+            inlineChildren={children_}
             element={element}
+            format={"block-math"}
           />
-          {children}
+          <span className={"math-highlight"}>{children}</span>
         </div>
       );
     case "inline-math":
       const inlineChildren = Node.string(element);
+      const spanUtility = [
+        "inline"
+      ]
       return (
-        <span {...attributes}>
-          <InlineMathElement
+        <span {...attributes} className={spanUtility.join(" ")}>
+          <MathElement
             inlineChildren={inlineChildren}
             element={element}
+            format={"inline-math"}
           />
-          {children}
+          <span className={"math-highlight"}>{children}</span>
         </span>
       );
     default:
@@ -68,7 +74,7 @@ export const Element = ({ attributes, element, children }) => {
   }
 };
 
-const BlockMathElement = ({ children_, element }) => {
+const MathElement = ({ inlineChildren, element, format }) => {
   const editor = useSlate();
   const focussed = useFocused();
   const selected = useSelected();
@@ -77,45 +83,31 @@ const BlockMathElement = ({ children_, element }) => {
     Transforms.setNodes(
       editor,
       { void: false },
-      { match: (n) => n.type === "block-math" }
+      { match: (n) => n.type === format }
     );
   } else {
     const path = ReactEditor.findPath(editor, element);
     Transforms.setNodes(editor, { void: true }, { at: path });
   }
+
   if (!element.void) {
     return null;
   } else {
-    return (
-      <div contentEditable={false}>
-        <BlockMath math={children_} />
-      </div>
-    );
-  }
-};
-
-const InlineMathElement = ({ inlineChildren, element }) => {
-  const editor = useSlate();
-  const focussed = useFocused();
-  const selected = useSelected();
-
-  if (focussed && selected) {
-    Transforms.setNodes(
-      editor,
-      { void: false },
-      { match: (n) => n.type === "inline-math" }
-    );
-  } else {
-    const path = ReactEditor.findPath(editor, element);
-    Transforms.setNodes(editor, { void: true }, { at: path });
-  }
-  if (!element.void) {
-    return null;
-  } else {
-    return (
-      <span contentEditable={false}>
-        <InlineMath math={inlineChildren} />
-      </span>
-    );
+    switch (format) {
+      case "inline-math":
+        return (
+          <span contentEditable={false}>
+            <InlineMath math={inlineChildren} />
+          </span>
+        );
+      case "block-math":
+        return (
+          <div contentEditable={false}>
+            <BlockMath math={inlineChildren} />
+          </div>
+        );
+      default:
+        return null;
+    }
   }
 };
