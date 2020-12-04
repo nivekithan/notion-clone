@@ -48,13 +48,12 @@ export const SlateEditor = () => {
       }
     }
   };
-  console.log(value);
+  // console.log(value);
   return (
     <Slate
       editor={editor}
       value={value}
       onChange={(n) => {
-        console.log(n);
         setValue(n);
       }}
     >
@@ -275,69 +274,31 @@ const ToolButton = ({ children, onClick, setSelection }) => {
 // -----------------------------------------------------------------
 const initalValue = [
   {
-    type: "paragraph",
-    children: [
-      {
-        text: "I am bold",
-        bold: true,
-      },
-      {
-        text: "I am italic",
-        italic: true,
-      },
-      {
-        text: "I am italic and bold",
-        italic: true,
-        bold: true,
-      },
-    ],
-  },
-  {
-    type: "paragraph",
-    children: [
-      {
-        text: "I am highlighter",
-        highlight: true,
-      },
-      {
-        text: "I am underline",
-        underline: true,
-      },
-      {
-        text: "I am code and underline",
-        underline: true,
-      },
-      {
-        text: "I am highlight and underline",
-        highlight: true,
-        underline: true,
-      },
-    ],
-  },
-  {
     type: "block-math",
-    void: true,
+    text_: "\\frac{3}{5}",
     children: [
       {
-        text: "\\frac{4}{5}",
+        text: " ",
       },
     ],
   },
   {
-    type: "paragraph",
+    type: "heading-1",
+
     children: [
       {
-        text: "I am after inline math",
+        text: "Hello        ",
+      },
+      {
+        type: "inline-math",
+        text_: "5_6",
+        children: [
+          {
+            text: " ",
+          },
+        ],
       },
     ],
   },
-  {
-    type: "inline-math",
-    void: true,
-    children: [
-      {
-        text: "5^{4}"
-      }
-    ]
-  }
+ 
 ];

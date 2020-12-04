@@ -1,7 +1,8 @@
 import { InlineMath, BlockMath } from "react-katex";
-import { Node, Transforms } from "slate";
+import { Editor, Node, Transforms } from "slate";
 import "katex/dist/katex.min.css";
 import { ReactEditor, useFocused, useSelected, useSlate } from "slate-react";
+import { useState } from "react";
 
 export const Leaf = ({ attributes, leaf, children }) => {
   const leafUtility = [];
@@ -42,31 +43,32 @@ export const Element = ({ attributes, element, children }) => {
     case "list-item":
       return <li {...attributes}>{children}</li>;
     case "block-math":
-      const children_ = Node.string(element);
+      const children_ = element.text_ ;
       const divUtility = ["flex", "justify-center"];
       return (
-        <div {...attributes} className={divUtility.join(" ")}>
+        <div
+          {...attributes}
+          className={divUtility.join(" ")}
+          contentEditable={false}
+        >
           <MathElement
             inlineChildren={children_}
             element={element}
             format={"block-math"}
           />
-          <span className={"math-highlight"}>{children}</span>
+          <span>{children}</span>
         </div>
       );
     case "inline-math":
-      const inlineChildren = Node.string(element);
-      const spanUtility = [
-        "inline"
-      ]
+      const inlineChildren = element.text_ ;
       return (
-        <span {...attributes} className={spanUtility.join(" ")}>
+        <span {...attributes} contentEditable={false}>
           <MathElement
             inlineChildren={inlineChildren}
             element={element}
             format={"inline-math"}
           />
-          <span className={"math-highlight"}>{children}</span>
+          <span>{children}</span>
         </span>
       );
     default:
@@ -76,38 +78,44 @@ export const Element = ({ attributes, element, children }) => {
 
 const MathElement = ({ inlineChildren, element, format }) => {
   const editor = useSlate();
-  const focussed = useFocused();
+  // const focuseed = useFocused();
   const selected = useSelected();
 
-  if (focussed && selected) {
-    Transforms.setNodes(
-      editor,
-      { void: false },
-      { match: (n) => n.type === format }
+  const [inputValue, setInputValue] = useState(inlineChildren);
+
+  const onInputChange = (e) => {
+    const path = ReactEditor.findPath(editor, element)
+    Transforms.setNodes(editor, { text_: e.target.value }, {at: path});
+    setInputValue(e.target.value);
+  };
+
+  if (selected) {
+    const inputUtility = ["border-2", "border-red-500", "px-2", "inline-block"];
+
+    return (
+      <span>
+        <input
+          autoFocus={true}
+          type="text"
+          value={inputValue}
+          onChange={onInputChange}
+          className={inputUtility.join(" ")}
+        />
+      </span>
     );
   } else {
-    const path = ReactEditor.findPath(editor, element);
-    Transforms.setNodes(editor, { void: true }, { at: path });
-  }
-
-  if (!element.void) {
-    return null;
-  } else {
-    switch (format) {
-      case "inline-math":
-        return (
-          <span contentEditable={false}>
-            <InlineMath math={inlineChildren} />
-          </span>
-        );
-      case "block-math":
-        return (
-          <div contentEditable={false}>
-            <BlockMath math={inlineChildren} />
-          </div>
-        );
-      default:
-        return null;
+    if (format === "inline-math") {
+      return (
+        <span contentEditable={false}>
+          <InlineMath math={inlineChildren} />
+        </span>
+      );
+    } else if (format === "block-math") {
+      return (
+        <div contentEditable={false}>
+          <BlockMath math={inlineChildren} />
+        </div>
+      );
     }
   }
 };
