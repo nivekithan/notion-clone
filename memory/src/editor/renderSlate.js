@@ -31,7 +31,7 @@ export const Leaf = ({ attributes, leaf, children }) => {
 export const Element = ({ attributes, element, children }) => {
   switch (element.type) {
     case "paragraph":
-      return <p {...attributes}>{children}</p>
+      return <p {...attributes}>{children}</p>;
     case "heading-1":
       return <h1 {...attributes}>{children}</h1>;
     case "heading-5":
@@ -47,7 +47,7 @@ export const Element = ({ attributes, element, children }) => {
     case "block-math":
       // prettier-ignore
       return <BlockMathElement attributes={attributes} element={element} children={children} />
-    case "inline-math" :
+    case "inline-math":
       //prettier-ignore
       return <InlineMathElement attributes={attributes} element={element} children={children} />
     default:
@@ -62,15 +62,15 @@ const BlockMathElement = ({ attributes, element, children }) => {
 
   if (focused && selected) {
     Transforms.setNodes(editor, { void: false });
-
+    const textUtility = ["math-highlight", "flex", "justify-center", "w-auto"];
     return (
-      <div {...attributes} className={"math-highlight"}>
+      <div {...attributes} className={textUtility.join(" ")}>
         {children}
       </div>
     );
   } else {
     const path = ReactEditor.findPath(editor, element);
-   
+
     const mathChildren = Node.string(element);
     Transforms.setNodes(editor, { void: true }, { at: path });
 
@@ -85,32 +85,40 @@ const BlockMathElement = ({ attributes, element, children }) => {
   }
 };
 
-const InlineMathElement = ({attributes, element, children}) => {
- 
-  const editor = useSlate()
-  const focused = useFocused()
-  const selected = useSelected()
+let firstTime = false;
+const InlineMathElement = ({ attributes, element, children }) => {
+  const editor = useSlate();
+  const focused = useFocused();
+  const selected = useSelected();
 
   if (focused && selected) {
-
-    Transforms.setNodes(editor, {void: false}, {match: n => n.type === "inline-math"})
-    console.log(children)
+    Transforms.setNodes(
+      editor,
+      { void: false },
+      { match: (n) => n.type === "inline-math" }
+    );
+    firstTime = true;
     return (
-      <span {...attributes} className={"math-highlight"} >{children}</span>
-    )
+      <span {...attributes} className={"math-highlight"}>
+        {children}
+      </span>
+    );
   } else {
-    const path = ReactEditor.findPath(editor, element)
-    const mathChildren = Node.string(element)
-    Transforms.setNodes(editor, {void: true}, {at: path})
+    const path = ReactEditor.findPath(editor, element);
+    const mathChildren = Node.string(element);
+    Transforms.setNodes(editor, { void: true }, { at: path });
+    if (firstTime) {
+      Transforms.deselect(editor);
+      firstTime = false;
+    }
 
     return (
-      <span {...attributes} contentEditable={false} >
+      <span {...attributes} contentEditable={false}>
         <span>
           <InlineMath math={mathChildren} />
         </span>
         {children}
       </span>
-    )
-}
-
-}
+    );
+  }
+};
