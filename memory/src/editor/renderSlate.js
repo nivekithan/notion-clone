@@ -30,6 +30,8 @@ export const Leaf = ({ attributes, leaf, children }) => {
 
 export const Element = ({ attributes, element, children }) => {
   switch (element.type) {
+    case "paragraph":
+      return <p {...attributes}>{children}</p>
     case "heading-1":
       return <h1 {...attributes}>{children}</h1>;
     case "heading-5":
@@ -43,79 +45,72 @@ export const Element = ({ attributes, element, children }) => {
     case "list-item":
       return <li {...attributes}>{children}</li>;
     case "block-math":
-      const children_ = element.text_ ;
-      const divUtility = ["flex", "justify-center"];
-      return (
-        <div
-          {...attributes}
-          className={divUtility.join(" ")}
-          contentEditable={false}
-        >
-          <MathElement
-            inlineChildren={children_}
-            element={element}
-            format={"block-math"}
-          />
-          <span>{children}</span>
-        </div>
-      );
-    case "inline-math":
-      const inlineChildren = element.text_ ;
-      return (
-        <span {...attributes} contentEditable={false}>
-          <MathElement
-            inlineChildren={inlineChildren}
-            element={element}
-            format={"inline-math"}
-          />
-          <span>{children}</span>
-        </span>
-      );
+      // prettier-ignore
+      return <BlockMathElement attributes={attributes} element={element} children={children} />
+    case "inline-math" :
+      //prettier-ignore
+      return <InlineMathElement attributes={attributes} element={element} children={children} />
     default:
-      return <p {...attributes}>{children}</p>;
+      return null;
   }
 };
 
-const MathElement = ({ inlineChildren, element, format }) => {
+const BlockMathElement = ({ attributes, element, children }) => {
   const editor = useSlate();
-  // const focuseed = useFocused();
+  const focused = useFocused();
   const selected = useSelected();
 
-  const [inputValue, setInputValue] = useState(inlineChildren);
-
-  const onInputChange = (e) => {
-    const path = ReactEditor.findPath(editor, element)
-    Transforms.setNodes(editor, { text_: e.target.value }, {at: path});
-    setInputValue(e.target.value);
-  };
-
-  if (selected) {
-    const inputUtility = ["border-2", "border-red-500", "px-2", "inline-block"];
+  if (focused && selected) {
+    Transforms.setNodes(editor, { void: false });
 
     return (
-      <span>
-        <input
-          autoFocus={true}
-          type="text"
-          value={inputValue}
-          onChange={onInputChange}
-          className={inputUtility.join(" ")}
-        />
-      </span>
+      <div {...attributes} className={"math-highlight"}>
+        {children}
+      </div>
     );
   } else {
-    if (format === "inline-math") {
-      return (
-        <span contentEditable={false}>
-          <InlineMath math={inlineChildren} />
-        </span>
-      );
-    } else if (format === "block-math") {
-      return (
-        <div contentEditable={false}>
-          <BlockMath math={inlineChildren} />
+    const path = ReactEditor.findPath(editor, element);
+   
+    const mathChildren = Node.string(element);
+    Transforms.setNodes(editor, { void: true }, { at: path });
+
+    return (
+      <div {...attributes} contentEditable={false}>
+        <div>
+          <BlockMath math={mathChildren} />
         </div>
-      );
-    }
+        {children}
+      </div>
+    );
   }
 };
+
+const InlineMathElement = ({attributes, element, children}) => {
+ 
+  const editor = useSlate()
+  const focused = useFocused()
+  const selected = useSelected()
+
+  if (focused && selected) {
+
+    Transforms.setNodes(editor, {void: false}, {match: n => n.type === "inline-math"})
+    console.log(children)
+    return (
+      <span {...attributes} className={"math-highlight"} >{children}</span>
+    )
+  } else {
+    const path = ReactEditor.findPath(editor, element)
+    const mathChildren = Node.string(element)
+    Transforms.setNodes(editor, {void: true}, {at: path})
+
+    return (
+      <span {...attributes} contentEditable={false} >
+        <span>
+          <InlineMath math={mathChildren} />
+        </span>
+        {children}
+      </span>
+    )
+}
+
+}

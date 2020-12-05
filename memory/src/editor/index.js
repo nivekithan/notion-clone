@@ -274,31 +274,20 @@ const ToolButton = ({ children, onClick, setSelection }) => {
 // -----------------------------------------------------------------
 const initalValue = [
   {
-    type: "block-math",
-    text_: "\\frac{3}{5}",
+    type: "paragraph",
     children: [
       {
-        text: " ",
-      },
-    ],
-  },
-  {
-    type: "heading-1",
-
-    children: [
-      {
-        text: "Hello        ",
+        text: "I am math",
       },
       {
         type: "inline-math",
-        text_: "5_6",
+        inline: true,
         children: [
           {
-            text: " ",
+            text: "\\frac{4}{5}",
           },
         ],
       },
     ],
   },
- 
 ];
