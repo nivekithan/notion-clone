@@ -24,6 +24,8 @@ import {
 import { CgMathMinus, CgMathPlus } from "react-icons/cg";
 
 import { withMath } from "./plugins";
+import { toggleBlock, isBlockActive, toggleMark, isMarkActive } from "./toggle";
+
 // ----------------------------------------------------------------------------------------------------------
 const HOTKEYS = {
   "mod+b": "bold",
@@ -32,7 +34,6 @@ const HOTKEYS = {
   "mod+h": "highlight",
 };
 
-const LIST_TYPES = ["numbered-list", "unordered-list"];
 // --------------------------------------------------------------------------------------------------------------
 export const SlateEditor = () => {
   const editor = useMemo(() => withMath(withReact(createEditor())), []);
@@ -48,7 +49,7 @@ export const SlateEditor = () => {
       }
     }
   };
-  // console.log(value);
+  console.log(value);
   return (
     <Slate
       editor={editor}
@@ -78,59 +79,6 @@ export const SlateEditor = () => {
     </Slate>
   );
 };
-// ----------------------------------------------------------------------------------------------------------
-const toggleMark = (editor, format) => {
-  const isActive = isMarkActive(editor, format);
-
-  if (isActive) {
-    Editor.removeMark(editor, format);
-  } else if (!isActive) {
-    Editor.addMark(editor, format, true);
-  }
-};
-
-const isMarkActive = (editor, format) => {
-  const marks = Editor.marks(editor);
-  return marks ? marks[format] === true : false;
-};
-// -------------------------------------------------------------------------------------------------------------
-
-// --------------------------------------------------------------------------------------------------------------
-
-const toggleBlock = (editor, format) => {
-  const isActive = isBlockActive(editor, format);
-  const isList = LIST_TYPES.includes(format);
-
-  Transforms.unwrapNodes(editor, {
-    match: (n) =>
-      LIST_TYPES.includes(
-        !Editor.isEditor(n) && SlateElement.isElement(n) && n.type
-      ),
-  });
-
-  const newProperties = {
-    type: isActive ? "paragraph" : isList ? "list-item" : format,
-  };
-
-  Transforms.setNodes(editor, newProperties);
-
-  if (!isActive && isList) {
-    Transforms.wrapNodes(editor, {
-      type: format,
-      children: [],
-    });
-  }
-};
-
-const isBlockActive = (editor, format) => {
-  const [match] = Editor.nodes(editor, {
-    match: (n) =>
-      !Editor.isEditor(n) && SlateElement.isElement(n) && n.type === format,
-  });
-
-  return !!match;
-};
-
 // ------------------------------------------------------------------------------------------------------------------
 
 const ElementButton = ({ format }) => {
@@ -274,12 +222,11 @@ const ToolButton = ({ children, onClick, setSelection }) => {
 // -----------------------------------------------------------------
 const initalValue = [
   {
-    type: "block-math",
-    void: true,
+    type: "heading-1",
     children: [
       {
-          text: "\\frac{3}{4}"
-      }
-    ]
-  }
+        text: "\\frac{3}{4}",
+      },
+    ],
+  },
 ];

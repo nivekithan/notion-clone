@@ -30,8 +30,8 @@ export const Leaf = ({ attributes, leaf, children }) => {
 
 export const Element = ({ attributes, element, children }) => {
   switch (element.type) {
-    case "paragraph":
-      return <p {...attributes}>{children}</p>;
+    case "section":
+      return <section {...attributes}>{children}</section>;
     case "heading-1":
       return <h1 {...attributes}>{children}</h1>;
     case "heading-5":
