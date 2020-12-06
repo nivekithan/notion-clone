@@ -1,11 +1,11 @@
-import { InlineMath, BlockMath } from "react-katex";
-import { Editor, Node, Transforms } from "slate";
+import  Tex from "@matejmazur/react-katex";
+import {  Node, Transforms } from "slate";
 import "katex/dist/katex.min.css";
-import { ReactEditor, useFocused, useSelected, useSlate } from "slate-react";
-import { useState } from "react";
+import { ReactEditor, RenderElementProps, RenderLeafProps, useFocused, useSelected, useSlate } from "slate-react";
 
-export const Leaf = ({ attributes, leaf, children }) => {
-  const leafUtility = [];
+
+export const Leaf = ({ attributes, leaf, children } : RenderLeafProps) => {
+  const leafUtility : string[] = [];
 
   if (leaf.bold) {
     leafUtility.push("font-semibold");
@@ -28,22 +28,20 @@ export const Leaf = ({ attributes, leaf, children }) => {
     );
 };
 
-export const Element = ({ attributes, element, children }) => {
+export const Element = ({ attributes, element, children } : RenderElementProps) => {
   switch (element.type) {
     case "section":
-      return <section {...attributes}>{children}</section>;
+      return <section {...attributes}  className={"default-text"}>{children}</section>;
     case "heading-1":
-      return <h1 {...attributes}>{children}</h1>;
-    case "heading-5":
-      return <h5 {...attributes}>{children}</h5>;
+      return <h1 {...attributes} className={"heading-1"}>{children}</h1>;
+    case "heading-3":
+      return <h3 {...attributes} className={"heading-3"}>{children}</h3>;
     case "numbered-list":
-      return <ol {...attributes}>{children}</ol>;
+      return <ol {...attributes} className={"numbered-list"}>{children}</ol>;
     case "unordered-list":
-      return <ul {...attributes}>{children}</ul>;
-    case "block-quote":
-      return <blockquote {...attributes}>{children}</blockquote>;
+      return <ul {...attributes} className={"unordered-list"}>{children}</ul>;
     case "list-item":
-      return <li {...attributes}>{children}</li>;
+      return <li {...attributes} className={"default-list"}>{children}</li>;
     case "block-math":
       // prettier-ignore
       return <BlockMathElement attributes={attributes} element={element} children={children} />
@@ -55,7 +53,9 @@ export const Element = ({ attributes, element, children }) => {
   }
 };
 
-const BlockMathElement = ({ attributes, element, children }) => {
+
+
+const BlockMathElement = ({ attributes, element, children } : RenderElementProps) => {
   const editor = useSlate();
   const focused = useFocused();
   const selected = useSelected();
@@ -77,7 +77,7 @@ const BlockMathElement = ({ attributes, element, children }) => {
     return (
       <div {...attributes} contentEditable={false}>
         <div>
-          <BlockMath math={mathChildren} />
+          <Tex math={mathChildren} block />
         </div>
         {children}
       </div>
@@ -86,7 +86,7 @@ const BlockMathElement = ({ attributes, element, children }) => {
 };
 
 let firstTime = false;
-const InlineMathElement = ({ attributes, element, children }) => {
+const InlineMathElement = ({ attributes, element, children } : RenderElementProps) => {
   const editor = useSlate();
   const focused = useFocused();
   const selected = useSelected();
@@ -115,7 +115,7 @@ const InlineMathElement = ({ attributes, element, children }) => {
     return (
       <span {...attributes} contentEditable={false}>
         <span>
-          <InlineMath math={mathChildren} />
+          <Tex math={mathChildren} />
         </span>
         {children}
       </span>

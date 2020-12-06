@@ -3,7 +3,7 @@ import { Days } from "./components/days";
 import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
 import { SlateEditor } from "./editor";
 
-export const App = () => {
+export const App: React.FC = () => {
   return (
     <div className="App">
       <Router>

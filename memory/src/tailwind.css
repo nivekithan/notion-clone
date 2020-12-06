@@ -16,6 +16,42 @@
 
   .math-highlight {
     background-color: hsl(30, 12%, 93%);
- 
   }
+
+  .heading-1 {
+    font-size: 2rem;
+    line-height: 2.5rem;
+    color: #000a3a;
+    font-weight: 700;
+    letter-spacing: 0.025em;
+
+  }
+
+  .heading-3 {
+    font-size: 1.5rem;
+    line-height: 2rem;
+    color: #000a3a;
+    font-weight: 400;
+    letter-spacing: 0.025em;
+
+  }
+
+  .numbered-list {
+    list-style-type: decimal;
+
+  }
+
+  .unordered-list {
+    list-style-type: disc;
+
+  }
+
+  .default-text {
+    letter-spacing: 0.025em;
+    font-size: 0.75rem;
+    line-height: 1rem;
+  }
+}
+
+h1 {
 }
