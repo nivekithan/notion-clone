@@ -58,6 +58,7 @@ export const SlateEditor = () => {
       }
     }
   };
+  console.log(value)
   return (
     <Slate
       editor={editor as ReactEditor}

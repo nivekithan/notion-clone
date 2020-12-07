@@ -108,7 +108,11 @@ const InlineMathElement = ({ attributes, element, children } : RenderElementProp
     const mathChildren = Node.string(element);
     Transforms.setNodes(editor, { void: true }, { at: path });
     if (firstTime) {
+      const selection = editor.selection
       Transforms.deselect(editor);
+      if (selection) {
+      Transforms.select(editor, selection)
+      }
       firstTime = false;
     }
 

@@ -19,16 +19,16 @@
   }
 
   .heading-1 {
-    font-size: 2rem;
+    font-size: 1.5rem;
     line-height: 2.5rem;
     color: #000a3a;
-    font-weight: 700;
+    font-weight: 400;
     letter-spacing: 0.025em;
 
   }
 
   .heading-3 {
-    font-size: 1.5rem;
+    font-size: 0.75rem;
     line-height: 2rem;
     color: #000a3a;
     font-weight: 400;
