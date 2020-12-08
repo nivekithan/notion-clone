@@ -35,7 +35,7 @@ export const toggleBlock = (editor: Editor, format: string) => {
     Transforms.unwrapNodes(editor, {
       match: (n) =>
         LIST_TYPES.includes(
-          (!Editor.isEditor(n) && SlateElement.isElement(n) && (n.type || n.type === "inline-math")) as string
+          (!Editor.isEditor(n) && SlateElement.isElement(n) && n.type) as string
         ) ,
     });
 

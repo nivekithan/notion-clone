@@ -1,6 +1,5 @@
 import {
   createEditor,
-  Element as SlateElement,
   Transforms,
   Node
 } from "slate";
@@ -25,6 +24,7 @@ import { CgMathMinus, CgMathPlus } from "react-icons/cg";
 
 import { withMath } from "./plugins";
 import { toggleBlock, isBlockActive, toggleMark, isMarkActive } from "./toggle";
+import {serialiser} from "./serialiser"
 
 // ----------------------------------------------------------------------------------------------------------
 
@@ -58,9 +58,10 @@ export const SlateEditor = () => {
       }
     }
   };
-  console.log(value)
+  
   return (
-    <Slate
+    <div> 
+         <Slate
       editor={editor as ReactEditor}
       value={value}
       onChange={(n) => {
@@ -86,6 +87,8 @@ export const SlateEditor = () => {
         onKeyDown={handleKeyDown}
       />
     </Slate>
+    {serialiser({children: value})}
+    </div>
   );
 };
 // ------------------------------------------------------------------------------------------------------------------
