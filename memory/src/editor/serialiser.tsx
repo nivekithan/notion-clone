@@ -1,4 +1,3 @@
-import escapeHtml from "escape-html";
 import Tex from "@matejmazur/react-katex";
 import {Node, Text} from "slate";
 
@@ -55,6 +54,6 @@ const Leaf = (leaf : Text) => {
   }
   // prettier-ignore
   return (
-    <span className={leafUtility.join(" ")}>{escapeHtml(text)}</span>
+    <span className={leafUtility.join(" ")}>{text}</span>
     );
 };
