@@ -16,14 +16,12 @@ const Element = (element : Node, children : JSX.Element[] ) => {
       return <section className={"default-text"}>{children}</section>;
     case "heading-1":
       return <h1 className={"heading-1"}>{children}</h1>;
-    case "heading-3":
-      return <h3 className={"heading-3"} >{children}</h3>;
     case "numbered-list":
-      return <ol className={"numbered-list"}>{children}</ol>;
+      return <ol className={"list-decimal list-outside"}>{children}</ol>;
     case "unordered-list":
-      return <ul className={"unordered-list"}>{children}</ul>;
+      return <ul className={"list-disc list-outside"}>{children}</ul>;
     case "list-item":
-      return <li className={"default-list"}>{children}</li>;
+      return <li className={"default-text"}>{children}</li>; 
     case "block-math":
       return <Tex math={Node.string(element)} block />
     case "inline-math":
@@ -45,6 +43,7 @@ const Leaf = (leaf : Text) => {
     leafUtility.push("italic");
   }
 
+
   if (leaf.underline) {
     leafUtility.push("underline");
   }
@@ -57,3 +56,4 @@ const Leaf = (leaf : Text) => {
     <span className={leafUtility.join(" ")}>{text}</span>
     );
 };
+

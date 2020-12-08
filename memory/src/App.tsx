@@ -2,7 +2,6 @@ import { Navbar } from "./components/navbar";
 import { Days } from "./components/days";
 import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
 import { SlateEditor } from "./editor";
-import { Editor } from "slate";
 
 export const App: React.FC = () => {
   return (

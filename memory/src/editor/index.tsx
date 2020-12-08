@@ -1,10 +1,14 @@
+import { createEditor, Transforms, Node } from "slate";
 import {
-  createEditor,
-  Transforms,
-  Node
-} from "slate";
-import { Editable, ReactEditor, RenderElementProps, RenderLeafProps, Slate, useSlate, withReact } from "slate-react";
-import {  useCallback, useMemo, useState } from "react";
+  Editable,
+  ReactEditor,
+  RenderElementProps,
+  RenderLeafProps,
+  Slate,
+  useSlate,
+  withReact,
+} from "slate-react";
+import { useCallback, useMemo, useState } from "react";
 import isHotKey from "is-hotkey";
 
 import { Leaf, Element } from "./renderSlate";
@@ -24,17 +28,16 @@ import { CgMathMinus, CgMathPlus } from "react-icons/cg";
 
 import { withMath } from "./plugins";
 import { toggleBlock, isBlockActive, toggleMark, isMarkActive } from "./toggle";
-import {serialiser} from "./serialiser"
 
 // ----------------------------------------------------------------------------------------------------------
 
 interface Hotkeys {
-  [propName: string] : string
-  [propName: number] : string
+  [propName: string]: string;
+  [propName: number]: string;
 }
 
 interface synteticKeybaordEvent<T> {
-  (e : React.KeyboardEvent<T>):  void
+  (e: React.KeyboardEvent<T>): void;
 }
 const HOTKEYS: Hotkeys = {
   "mod+b": "bold",
@@ -45,58 +48,64 @@ const HOTKEYS: Hotkeys = {
 
 // --------------------------------------------------------------------------------------------------------------
 export const SlateEditor = () => {
-  const editor   = useMemo(() => withMath(withReact(createEditor())), []);
+  const editor = useMemo(
+    () => withMath(withReact(createEditor())),
+    []
+  );
   const [value, setValue] = useState(initalValue);
-  const renderLeaf = useCallback((props : RenderLeafProps) => <Leaf {...props} />, []);
-  const renderElement = useCallback((props: RenderElementProps) => <Element {...props} />, []);
-  const handleKeyDown : synteticKeybaordEvent<HTMLDivElement> = (e ) => {
+  const renderLeaf = useCallback(
+    (props: RenderLeafProps) => <Leaf {...props} />,
+    []
+  );
+  const renderElement = useCallback(
+    (props: RenderElementProps) => <Element {...props} />,
+    []
+  );
+  const handleKeyDown: synteticKeybaordEvent<HTMLDivElement> = (e) => {
     for (const hotKey in HOTKEYS) {
-      if (isHotKey(hotKey, e as any as KeyboardEvent )) {
+      if (isHotKey(hotKey, (e as any) as KeyboardEvent)) {
         e.preventDefault();
         const mark = HOTKEYS[hotKey];
         toggleMark(editor, mark);
       }
     }
   };
-  
+
   return (
-    <div> 
-         <Slate
-      editor={editor as ReactEditor}
-      value={value}
-      onChange={(n) => {
-        setValue(n);
-      }}
-    >
-      <section>
-        <MarkButton format={"bold"} />
-        <MarkButton format={"highlight"} />
-        <MarkButton format={"italic"} />
-        <MarkButton format={"underline"} />
-        <ElementButton format={"heading-1"} />
-        <ElementButton format={"heading-3"} />
-        <ElementButton format={"block-quote"} />
-        <ElementButton format={"numbered-list"} />
-        <ElementButton format={"unordered-list"} />
-        <ElementButton format={"block-math"} />
-        <ElementButton format={"inline-math"} />
-      </section>
-      <Editable
-        renderLeaf={renderLeaf}
-        renderElement={renderElement}
-        onKeyDown={handleKeyDown}
-      />
-    </Slate>
-    {serialiser({children: value})}
+    <div>
+      <Slate
+        editor={(editor as any) as ReactEditor}
+        value={value}
+        onChange={(n) => {
+          setValue(n);
+        }}
+      >
+        <section>
+          <MarkButton format={"bold"} />
+          <MarkButton format={"highlight"} />
+          <MarkButton format={"italic"} />
+          <MarkButton format={"underline"} />
+          <ElementButton format={"heading-1"} />
+          <ElementButton format={"numbered-list"} />
+          <ElementButton format={"unordered-list"} />
+          <ElementButton format={"block-math"} />
+          <ElementButton format={"inline-math"} />
+        </section>
+        <Editable
+          renderLeaf={renderLeaf}
+          renderElement={renderElement}
+          onKeyDown={handleKeyDown}
+        />
+      </Slate>
     </div>
   );
 };
 // ------------------------------------------------------------------------------------------------------------------
-type Format =  {
-  format : string
-}
+type Format = {
+  format: string;
+};
 
-const ElementButton = ({ format } : Format) => {
+const ElementButton = ({ format }: Format) => {
   const editor = useSlate();
 
   const setSelection = () => {
@@ -107,7 +116,7 @@ const ElementButton = ({ format } : Format) => {
     <Button
       format={format}
       isActive={isBlockActive(editor, format)}
-      onClick ={(e) => {
+      onClick={(e) => {
         e.preventDefault();
         toggleBlock(editor, format);
       }}
@@ -116,7 +125,7 @@ const ElementButton = ({ format } : Format) => {
   );
 };
 
-const MarkButton = ({ format } : Format) => {
+const MarkButton = ({ format }: Format) => {
   const editor = useSlate();
 
   const setSelection = () => {
@@ -127,7 +136,7 @@ const MarkButton = ({ format } : Format) => {
     <Button
       format={format}
       isActive={isMarkActive(editor, format)}
-      onClick={(e : React.MouseEvent<HTMLButtonElement, MouseEvent>) : void => {
+      onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>): void => {
         e.preventDefault();
         toggleMark(editor, format);
       }}
@@ -137,12 +146,12 @@ const MarkButton = ({ format } : Format) => {
 };
 // ------------------------------------------------------------------------------------------------------------------------
 interface ForButton extends Format {
-  isActive : boolean,
-  onClick: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void,
-  setSelection: () => void
+  isActive: boolean;
+  onClick: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+  setSelection: () => void;
 }
 
-const Button = ({ isActive, format, onClick, setSelection } : ForButton) => {
+const Button = ({ isActive, format, onClick, setSelection }: ForButton) => {
   const iconColor = isActive ? "red" : "blue";
 
   switch (format) {
@@ -220,12 +229,12 @@ const Button = ({ isActive, format, onClick, setSelection } : ForButton) => {
 };
 
 interface ForToolButton {
-  onClick : (e : React.MouseEvent<HTMLButtonElement, MouseEvent>) => void,
-  setSelection: () => void,
-  children: React.ReactChild
+  onClick: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+  setSelection: () => void;
+  children: React.ReactChild;
 }
 
-const ToolButton = ({ children, onClick, setSelection } : ForToolButton) => {
+const ToolButton = ({ children, onClick, setSelection }: ForToolButton) => {
   const buttonUtility = [
     "cursor-pointer",
     "inline-block",
@@ -247,7 +256,7 @@ const ToolButton = ({ children, onClick, setSelection } : ForToolButton) => {
 };
 // ---------------------------------------------------------------
 // -----------------------------------------------------------------
-const initalValue : Node[]  = [
+const initalValue: Node[] = [
   {
     type: "heading-1",
     children: [
