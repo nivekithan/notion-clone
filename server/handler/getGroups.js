@@ -7,10 +7,7 @@ const getGroups = (req, res) => {
     } else if (days) {
       res.json(days);
     }
-  });
-
- 
-  
+  });  
 };
 
 module.exports = getGroups;
