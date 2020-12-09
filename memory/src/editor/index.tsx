@@ -48,10 +48,7 @@ const HOTKEYS: Hotkeys = {
 
 // --------------------------------------------------------------------------------------------------------------
 export const SlateEditor = () => {
-  const editor = useMemo(
-    () => withMath(withReact(createEditor())),
-    []
-  );
+  const editor = useMemo(() => withMath(withReact(createEditor())), []);
   const [value, setValue] = useState(initalValue);
   const renderLeaf = useCallback(
     (props: RenderLeafProps) => <Leaf {...props} />,
@@ -70,6 +67,7 @@ export const SlateEditor = () => {
       }
     }
   };
+  const sectionUtility = ["inline-flex", "flex-row", "content-center", "m-3"];
 
   return (
     <div>
@@ -80,22 +78,29 @@ export const SlateEditor = () => {
           setValue(n);
         }}
       >
-        <section>
-          <MarkButton format={"bold"} />
-          <MarkButton format={"highlight"} />
-          <MarkButton format={"italic"} />
-          <MarkButton format={"underline"} />
-          <ElementButton format={"heading-1"} />
-          <ElementButton format={"numbered-list"} />
-          <ElementButton format={"unordered-list"} />
-          <ElementButton format={"block-math"} />
-          <ElementButton format={"inline-math"} />
-        </section>
-        <Editable
-          renderLeaf={renderLeaf}
-          renderElement={renderElement}
-          onKeyDown={handleKeyDown}
-        />
+        <div className={"flex bg-mywhite h-14 bg "}>
+          <section className={sectionUtility.join(" ")}>
+            <MarkButton format={"bold"} />
+            <MarkButton format={"highlight"} />
+            <MarkButton format={"italic"} />
+          </section>
+          <section className={sectionUtility.join(" ")}>
+            <ElementButton format={"heading-1"} />
+            <ElementButton format={"numbered-list"} />
+            <ElementButton format={"unordered-list"} />
+          </section>
+          <section className={sectionUtility.join(" ")}>
+            <ElementButton format={"block-math"} />
+            <ElementButton format={"inline-math"} />
+          </section>
+        </div>
+        <div className={"mx-10%"}>
+          <Editable
+            renderLeaf={renderLeaf}
+            renderElement={renderElement}
+            onKeyDown={handleKeyDown}
+          />
+        </div>
       </Slate>
     </div>
   );
@@ -105,7 +110,7 @@ type Format = {
   format: string;
 };
 
-const ElementButton = ({ format }: Format) => {
+export const ElementButton = ({ format }: Format) => {
   const editor = useSlate();
 
   const setSelection = () => {
@@ -125,7 +130,7 @@ const ElementButton = ({ format }: Format) => {
   );
 };
 
-const MarkButton = ({ format }: Format) => {
+export const MarkButton = ({ format }: Format) => {
   const editor = useSlate();
 
   const setSelection = () => {
@@ -152,7 +157,7 @@ interface ForButton extends Format {
 }
 
 const Button = ({ isActive, format, onClick, setSelection }: ForButton) => {
-  const iconColor = isActive ? "red" : "blue";
+  const iconColor = isActive ? "#304fd0" : "#565c63";
 
   switch (format) {
     case "bold":
@@ -237,9 +242,10 @@ interface ForToolButton {
 const ToolButton = ({ children, onClick, setSelection }: ForToolButton) => {
   const buttonUtility = [
     "cursor-pointer",
-    "inline-block",
-    "bg-gray-100",
-    "p-1",
+    "hover:border-2",
+    "hover:border-mygrey-600",
+    "p-2",
+    "mx-2",
   ];
 
   return (

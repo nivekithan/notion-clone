@@ -24,7 +24,7 @@ export const MyEditor = {
                 ].join(" ")
             case "inline-math-focus":
                 return "math-highlight"
-            case "blod":
+            case "bold":
                 return "font-semibold"
             case "italic":
                 return "italic"
