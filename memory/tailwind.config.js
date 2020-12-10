@@ -22,7 +22,16 @@ module.exports = {
         "20%" : "20%",
         "30%" : "30%",
         "40%" : "40%"
-      }
+      },
+      spacing : {
+        sm : "8px",
+        l : "16px",
+        xl : "24px",
+        xxl : "36px",
+        xxxl : "48px",
+        "box340" : "340px",
+        "box273" : "273px"
+      },
     },
   },
   variants: {
