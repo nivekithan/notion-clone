@@ -46,11 +46,12 @@ export const Days = () => {
 
   return <section>{output}</section>;
 };
-// ---------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------
 
 const AddNewDays = () => {
   const [isNewDays, setisNewDays] = useState<boolean>(true);
-
+  const [nameValue, setNameValue] = useState<string>("");
+  const [tagValue, setTagValue] = useState<string>("")
   const utility: Utility = {
     "bg-rectangle": ["bg-myblue-400", "inline-block"],
     contentWrapper: [
@@ -64,14 +65,30 @@ const AddNewDays = () => {
     ],
     textWrapper: ["flex", "flex-col", "items-center", "gap-y-4"],
     text: ["text-white", "text-4xl", "font-serif", "font-bold"],
+    
+    contentWrapperNew: [
+      "w-box292",
+      "h-box201",
+      "mx-xl",
+      "my-xxl",
+    ],
+
+    form: [
+      "flex",
+      "flex-col",
+      "gap-6"
+    ]
   };
 
   const Ouput = () => {
     if (isNewDays) {
       return (
         <section className={utility["bg-rectangle"].join(" ")}>
-            <section className={utility.contentWrapper.join(" ")}>
-           
+            <section className={utility.contentWrapperNew.join(" ")}>
+              <form className={utility.form.join(" ")}>
+                <input type="text" value={nameValue} onChange={(e) => setNameValue(e.target.value)} />
+                <input type="text" value={tagValue} onChange={(e) => setTagValue(e.target.value)} />
+              </form>
             </section>
         </section>
       )
@@ -92,7 +109,7 @@ const AddNewDays = () => {
   return <Ouput />;
 };
 
-// ---------------------------------------------------------\
+// --------------------------------------------------------------------------------------------
 
 const Day = ({ days }: { days: DaysINF[] }) => {
   const utility: Utility = {
