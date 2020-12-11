@@ -49,6 +49,8 @@ export const Days = () => {
 // ---------------------------------------------------------------------------
 
 const AddNewDays = () => {
+  const [isNewDays, setisNewDays] = useState<boolean>(true);
+
   const utility: Utility = {
     "bg-rectangle": ["bg-myblue-400", "inline-block"],
     contentWrapper: [
@@ -64,16 +66,30 @@ const AddNewDays = () => {
     text: ["text-white", "text-4xl", "font-serif", "font-bold"],
   };
 
-  return (
-    <section className={utility["bg-rectangle"].join(" ")}>
-      <section className={utility.contentWrapper.join(" ")}>
-        <ul className={utility.textWrapper.join(" ")}>
-          <li className={utility.text.join(" ")}>New Day</li>
-          <HiOutlinePlusCircle color={"#ffffff"} size="27px" />
-        </ul>
-      </section>
-    </section>
-  );
+  const Ouput = () => {
+    if (isNewDays) {
+      return (
+        <section className={utility["bg-rectangle"].join(" ")}>
+            <section className={utility.contentWrapper.join(" ")}>
+           
+            </section>
+        </section>
+      )
+    } else {
+      return (
+        <section className={utility["bg-rectangle"].join(" ")}>
+          <section className={utility.contentWrapper.join(" ")}>
+            <ul className={utility.textWrapper.join(" ")}>
+              <li className={utility.text.join(" ")}>New Day</li>
+              <HiOutlinePlusCircle color={"#ffffff"} size="27px" />
+            </ul>
+          </section>
+        </section>
+      );
+    }
+  };
+
+  return <Ouput />;
 };
 
 // ---------------------------------------------------------\
@@ -90,7 +106,7 @@ const Day = ({ days }: { days: DaysINF[] }) => {
       "flex",
       "flex-col",
     ],
-    tagWrapper: ["h-box94", "overflow-hidden"],
+    tagWrapper: ["h-box94", "overflow-y-auto"],
     text: ["text-white", "text-2xl", "font-bold", "font-serif"],
   };
 
