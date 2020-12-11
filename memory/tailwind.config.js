@@ -26,14 +26,19 @@ module.exports = {
         "40%": "40%",
       },
       spacing: {
-        sm: "8px",
+        s: "8px",
         l: "16px",
         xl: "24px",
         xxl: "36px",
         xxxl: "48px",
         box340: "340px",
-        box273: "273px",
+        box292: "292px",
+        box201: "201px",
+        box94: "94px",
       },
+      fontSize: {
+        "10" :"0.625rem" 
+      }
     },
   },
   variants: {
