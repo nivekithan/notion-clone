@@ -1,8 +1,7 @@
-import { useState, useEffect, useRef } from "react";
-import { FaToggleOn, FaToggleOff } from "react-icons/fa";
+import { useState, useEffect } from "react";
 import { HiOutlinePlusCircle } from "react-icons/hi";
 import { Fragment } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 // This element is child element for DayCards Element
 //
 // allows the user to start the test is strict mode or in not in strict strict mode
@@ -59,8 +58,8 @@ const AddNewDays = ({
   isNewDays,
   setisNewDays,
 }: {
-  isNewDays: boolean,
-  setisNewDays: React.Dispatch<React.SetStateAction<boolean>>
+  isNewDays: boolean;
+  setisNewDays: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const { register, handleSubmit } = useForm<FormInputs>();
 
@@ -78,7 +77,14 @@ const AddNewDays = ({
     textWrapper: ["flex", "flex-col", "items-center", "gap-y-4"],
     text: ["text-white", "text-4xl", "font-serif", "font-bold"],
 
-    contentWrapperNew: ["w-box292", "h-box201", "mx-xl", "my-xxl", "flex", "flex-col"],
+    contentWrapperNew: [
+      "w-box292",
+      "h-box201",
+      "mx-xl",
+      "my-xxl",
+      "flex",
+      "flex-col",
+    ],
 
     form: ["flex", "flex-col", "gap-6"],
 
@@ -93,21 +99,15 @@ const AddNewDays = ({
       "uppercase",
       "font-serif",
       "font-bold",
-      "tracking-submit"
+      "tracking-submit",
     ],
 
-    cancelText: [
-      "text-white",
-      "font-serif",
-      "font-xs",
-      "font-bold"
-
-    ]
+    cancelText: ["text-white", "font-serif", "font-xs", "font-bold"],
   };
 
   const onSubmit = handleSubmit((data) => {
     const { name, tags } = data;
-    const tagList = (tags.trim()).split(";");
+    const tagList = tags.trim().split(";");
 
     const url = "http://localhost:4000/post/newgroup";
 
@@ -123,10 +123,10 @@ const AddNewDays = ({
     });
   });
 
-  const onCancel = (e : React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    e.preventDefault()
-    setisNewDays(false)
-  }
+  const onCancel = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.preventDefault();
+    setisNewDays(false);
+  };
 
   const Ouput = () => {
     if (isNewDays) {
@@ -152,7 +152,9 @@ const AddNewDays = ({
                 value="Submit"
               />
             </form>
-            <button className={utility.cancelText.join(" ")} onClick={onCancel}>Cancel</button>     
+            <button className={utility.cancelText.join(" ")} onClick={onCancel}>
+              Cancel
+            </button>
           </section>
         </section>
       );
