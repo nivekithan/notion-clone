@@ -2,10 +2,6 @@ import { useState, useEffect } from "react";
 import { HiOutlinePlusCircle } from "react-icons/hi";
 import { Fragment } from "react";
 import { useForm } from "react-hook-form";
-// This element is child element for DayCards Element
-//
-// allows the user to start the test is strict mode or in not in strict strict mode
-// by default it will start in strict mode
 
 // -----------------------------------------------------------------------------------------------
 
@@ -23,6 +19,15 @@ interface Utility {
 interface FormInputs {
   name: string;
   tags: string;
+}
+
+interface FormsINT {
+  onSubmit: (data: FormInputs) => void;
+  onCancel: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+  defualtValue?: {
+    name: string;
+    tags: string;
+  };
 }
 // ---------------------------------------------------------------------------------------------------
 // Renders the days the component
@@ -105,7 +110,7 @@ const AddNewDays = ({
     cancelText: ["text-white", "font-serif", "font-xs", "font-bold"],
   };
 
-  const onSubmit = handleSubmit((data) => {
+  const onSubmit = (data: FormInputs) => {
     const { name, tags } = data;
     const tagList = tags.trim().split(";");
 
@@ -121,7 +126,7 @@ const AddNewDays = ({
     }).then(() => {
       setisNewDays(false);
     });
-  });
+  };
 
   const onCancel = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
@@ -130,33 +135,17 @@ const AddNewDays = ({
 
   const Ouput = () => {
     if (isNewDays) {
+      const defualtValue = {
+        name: "",
+        tags: "",
+      };
+
       return (
-        <section className={utility["bg-rectangle"].join(" ")}>
-          <section className={utility.contentWrapperNew.join(" ")}>
-            <form className={utility.form.join(" ")} onSubmit={onSubmit}>
-              <input
-                ref={register({ required: true })}
-                name="name"
-                placeholder="Name"
-                className={utility.input.join(" ")}
-              />
-              <input
-                ref={register({ required: true })}
-                name="tags"
-                placeholder="Tags"
-                className={utility.input.join(" ")}
-              />
-              <input
-                type="submit"
-                className={utility.submit.join(" ")}
-                value="Submit"
-              />
-            </form>
-            <button className={utility.cancelText.join(" ")} onClick={onCancel}>
-              Cancel
-            </button>
-          </section>
-        </section>
+        <Forms
+          onSubmit={onSubmit}
+          onCancel={onCancel}
+          defualtValue={defualtValue}
+        />
       );
     } else {
       return (
@@ -201,21 +190,77 @@ const Day = ({ days }: { days: DaysINF[] }) => {
   };
 
   const output = days.map((day, index) => {
-    return (
-      <section className={utility.sectionWrapper.join(" ")} key={index}>
-        <ul className={utility.contentWrapper.join(" ")}>
-          <li className={utility.text.join(" ")}>{day.name}</li>
-          <li className={utility.tagWrapper.join(" ")}>
-            <TagWrapper tags={day.tags} />
-          </li>
-          <li>
-            <ButtonsWrapper />
-          </li>
-        </ul>
-      </section>
-    );
+    return <SingleDay day={day} />;
   });
   return <Fragment>{output}</Fragment>;
+};
+
+const SingleDay = ({ day }: { day: DaysINF }) => {
+  const [Editable, setEditable] = useState<boolean>(false);
+
+  const Output = () => {
+    if (Editable) {
+      const defaultValue = {
+        name: day.name,
+        tags: day.tags.join(";"),
+      };
+
+      const onSubmit = (data: FormInputs) => {
+        setEditable(false);
+      };
+
+      const onCancel = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        e.preventDefault();
+        setEditable(false);
+      };
+
+      return (
+        <Forms
+          defualtValue={defaultValue}
+          onSubmit={onSubmit}
+          onCancel={onCancel}
+        />
+      );
+    } else {
+      const utility: Utility = {
+        sectionWrapper: ["w-box340", "bg-mygrey-400", "inline-block"],
+        contentWrapper: [
+          "w-box292",
+          "h-box201",
+          "mx-xl",
+          "my-xxl",
+          "gap-y-6",
+          "flex",
+          "flex-col",
+        ],
+        tagWrapper: ["h-box94", "overflow-y-auto"],
+        text: ["text-white", "text-2xl", "font-bold", "font-serif"],
+      };
+
+      const onEditClick = (
+        e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+      ) => {
+        e.preventDefault();
+        setEditable(true);
+      };
+
+      return (
+        <section className={utility.sectionWrapper.join(" ")}>
+          <ul className={utility.contentWrapper.join(" ")}>
+            <li className={utility.text.join(" ")}>{day.name}</li>
+            <li className={utility.tagWrapper.join(" ")}>
+              <TagWrapper tags={day.tags} />
+            </li>
+            <li>
+              <ButtonsWrapper onEditClick={onEditClick} />
+            </li>
+          </ul>
+        </section>
+      );
+    }
+  };
+
+  return <Output />;
 };
 //----------------------------------------------------------------------------------------------------
 const TagWrapper = ({ tags }: { tags: string[] }) => {
@@ -249,7 +294,11 @@ const TagWrapper = ({ tags }: { tags: string[] }) => {
 
 //-------------------------------------------------------------------------------------------------------------
 
-const ButtonsWrapper = () => {
+const ButtonsWrapper = ({
+  onEditClick,
+}: {
+  onEditClick: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+}) => {
   const utility: Utility = {
     buttonWrapper: ["flex", "flex-row", "justify-between", "items-center"],
     buttonText: ["text-white", "text-10", "font-serif", "font-bold"],
@@ -261,13 +310,17 @@ const ButtonsWrapper = () => {
         <button className={utility.buttonText.join(" ")}>Delete</button>
       </li>
       <li>
-        <Buttons />
+        <Buttons onEditClick={onEditClick} />
       </li>
     </ul>
   );
 };
 
-const Buttons = () => {
+const Buttons = ({
+  onEditClick,
+}: {
+  onEditClick: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+}) => {
   const utility: Utility = {
     buttonWrapper: ["flex", "flex-row", "gap-x-3", "items-center"],
     editButton: ["text-white", "text-sm", "font-serif", "font-bold"],
@@ -285,11 +338,85 @@ const Buttons = () => {
   return (
     <ul className={utility.buttonWrapper.join(" ")}>
       <li>
-        <button className={utility.editButton.join(" ")}>Edit</button>{" "}
+        <button className={utility.editButton.join(" ")} onClick={onEditClick}>
+          Edit
+        </button>{" "}
       </li>
       <li>
         <button className={utility.startButton.join(" ")}>Start</button>{" "}
       </li>
     </ul>
+  );
+};
+
+// ------------------------------------------------------------------------------------------------------
+
+const Forms = ({ onCancel, onSubmit, defualtValue }: FormsINT) => {
+  const { register, handleSubmit } = useForm({
+    defaultValues: defualtValue,
+  });
+
+  const utility = {
+    "bg-rectangle": ["bg-myblue-400", "inline-block"],
+
+    contentWrapperNew: [
+      "w-box292",
+      "h-box201",
+      "mx-xl",
+      "my-xxl",
+      "flex",
+      "flex-col",
+    ],
+
+    form: ["flex", "flex-col", "gap-6"],
+
+    input: ["h-8", "rounded-md", "px-2"],
+
+    submit: [
+      "bg-black",
+      "text-white",
+      "rounded-md",
+      "h-9",
+      "text-xs",
+      "uppercase",
+      "font-serif",
+      "font-bold",
+      "tracking-submit",
+      "cursor-pointer",
+    ],
+
+    cancelText: ["text-white", "font-serif", "font-xs", "font-bold"],
+  };
+
+  return (
+    <section className={utility["bg-rectangle"].join(" ")}>
+      <section className={utility.contentWrapperNew.join(" ")}>
+        <form
+          className={utility.form.join(" ")}
+          onSubmit={handleSubmit(onSubmit)}
+        >
+          <input
+            ref={register({ required: true })}
+            name="name"
+            placeholder="Name"
+            className={utility.input.join(" ")}
+          />
+          <input
+            ref={register({ required: true })}
+            name="tags"
+            placeholder="Tags"
+            className={utility.input.join(" ")}
+          />
+          <input
+            type="submit"
+            className={utility.submit.join(" ")}
+            value="Submit"
+          />
+        </form>
+        <button className={utility.cancelText.join(" ")} onClick={onCancel}>
+          Cancel
+        </button>
+      </section>
+    </section>
   );
 };
