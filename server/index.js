@@ -23,5 +23,6 @@ app.use(express.json());
 // app routes
 app.use("/post", require("./routers/post"));
 app.use("/get", require("./routers/get"));
+app.use("/put", require("./routers/put"))
 
 app.listen(port);
