@@ -9,7 +9,7 @@ export const App: React.FC = () => {
       <Router>
         <Navbar />
         <Switch>
-          <Route path="/" exact component={Days} />
+          <Route path="/" exact render={() => <Days />} />
           <Route path="/editor" exact component={SlateEditor} />
         </Switch>
       </Router>

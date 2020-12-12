@@ -38,6 +38,9 @@ module.exports = {
       },
       fontSize: {
         "10" :"0.625rem" 
+      },
+      letterSpacing: {
+        submit: "10px"
       }
     },
   },

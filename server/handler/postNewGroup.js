@@ -13,7 +13,7 @@ const postNewGroup = (req, res) => {
         console.error(err);
         res.end();
       } else if (dayDoc) {
-        // pushes the name and group_id to array in dayDoc
+          // pushes the name and group_id to array in dayDoc
         dayDoc.days.push({
           name: req.body.name,
           group_id: grpQueDoc._id,

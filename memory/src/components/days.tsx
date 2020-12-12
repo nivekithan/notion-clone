@@ -1,7 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { FaToggleOn, FaToggleOff } from "react-icons/fa";
 import { HiOutlinePlusCircle } from "react-icons/hi";
 import { Fragment } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
 // This element is child element for DayCards Element
 //
 // allows the user to start the test is strict mode or in not in strict strict mode
@@ -19,17 +20,23 @@ interface DaysINF {
 interface Utility {
   [index: string]: string[];
 }
+
+interface FormInputs {
+  name: string;
+  tags: string;
+}
 // ---------------------------------------------------------------------------------------------------
 // Renders the days the component
 export const Days = () => {
   const [days, setDays] = useState<DaysINF[] | null>(null);
+  const [isNewDays, setisNewDays] = useState<boolean>(false);
 
   useEffect(() => {
     (async () => {
       const url: string = "http://localhost:4000/get/days";
       setDays((await (await fetch(url)).json()).days);
     })();
-  }, []);
+  }, [isNewDays]);
 
   const utility: Utility = {
     section: ["mx-10%", "flex", "flex-wrap", "gap-9"],
@@ -37,7 +44,7 @@ export const Days = () => {
 
   const output = days ? (
     <section className={utility.section.join(" ")}>
-      <AddNewDays />
+      <AddNewDays isNewDays={isNewDays} setisNewDays={setisNewDays} />
       <Day days={days} />
     </section>
   ) : (
@@ -48,10 +55,15 @@ export const Days = () => {
 };
 // ---------------------------------------------------------------------------------------------------------
 
-const AddNewDays = () => {
-  const [isNewDays, setisNewDays] = useState<boolean>(true);
-  const [nameValue, setNameValue] = useState<string>("");
-  const [tagValue, setTagValue] = useState<string>("")
+const AddNewDays = ({
+  isNewDays,
+  setisNewDays,
+}: {
+  isNewDays: boolean,
+  setisNewDays: React.Dispatch<React.SetStateAction<boolean>>
+}) => {
+  const { register, handleSubmit } = useForm<FormInputs>();
+
   const utility: Utility = {
     "bg-rectangle": ["bg-myblue-400", "inline-block"],
     contentWrapper: [
@@ -65,40 +77,99 @@ const AddNewDays = () => {
     ],
     textWrapper: ["flex", "flex-col", "items-center", "gap-y-4"],
     text: ["text-white", "text-4xl", "font-serif", "font-bold"],
-    
-    contentWrapperNew: [
-      "w-box292",
-      "h-box201",
-      "mx-xl",
-      "my-xxl",
+
+    contentWrapperNew: ["w-box292", "h-box201", "mx-xl", "my-xxl", "flex", "flex-col"],
+
+    form: ["flex", "flex-col", "gap-6"],
+
+    input: ["h-8", "rounded-md", "px-2"],
+
+    submit: [
+      "bg-black",
+      "text-white",
+      "rounded-md",
+      "h-9",
+      "text-xs",
+      "uppercase",
+      "font-serif",
+      "font-bold",
+      "tracking-submit"
     ],
 
-    form: [
-      "flex",
-      "flex-col",
-      "gap-6"
+    cancelText: [
+      "text-white",
+      "font-serif",
+      "font-xs",
+      "font-bold"
+
     ]
   };
+
+  const onSubmit = handleSubmit((data) => {
+    const { name, tags } = data;
+    const tagList = (tags.trim()).split(";");
+
+    const url = "http://localhost:4000/post/newgroup";
+
+    fetch(url, {
+      method: "POST",
+      body: JSON.stringify({ name, tags: tagList }),
+      headers: {
+        "Content-type": "application/json ; charset=utf-8",
+        "Access-Control-Allow-Origin": "*",
+      },
+    }).then(() => {
+      setisNewDays(false);
+    });
+  });
+
+  const onCancel = (e : React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.preventDefault()
+    setisNewDays(false)
+  }
 
   const Ouput = () => {
     if (isNewDays) {
       return (
         <section className={utility["bg-rectangle"].join(" ")}>
-            <section className={utility.contentWrapperNew.join(" ")}>
-              <form className={utility.form.join(" ")}>
-                <input type="text" value={nameValue} onChange={(e) => setNameValue(e.target.value)} />
-                <input type="text" value={tagValue} onChange={(e) => setTagValue(e.target.value)} />
-              </form>
-            </section>
+          <section className={utility.contentWrapperNew.join(" ")}>
+            <form className={utility.form.join(" ")} onSubmit={onSubmit}>
+              <input
+                ref={register({ required: true })}
+                name="name"
+                placeholder="Name"
+                className={utility.input.join(" ")}
+              />
+              <input
+                ref={register({ required: true })}
+                name="tags"
+                placeholder="Tags"
+                className={utility.input.join(" ")}
+              />
+              <input
+                type="submit"
+                className={utility.submit.join(" ")}
+                value="Submit"
+              />
+            </form>
+            <button className={utility.cancelText.join(" ")} onClick={onCancel}>Cancel</button>     
+          </section>
         </section>
-      )
+      );
     } else {
       return (
         <section className={utility["bg-rectangle"].join(" ")}>
           <section className={utility.contentWrapper.join(" ")}>
             <ul className={utility.textWrapper.join(" ")}>
               <li className={utility.text.join(" ")}>New Day</li>
-              <HiOutlinePlusCircle color={"#ffffff"} size="27px" />
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  setisNewDays(true);
+                }}
+              >
+                <HiOutlinePlusCircle color={"#ffffff"} size="27px" />
+              </button>
             </ul>
           </section>
         </section>
@@ -163,8 +234,12 @@ const TagWrapper = ({ tags }: { tags: string[] }) => {
 
   return (
     <ul className={utility.tagWrapper.join(" ")}>
-      {tags.map((tag) => {
-        return <li className={utility.tag.join(" ")}>{tag}</li>;
+      {tags.map((tag, index) => {
+        return (
+          <li className={utility.tag.join(" ")} key={index}>
+            {tag}
+          </li>
+        );
       })}
     </ul>
   );
