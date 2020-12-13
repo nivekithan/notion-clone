@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { HiOutlinePlusCircle } from "react-icons/hi";
 import { Fragment } from "react";
 import { useForm } from "react-hook-form";
+import {  Link } from "react-router-dom";
 // -----------------------------------------------------------------------------------------------
 
 interface DaysINF {
@@ -22,12 +23,14 @@ interface FormInputs {
 
 interface FormsINT {
   onSubmit: (data: FormInputs) => void;
-  onCancel: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+  onCancel: ButtonClick;
   defualtValue: {
     name: string;
     tags: string;
   };
 }
+
+type ButtonClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
 // ---------------------------------------------------------------------------------------------------
 // Renders the days the component
 export const Days = () => {
@@ -42,13 +45,13 @@ export const Days = () => {
   }, [isNewDays, hasChanged]);
 
   const utility: Utility = {
-    section: ["mx-10%", "flex", "flex-wrap", "gap-9"],
+    section: ["mx-9%", "flex", "flex-wrap", "gap-9"],
   };
 
   const output = days ? (
     <section className={utility.section.join(" ")}>
       <AddNewDays isNewDays={isNewDays} setisNewDays={setisNewDays} />
-      <Day days={days}  setHasChanged={setHasChanged}/>
+      <Day days={days} setHasChanged={setHasChanged} />
     </section>
   ) : (
     <h1>I am before</h1>
@@ -65,7 +68,6 @@ const AddNewDays = ({
   isNewDays: boolean;
   setisNewDays: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-
   const utility: Utility = {
     "bg-rectangle": ["bg-myblue-400", "inline-block"],
     contentWrapper: [
@@ -79,7 +81,6 @@ const AddNewDays = ({
     ],
     textWrapper: ["flex", "flex-col", "items-center", "gap-y-4"],
     text: ["text-white", "text-4xl", "font-serif", "font-bold"],
-
   };
 
   const onSubmit = (data: FormInputs) => {
@@ -100,7 +101,7 @@ const AddNewDays = ({
     });
   };
 
-  const onCancel = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const onCancel: ButtonClick = (e) => {
     e.preventDefault();
     setisNewDays(false);
   };
@@ -145,16 +146,37 @@ const AddNewDays = ({
 
 // --------------------------------------------------------------------------------------------
 
-const Day = ({ days, setHasChanged }: { days: DaysINF[] , setHasChanged : React.Dispatch<React.SetStateAction<boolean>>}) => {
-  const output = days.map((day, index) => {
-    return <SingleDay day={day} setHasChanged = {setHasChanged} />;
+const Day = ({
+  days,
+  setHasChanged,
+}: {
+  days: DaysINF[];
+  setHasChanged: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
+  const output = days.map((day) => {
+    return (
+      <SingleDay
+        day={day}
+        setHasChanged={setHasChanged}
+        key={day._id}
+        dataKey={day._id}
+      />
+    );
   });
   return <Fragment>{output}</Fragment>;
 };
 
 // Componenet responsible for day component other than new day component
 
-const SingleDay = ({ day, setHasChanged }: { day: DaysINF ,  setHasChanged : React.Dispatch<React.SetStateAction<boolean>> }) => {
+const SingleDay = ({
+  day,
+  setHasChanged,
+  dataKey,
+}: {
+  day: DaysINF;
+  setHasChanged: React.Dispatch<React.SetStateAction<boolean>>;
+  dataKey: string;
+}) => {
   const [Editable, setEditable] = useState<boolean>(false);
 
   const Output = () => {
@@ -176,17 +198,14 @@ const SingleDay = ({ day, setHasChanged }: { day: DaysINF ,  setHasChanged : Rea
           method: "PUT",
           body: JSON.stringify(body),
           headers: {
-            "Content-type" : "application/json ; charset=utf-8",
-
+            "Content-type": "application/json ; charset=utf-8",
           },
         })
-        .then(() => setEditable(false))
-        .then(() => setHasChanged((state)=> !state))
-        
-        
+          .then(() => setEditable(false))
+          .then(() => setHasChanged((state) => !state));
       };
 
-      const onCancel = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      const onCancel: ButtonClick = (e) => {
         e.preventDefault();
         setEditable(false);
       };
@@ -213,9 +232,7 @@ const SingleDay = ({ day, setHasChanged }: { day: DaysINF ,  setHasChanged : Rea
         tagWrapper: ["h-box94", "overflow-y-auto"],
         text: ["text-white", "text-2xl", "font-bold", "font-serif"],
       };
-      const onEditClick = (
-        e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-      ) => {
+      const onEditClick: ButtonClick = (e) => {
         e.preventDefault();
         setEditable(true);
       };
@@ -228,7 +245,7 @@ const SingleDay = ({ day, setHasChanged }: { day: DaysINF ,  setHasChanged : Rea
               <TagWrapper tags={day.tags} />
             </li>
             <li>
-              <ButtonsWrapper onEditClick={onEditClick} />
+              <ButtonsWrapper onEditClick={onEditClick} dataKey={dataKey} />
             </li>
           </ul>
         </section>
@@ -272,8 +289,10 @@ const TagWrapper = ({ tags }: { tags: string[] }) => {
 
 const ButtonsWrapper = ({
   onEditClick,
+  dataKey,
 }: {
-  onEditClick: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+  onEditClick: ButtonClick;
+  dataKey: string;
 }) => {
   const utility: Utility = {
     buttonWrapper: ["flex", "flex-row", "justify-between", "items-center"],
@@ -286,7 +305,7 @@ const ButtonsWrapper = ({
         <button className={utility.buttonText.join(" ")}>Delete</button>
       </li>
       <li>
-        <Buttons onEditClick={onEditClick} />
+        <Buttons onEditClick={onEditClick} dataKey={dataKey} />
       </li>
     </ul>
   );
@@ -294,8 +313,10 @@ const ButtonsWrapper = ({
 
 const Buttons = ({
   onEditClick,
+  dataKey,
 }: {
-  onEditClick: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+  onEditClick: ButtonClick;
+  dataKey: string;
 }) => {
   const utility: Utility = {
     buttonWrapper: ["flex", "flex-row", "gap-x-3", "items-center"],
@@ -319,7 +340,9 @@ const Buttons = ({
         </button>{" "}
       </li>
       <li>
-        <button className={utility.startButton.join(" ")}>Start</button>{" "}
+        <Link to={`/test/${dataKey}`}>
+          <button className={utility.startButton.join(" ")}>Start</button>{" "}
+        </Link>
       </li>
     </ul>
   );
