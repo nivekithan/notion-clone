@@ -1,9 +1,9 @@
 const DayModel = require("../models/dayModel");
 
 const putDay = (req, res) => {
+  console.dir(req.body)
   const { id } = req.query;
   const { name, tags } = req.body;
-console.log(name, tags) 
   const putDayFun = (err, dayDoc) => {
     if (err) {
       console.error(err);
@@ -17,7 +17,7 @@ console.log(name, tags)
                 res.send("it worked")
             }
 
-        }
+        } 
         res.end()
      
       }  

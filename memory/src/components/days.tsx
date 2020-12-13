@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { HiOutlinePlusCircle } from "react-icons/hi";
 import { Fragment } from "react";
 import { useForm } from "react-hook-form";
-
 // -----------------------------------------------------------------------------------------------
 
 interface DaysINF {
@@ -24,7 +23,7 @@ interface FormInputs {
 interface FormsINT {
   onSubmit: (data: FormInputs) => void;
   onCancel: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
-  defualtValue?: {
+  defualtValue: {
     name: string;
     tags: string;
   };
@@ -34,13 +33,13 @@ interface FormsINT {
 export const Days = () => {
   const [days, setDays] = useState<DaysINF[] | null>(null);
   const [isNewDays, setisNewDays] = useState<boolean>(false);
-
+  const [hasChanged, setHasChanged] = useState<boolean>(false);
   useEffect(() => {
     (async () => {
       const url: string = "http://localhost:4000/get/days";
       setDays((await (await fetch(url)).json()).days);
     })();
-  }, [isNewDays]);
+  }, [isNewDays, hasChanged]);
 
   const utility: Utility = {
     section: ["mx-10%", "flex", "flex-wrap", "gap-9"],
@@ -49,7 +48,7 @@ export const Days = () => {
   const output = days ? (
     <section className={utility.section.join(" ")}>
       <AddNewDays isNewDays={isNewDays} setisNewDays={setisNewDays} />
-      <Day days={days} />
+      <Day days={days}  setHasChanged={setHasChanged}/>
     </section>
   ) : (
     <h1>I am before</h1>
@@ -66,7 +65,6 @@ const AddNewDays = ({
   isNewDays: boolean;
   setisNewDays: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const { register, handleSubmit } = useForm<FormInputs>();
 
   const utility: Utility = {
     "bg-rectangle": ["bg-myblue-400", "inline-block"],
@@ -82,32 +80,6 @@ const AddNewDays = ({
     textWrapper: ["flex", "flex-col", "items-center", "gap-y-4"],
     text: ["text-white", "text-4xl", "font-serif", "font-bold"],
 
-    contentWrapperNew: [
-      "w-box292",
-      "h-box201",
-      "mx-xl",
-      "my-xxl",
-      "flex",
-      "flex-col",
-    ],
-
-    form: ["flex", "flex-col", "gap-6"],
-
-    input: ["h-8", "rounded-md", "px-2"],
-
-    submit: [
-      "bg-black",
-      "text-white",
-      "rounded-md",
-      "h-9",
-      "text-xs",
-      "uppercase",
-      "font-serif",
-      "font-bold",
-      "tracking-submit",
-    ],
-
-    cancelText: ["text-white", "font-serif", "font-xs", "font-bold"],
   };
 
   const onSubmit = (data: FormInputs) => {
@@ -173,29 +145,16 @@ const AddNewDays = ({
 
 // --------------------------------------------------------------------------------------------
 
-const Day = ({ days }: { days: DaysINF[] }) => {
-  const utility: Utility = {
-    sectionWrapper: ["w-box340", "bg-mygrey-400", "inline-block"],
-    contentWrapper: [
-      "w-box292",
-      "h-box201",
-      "mx-xl",
-      "my-xxl",
-      "gap-y-6",
-      "flex",
-      "flex-col",
-    ],
-    tagWrapper: ["h-box94", "overflow-y-auto"],
-    text: ["text-white", "text-2xl", "font-bold", "font-serif"],
-  };
-
+const Day = ({ days, setHasChanged }: { days: DaysINF[] , setHasChanged : React.Dispatch<React.SetStateAction<boolean>>}) => {
   const output = days.map((day, index) => {
-    return <SingleDay day={day} />;
+    return <SingleDay day={day} setHasChanged = {setHasChanged} />;
   });
   return <Fragment>{output}</Fragment>;
 };
 
-const SingleDay = ({ day }: { day: DaysINF }) => {
+// Componenet responsible for day component other than new day component
+
+const SingleDay = ({ day, setHasChanged }: { day: DaysINF ,  setHasChanged : React.Dispatch<React.SetStateAction<boolean>> }) => {
   const [Editable, setEditable] = useState<boolean>(false);
 
   const Output = () => {
@@ -206,14 +165,32 @@ const SingleDay = ({ day }: { day: DaysINF }) => {
       };
 
       const onSubmit = (data: FormInputs) => {
-        setEditable(false);
+        const body = {
+          name: data.name,
+          tags: data.tags.split(";"),
+        };
+
+        const url = "http://localhost:4000/put/day?id=" + day._id;
+
+        fetch(url, {
+          method: "PUT",
+          body: JSON.stringify(body),
+          headers: {
+            "Content-type" : "application/json ; charset=utf-8",
+
+          },
+        })
+        .then(() => setEditable(false))
+        .then(() => setHasChanged((state)=> !state))
+        
+        
       };
 
       const onCancel = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault();
         setEditable(false);
       };
-
+      // Returning the output
       return (
         <Forms
           defualtValue={defaultValue}
@@ -236,7 +213,6 @@ const SingleDay = ({ day }: { day: DaysINF }) => {
         tagWrapper: ["h-box94", "overflow-y-auto"],
         text: ["text-white", "text-2xl", "font-bold", "font-serif"],
       };
-
       const onEditClick = (
         e: React.MouseEvent<HTMLButtonElement, MouseEvent>
       ) => {
