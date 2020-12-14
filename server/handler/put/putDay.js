@@ -1,4 +1,4 @@
-const DayModel = require("../models/dayModel");
+const DayModel = require("../../models/dayModel");
 
 const putDay = (req, res) => {
   console.dir(req.body)

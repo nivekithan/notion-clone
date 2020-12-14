@@ -8,7 +8,7 @@ const grpQueSchema = mongoose.Schema({
       data: [
         {
           que: {},
-          ans: {}
+          ans: {},
         }
       ]
     }

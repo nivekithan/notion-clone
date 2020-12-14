@@ -6,4 +6,8 @@ router.get("/days", (req, res) => {
   handler.getGroups(req, res);
 });
 
+router.get("/grpQue", (req, res) => {
+  handler.getGrpQue(req, res)
+})
+
 module.exports = router;

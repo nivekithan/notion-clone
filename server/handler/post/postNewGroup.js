@@ -1,5 +1,5 @@
-const DayModel = require("../models/dayModel");
-const GrpQueModel = require("../models/grpQue");
+const DayModel = require("../../models/dayModel");
+const GrpQueModel = require("../../models/grpQueModel");
 
 // DOMAIN/post/newGroup
 const postNewGroup = (req, res) => {

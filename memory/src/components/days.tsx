@@ -189,7 +189,7 @@ const SingleDay = ({
       const onSubmit = (data: FormInputs) => {
         const body = {
           name: data.name,
-          tags: data.tags.split(";"),
+          tags: (data.tags.trim()).split(";"),
         };
 
         const url = "http://localhost:4000/put/day?id=" + day._id;
