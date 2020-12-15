@@ -3,6 +3,8 @@ import { HiOutlinePlusCircle } from "react-icons/hi";
 import { Fragment } from "react";
 import { useForm } from "react-hook-form";
 import {  Link } from "react-router-dom";
+import { useQuery } from "react-query";
+import handler from "../api";
 // -----------------------------------------------------------------------------------------------
 
 interface DaysINF {
@@ -37,21 +39,19 @@ export const Days = () => {
   const [days, setDays] = useState<DaysINF[] | null>(null);
   const [isNewDays, setisNewDays] = useState<boolean>(false);
   const [hasChanged, setHasChanged] = useState<boolean>(false);
-  useEffect(() => {
-    (async () => {
-      const url: string = "http://localhost:4000/get/days";
-      setDays((await (await fetch(url)).json()).days);
-    })();
-  }, [isNewDays, hasChanged]);
+  
+  const daysQuery = useQuery(["days"], handler.getDays)
 
   const utility: Utility = {
     section: ["mx-9%", "flex", "flex-wrap", "gap-9"],
   };
+  
+  if (!daysQuery) return null;
 
-  const output = days ? (
+  const output = daysQuery ? (
     <section className={utility.section.join(" ")}>
       <AddNewDays isNewDays={isNewDays} setisNewDays={setisNewDays} />
-      <Day days={days} setHasChanged={setHasChanged} />
+      <Day days={daysQuery} setHasChanged={setHasChanged} />
     </section>
   ) : (
     <h1>I am before</h1>

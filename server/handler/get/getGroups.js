@@ -6,7 +6,7 @@ const getGroups = (req, res) => {
       console.log(err);
     } else if (days) {
       res.json(days);
-    }
+    } 
   });  
 };
 
