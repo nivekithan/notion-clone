@@ -7,6 +7,7 @@ import { useQueryClient } from "react-query";
 import { useDays } from "../hooks/useDays";
 import { useCreateDays } from "../hooks/useCreateDays";
 import { useUpdateDays } from "../hooks/useUpdataDays";
+import { useDeleteDays } from "../hooks/useDeleteDays";
 // -----------------------------------------------------------------------------------------------
 
 interface DaysINF {
@@ -151,7 +152,6 @@ const Day = ({ days }: { days: DaysINF[] }) => {
 const SingleDay = ({ day, dataKey }: { day: DaysINF; dataKey: string }) => {
   const [Editable, setEditable] = useState<boolean>(false);
   const updateDays = useUpdateDays();
-  const queryClient = useQueryClient();
 
   const Output = () => {
     if (Editable) {
@@ -262,12 +262,17 @@ const ButtonsWrapper = ({
   const utility: Utility = {
     buttonWrapper: ["flex", "flex-row", "justify-between", "items-center"],
     buttonText: ["text-white", "text-10", "font-serif", "font-bold"],
-  };
+  }
+  const deleteDays = useDeleteDays();
+
+  const onDelete = () => {
+    deleteDays.mutate({id : dataKey})
+  }
 
   return (
     <ul className={utility.buttonWrapper.join(" ")}>
       <li>
-        <button className={utility.buttonText.join(" ")}>Delete</button>
+        <button className={utility.buttonText.join(" ")} onClick={onDelete}>Delete</button>
       </li>
       <li>
         <Buttons onEditClick={onEditClick} dataKey={dataKey} />
