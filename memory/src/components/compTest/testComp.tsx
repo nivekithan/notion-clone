@@ -1,7 +1,7 @@
 import { QueryClient, useQuery, useQueryClient } from "react-query";
 import { RouteComponentProps } from "react-router-dom";
-import handler from "../../api";
 import React, { useState } from "react";
+import {useQues} from "../../hooks/useQues";
 
 // =====================================================
 interface MatchParams {
@@ -16,21 +16,13 @@ interface SingleQues {
   ans: {};
 }
 
-interface AllQues {
-  day_id: string;
-  _id: string;
-  data: SingleQues[][];
-}
 
 // --------------------------------------------------------
 export const TestComponent = ({ match }: TestComponentTypes) => {
   const [activeNo, setActiveNo] = useState<number>(0);
   const queryClient = useQueryClient();
 
-  const allQuesQuery = useQuery<AllQues, Error>(
-    ["allQues", match.params.id],
-    () => handler.getQues(match.params.id)
-  );
+  const allQuesQuery = useQues(match.params.id);
 
   if (allQuesQuery.isLoading) return <h1>Fetching .....</h1>;
 

@@ -30,8 +30,7 @@ const postNewGroup = (req, res) => {
         dayDoc.save();
 
       
-        // Usefull for checking if it worked or not in postman
-        res.send("It worked");
+        res.json(dayDoc);
       } else {
         res.send("It should not happen");
       }

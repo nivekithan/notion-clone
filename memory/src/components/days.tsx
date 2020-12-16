@@ -1,10 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { HiOutlinePlusCircle } from "react-icons/hi";
 import { Fragment } from "react";
 import { useForm } from "react-hook-form";
-import {  Link } from "react-router-dom";
-import { useQuery } from "react-query";
-import handler from "../api";
+import { Link } from "react-router-dom";
+import { useQueryClient } from "react-query";
+import { useDays } from "../hooks/useDays";
+import { useCreateDays } from "../hooks/useCreateDays";
+import { useUpdateDays } from "../hooks/useUpdataDays";
 // -----------------------------------------------------------------------------------------------
 
 interface DaysINF {
@@ -36,25 +38,23 @@ type ButtonClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
 // ---------------------------------------------------------------------------------------------------
 // Renders the days the component
 export const Days = () => {
-  const [days, setDays] = useState<DaysINF[] | null>(null);
   const [isNewDays, setisNewDays] = useState<boolean>(false);
-  const [hasChanged, setHasChanged] = useState<boolean>(false);
-  
-  const daysQuery = useQuery(["days"], handler.getDays)
 
+  const daysQuery = useDays();
+
+  if (daysQuery.isLoading) return <h1>It is loading ..........</h1>;
+  if (daysQuery.isError)
+    return <h1>There is something wrong {daysQuery.error}</h1>;
+  if (!daysQuery.data) return null;
   const utility: Utility = {
     section: ["mx-9%", "flex", "flex-wrap", "gap-9"],
   };
-  
-  if (!daysQuery) return null;
 
-  const output = daysQuery ? (
+  const output = (
     <section className={utility.section.join(" ")}>
       <AddNewDays isNewDays={isNewDays} setisNewDays={setisNewDays} />
-      <Day days={daysQuery} setHasChanged={setHasChanged} />
+      <Day days={daysQuery.data} />
     </section>
-  ) : (
-    <h1>I am before</h1>
   );
 
   return <section>{output}</section>;
@@ -68,6 +68,8 @@ const AddNewDays = ({
   isNewDays: boolean;
   setisNewDays: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
+  const newDays = useCreateDays();
+
   const utility: Utility = {
     "bg-rectangle": ["bg-myblue-400", "inline-block"],
     contentWrapper: [
@@ -84,20 +86,11 @@ const AddNewDays = ({
   };
 
   const onSubmit = (data: FormInputs) => {
-    const { name, tags } = data;
-    const tagList = tags.trim().split(";");
-
-    const url = "http://localhost:4000/post/newgroup";
-
-    fetch(url, {
-      method: "POST",
-      body: JSON.stringify({ name, tags: tagList }),
-      headers: {
-        "Content-type": "application/json ; charset=utf-8",
-        "Access-Control-Allow-Origin": "*",
+    newDays.mutate({
+      data,
+      stateFun: () => {
+        setisNewDays(false);
       },
-    }).then(() => {
-      setisNewDays(false);
     });
   };
 
@@ -146,38 +139,19 @@ const AddNewDays = ({
 
 // --------------------------------------------------------------------------------------------
 
-const Day = ({
-  days,
-  setHasChanged,
-}: {
-  days: DaysINF[];
-  setHasChanged: React.Dispatch<React.SetStateAction<boolean>>;
-}) => {
+const Day = ({ days }: { days: DaysINF[] }) => {
   const output = days.map((day) => {
-    return (
-      <SingleDay
-        day={day}
-        setHasChanged={setHasChanged}
-        key={day._id}
-        dataKey={day._id}
-      />
-    );
+    return <SingleDay day={day} key={day._id} dataKey={day._id} />;
   });
   return <Fragment>{output}</Fragment>;
 };
 
 // Componenet responsible for day component other than new day component
 
-const SingleDay = ({
-  day,
-  setHasChanged,
-  dataKey,
-}: {
-  day: DaysINF;
-  setHasChanged: React.Dispatch<React.SetStateAction<boolean>>;
-  dataKey: string;
-}) => {
+const SingleDay = ({ day, dataKey }: { day: DaysINF; dataKey: string }) => {
   const [Editable, setEditable] = useState<boolean>(false);
+  const updateDays = useUpdateDays();
+  const queryClient = useQueryClient();
 
   const Output = () => {
     if (Editable) {
@@ -187,22 +161,13 @@ const SingleDay = ({
       };
 
       const onSubmit = (data: FormInputs) => {
-        const body = {
-          name: data.name,
-          tags: (data.tags.trim()).split(";"),
-        };
-
-        const url = "http://localhost:4000/put/day?id=" + day._id;
-
-        fetch(url, {
-          method: "PUT",
-          body: JSON.stringify(body),
-          headers: {
-            "Content-type": "application/json ; charset=utf-8",
+        updateDays.mutate({
+          data,
+          day_id: day._id,
+          stateFunc: () => {
+            setEditable(false);
           },
-        })
-          .then(() => setEditable(false))
-          .then(() => setHasChanged((state) => !state));
+        });
       };
 
       const onCancel: ButtonClick = (e) => {

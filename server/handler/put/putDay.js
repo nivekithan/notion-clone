@@ -1,7 +1,6 @@
 const DayModel = require("../../models/dayModel");
 
 const putDay = (req, res) => {
-  console.dir(req.body)
   const { id } = req.query;
   const { name, tags } = req.body;
   const putDayFun = (err, dayDoc) => {
@@ -14,7 +13,7 @@ const putDay = (req, res) => {
                 dayDoc.days[index].name = name ? name : dayDoc.days[index].name;
                 dayDoc.days[index].tags = tags ? tags : dayDoc.days[index].tags;
                 dayDoc.save()
-                res.send("it worked")
+                res.json(dayDoc)
             }
 
         } 
