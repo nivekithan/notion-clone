@@ -1,7 +1,7 @@
 import { QueryClient, useQuery, useQueryClient } from "react-query";
 import { RouteComponentProps } from "react-router-dom";
 import React, { useState } from "react";
-import {useQues} from "../../hooks/useQues";
+import {useQues} from "../../hooks";
 
 // =====================================================
 interface MatchParams {
