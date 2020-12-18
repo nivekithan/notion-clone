@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Fragment, useState } from "react";
 
 // Hooks
 
@@ -90,9 +90,13 @@ export const Days = () => {
 
   // -----------------------------------------------------------------------
   return (
-    <section className={utility.section.join(" ")}>
-      {[addNewDaysComp, ...days, DeleteConformation()]}
+    <Fragment>
+      <section className={utility.section.join(" ")}>
+      {[addNewDaysComp, ...days]}
     </section>
+    <DeleteConformation />
+    </Fragment>
+    
   );
 };
 
