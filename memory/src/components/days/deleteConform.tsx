@@ -1,12 +1,11 @@
-import { Utility } from "./";
+import { Utility, ButtonClick } from "./";
 
 const utility: Utility = {
   popup: [
-    "absolute",
+    "fixed",
     "bg-white",
-    "top-0",
-    "mt-20%",
-    "ml-40%",
+    "top-1/2",
+    "left-1/2",
     "flex",
     "items-center",
     "justify-center",
@@ -36,16 +35,32 @@ const utility: Utility = {
   ],
 };
 
-export const DeleteConformation = () => {
+export const DeleteConformation = ({
+  onDeleteClick,
+  onCancelClick,
+}: {
+  onDeleteClick: ButtonClick;
+  onCancelClick: ButtonClick;
+}) => {
   return (
-    <section className={utility.popup.join(" ")}>
+    <section className={utility.popup.join(" ")} style={{transform : "translate(-50%, -50%)"}}>
       <section className={utility.wrapper.join(" ")}>
         <span className={utility.headerText.join(" ")}>
           Will delete <br /> permanently
         </span>
         <section className={utility.buttonWrapper.join(" ")}>
-          <button className={utility.redButton.join(" ")}>Delete</button>
-          <button className={utility.blueButton.join(" ")}>Cancel</button>
+          <button
+            className={utility.redButton.join(" ")}
+            onClick={onDeleteClick}
+          >
+            Delete
+          </button>
+          <button
+            className={utility.blueButton.join(" ")}
+            onClick={onCancelClick}
+          >
+            Cancel
+          </button>
         </section>
       </section>
     </section>

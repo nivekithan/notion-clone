@@ -32,10 +32,8 @@ const utility: Utility = {
 
 export const Days = () => {
   const [isNewDays, setisNewDays] = useState<boolean>(false);
-
   const daysQuery = useDays();
   const createDays = useCreateDays();
-
   if (daysQuery.isLoading) return <h1>It is loading ..........</h1>;
   if (daysQuery.isError)
     return <h1>There is something wrong {daysQuery.error}</h1>;
@@ -92,24 +90,21 @@ export const Days = () => {
   return (
     <Fragment>
       <section className={utility.section.join(" ")}>
-      {[addNewDaysComp, ...days]}
-    </section>
-    <DeleteConformation />
+        {[addNewDaysComp, ...days]}
+      </section>
     </Fragment>
-    
   );
 };
 
 const DayCompents = ({ day }: { day: DaysINT }) => {
   const [isEditable, setIsEditable] = useState<boolean>(false);
   const updateDayMutate = useUpdateDays();
-  const deleteDaysMutate = useDeleteDays();
+  const [isDeleteConform, setIsDeleteConform] = useState<boolean>(false);
+  const deleteMutate = useDeleteDays();
+
   const onEditClick: ButtonClick = (e) => {
     e.preventDefault();
     setIsEditable(true);
-  };
-  const onDeleteClick = () => {
-    deleteDaysMutate.mutate({ id: day._id });
   };
 
   const onCancelForm: ButtonClick = (e) => {
@@ -131,7 +126,25 @@ const DayCompents = ({ day }: { day: DaysINT }) => {
       },
     });
   };
+  // Delete Conforming component details
+  const onDeleteConformCancel: ButtonClick = (e) => {
+    e.preventDefault();
+    setIsDeleteConform(false);
+  };
 
+  const onDeleteConformDelete: ButtonClick = (e) => {
+    e.preventDefault();
+    deleteMutate.mutate({
+      id: day._id,
+      stateFunc: () => {
+        setIsDeleteConform(false);
+      },
+    });
+  };
+  const onDeleteClick: ButtonClick = (e) => {
+    e.preventDefault();
+    setIsDeleteConform(true);
+  };
   return (
     <section className={utility["bg-rectangle"].join(" ")}>
       {isEditable ? (
@@ -147,6 +160,13 @@ const DayCompents = ({ day }: { day: DaysINT }) => {
           onDeleteClick={onDeleteClick}
         />
       )}
+
+      {isDeleteConform ? (
+        <DeleteConformation
+          onDeleteClick={onDeleteConformDelete}
+          onCancelClick={onDeleteConformCancel}
+        />
+      ) : null}
     </section>
   );
 };
