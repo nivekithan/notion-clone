@@ -16,3 +16,5 @@ const grpQueSchema = mongoose.Schema({
 const GrpQueModel = mongoose.model("questions", grpQueSchema);
 
 module.exports = GrpQueModel;
+
+
