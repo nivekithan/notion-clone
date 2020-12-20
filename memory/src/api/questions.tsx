@@ -224,4 +224,39 @@ class Pages {
         this.end = initialState ? initialState.start : null;
         this.data = initialState ? initialState.data : {}
     }
+
+    [Symbol.iterator]() {
+
+        let nextID = this.start 
+        return {
+            next: () => {
+                if (this.isEmpty()) return {done : true};
+
+                return {
+                    done : false,
+                    value : this.data[nextID as string].questions
+                }
+            }
+        }
+    }
+
+    isEmpty() {
+        return !this.start
+    }
+
+    hasOnlySingleElement() {
+        return this.start === this.end
+    }
+
+    _changePreNextid(id : string){
+        
+        const element = this.data[id]
+
+        if (!element) throw new Error(`There is no element with id ${id}`)
+
+        const beforeElementID = element._perv 
+
+    }
+
+
 }
