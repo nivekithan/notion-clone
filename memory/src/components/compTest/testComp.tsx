@@ -1,8 +1,6 @@
-import { QueryClient, useQuery, useQueryClient } from "react-query";
 import { RouteComponentProps } from "react-router-dom";
-import React, { useState } from "react";
 import {useQues} from "../../hooks";
-
+import {DoubleLinked} from "../../api/doubleLinked"
 // =====================================================
 interface MatchParams {
   id: string;
@@ -10,18 +8,27 @@ interface MatchParams {
 
 interface TestComponentTypes extends RouteComponentProps<MatchParams> {}
 
-interface SingleQues {
-  type: string;
-  ques: {};
-  ans: {};
+
+
+type Page =  {
+  start : string | null,
+  end : string | null,
+  data : DoubleLinked<Ques>
+}
+
+interface Ques {
+  start : string | null,
+  end : string | null,
+  data : {
+    type : string,
+    ques : {},
+    ans : {}
+  } | {}
 }
 
 
 // --------------------------------------------------------
 export const TestComponent = ({ match }: TestComponentTypes) => {
-  const [activeNo, setActiveNo] = useState<number>(0);
-  const queryClient = useQueryClient();
-
   const allQuesQuery = useQues(match.params.id);
 
   if (allQuesQuery.isLoading) return <h1>Fetching .....</h1>;
@@ -29,22 +36,18 @@ export const TestComponent = ({ match }: TestComponentTypes) => {
   if (allQuesQuery.isError)
     return <h1>THere is some error {allQuesQuery.error.message}</h1>;
 
+  if (allQuesQuery.isSuccess) {
   const { data } = allQuesQuery;
-  if (!data) return null;
-  const activeQues: SingleQues[] = data.data[activeNo];
+  
+    const AllPage = new DoubleLinked<Page>(data.data)
+    
+    console.log(AllPage)
   
 
   return (
-    <button
-      onClick={(e) => {
-        e.preventDefault();
-        setActiveNo((num) => num++);
-      }}
-    >
-      Hello{" "}
-      {activeQues?.map((ques) => {
-        return ques.type;
-      })}
-    </button>
-  );
+    <h1>Something</h1>
+  )
+  }
+
+  return <h1>Something is wrong</h1>
 };

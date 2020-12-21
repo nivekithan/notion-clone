@@ -24,6 +24,7 @@ const postNewGroup = (req, res) => {
         // of grpQue
         const day_id = dayDoc.days[dayDoc.days.length - 1]._id;
         grpQueDoc.day_id = day_id;
+        grpQueDoc.data = {}
 
         // saving the documents
         grpQueDoc.save();

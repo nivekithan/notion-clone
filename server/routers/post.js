@@ -11,4 +11,10 @@ router.post("/newGroup", (req, res) => {
 }
 )
 
+router.post("/newpage", (req, res) => {
+
+    handler.postNewPage(req, res)
+})
+
+
 module.exports = router;

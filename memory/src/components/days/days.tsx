@@ -21,8 +21,6 @@ import {
   DeleteConformation
 } from "./";
 
-import {Questions} from "../../api/questions"
-
 // -----------------------------------------------------------------------------------------------
 
 const utility: Utility = {
@@ -89,46 +87,6 @@ export const Days = () => {
   const days = daysQuery.data.map((day) => {
     return <DayCompents day={day} key={day._id} />;
   });
-
-
-  const testQuestions = new Questions()
-  testQuestions.append({
-    ans : {"ans" : "ans"},
-    ques : {"ques" : "ques"},
-    id : "12343"
-  })
-
-  testQuestions.append({
-    ans : {"second" : "2"},
-    ques : {"ques" : "q"},
-    id : "2344"
-  })
-
-  testQuestions.append({
-    ans : {"third" : "3"},
-    ques : {"ques" : "34"},
-    id : "1202"
-  })
-
-  
-  
-  testQuestions.insert({
-    ans : {"five" : "5"},
-    ques : {"five" : "ques"},
-    id : "0098"
-  }, {
-    beforeID : "1202"
-  })
-
-  testQuestions.insert({
-    ans : {"four" : "4"},
-    "ques" : {"four" : "543"},
-    id : "675849",
-  }, {
-    afterID : "0098"
-  })
-
-  console.log(testQuestions)
 
   // -----------------------------------------------------------------------
   return (
