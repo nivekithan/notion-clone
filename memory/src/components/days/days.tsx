@@ -64,7 +64,7 @@ export const Days = () => {
   };
 
   const addNewDaysComp = (
-    <section className={utility["bg-rectangle"].join(" ")}>
+    <section className={utility["bg-rectangle"].join(" ")} key={"2234"}>
       {!isNewDays ? (
         <div>
           <AddNewDays onClick={onAddNewDaysButtonClick} />

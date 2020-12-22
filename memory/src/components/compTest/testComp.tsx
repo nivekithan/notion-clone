@@ -39,10 +39,7 @@ export const TestComponent = ({ match }: TestComponentTypes) => {
   if (allQuesQuery.isSuccess) {
   const { data } = allQuesQuery;
   
-    const AllPage = new DoubleLinked<Page>(data.data)
     
-    console.log(AllPage)
-  
 
   return (
     <h1>Something</h1>

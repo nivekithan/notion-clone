@@ -8,8 +8,8 @@ const postNewPage = (req, res) => {
             console.error(err);
             res.send(err)
         } else if (ques) {
-            const {id, data} = req.body
-            ques.data[id] = data;
+            const {data} = req.body
+            ques.data = data;
             ques.markModified("data")
             ques.save()
             res.json(ques)

@@ -475,4 +475,3 @@ describe("Running test in DoubleLinked class", () => {
     })
   })
 })
-

@@ -1,4 +1,4 @@
-import { parseQueryArgs } from "react-query/types/core/utils";
+import { nanoid } from "nanoid";
 
 interface DoubleLinkedElements<T> {
   [index: string]: { _next: string | null; _prev: string | null; data: T };
@@ -346,17 +346,19 @@ interface TestsArg {
       data: {
         start: string | null;
         end: string | null;
-        data: {
-          [index: string]: {
-            _next: string | null;
-            _prev: string | null;
-            data: {
-              type: string;
-              ques: {};
-              ans: {};
-            };
-          };
-        };
+        data:
+          | {
+              [index: string]: {
+                _next: string | null;
+                _prev: string | null;
+                data: {
+                  type: string;
+                  ques: {};
+                  ans: {};
+                };
+              };
+            }
+          | {};
       };
     };
   };
@@ -369,3 +371,37 @@ interface Ques {
 }
 // -------------------------------------------------------
 
+export const createTest = (
+  arg?: TestsArg
+): DoubleLinked<DoubleLinked<Ques>> => {
+  if (!arg) {
+    const firstPageID = nanoid();
+
+    const initialParam = {
+      start: firstPageID,
+      end: firstPageID,
+      data: {
+        firstPageID: {
+          _next: null,
+          _prev: null,
+          data: {
+            start: null,
+            end: null,
+            data: {},
+          },
+        },
+      },
+    };
+
+    return createTest(initialParam);
+  } else {
+    for (let key in arg.data) {
+      arg.data[key].data = new DoubleLinked<Ques>(arg.data[key].data);
+    }
+    const finishedClass = new DoubleLinked<DoubleLinked<Ques>>(
+      arg as DoubleLinkedConsArg<DoubleLinked<Ques>>
+    );
+
+    return finishedClass;
+  }
+};

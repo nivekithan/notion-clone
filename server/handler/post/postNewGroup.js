@@ -1,6 +1,6 @@
 const DayModel = require("../../models/dayModel");
 const GrpQueModel = require("../../models/grpQueModel");
-
+const {nanoid} = require("nanoid")
 // DOMAIN/post/newGroup
 const postNewGroup = (req, res) => {
   const grpQueDoc = new GrpQueModel();
@@ -8,12 +8,11 @@ const postNewGroup = (req, res) => {
   DayModel.findOne(
     { _id: process.env.TEST_DB_DAYS_ID },
     function (err, dayDoc) {
-    
       if (err) {
         console.error(err);
         res.end();
       } else if (dayDoc) {
-          // pushes the name and group_id to array in dayDoc
+        // pushes the name and group_id to array in dayDoc
         dayDoc.days.push({
           name: req.body.name,
           group_id: grpQueDoc._id,
@@ -24,13 +23,13 @@ const postNewGroup = (req, res) => {
         // of grpQue
         const day_id = dayDoc.days[dayDoc.days.length - 1]._id;
         grpQueDoc.day_id = day_id;
-        grpQueDoc.data = {}
+        grpQueDoc.data = {};
 
         // saving the documents
+        grpQueDoc.markModified("data")
         grpQueDoc.save();
         dayDoc.save();
 
-      
         res.json(dayDoc);
       } else {
         res.send("It should not happen");
