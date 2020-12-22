@@ -1,6 +1,6 @@
 import { RouteComponentProps } from "react-router-dom";
 import {useQues} from "../../hooks";
-import {DoubleLinked} from "../../api/doubleLinked"
+import {DoubleLinked} from "../../api/test"
 // =====================================================
 interface MatchParams {
   id: string;
