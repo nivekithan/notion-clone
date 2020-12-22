@@ -1,5 +1,27 @@
 import { DoubleLinked } from "../doubleLinked.tsx";
 
+const COMMON_RESULT_3 = {
+  start: "000",
+  end: "002",
+  data: {
+    "000": {
+      _next: "001",
+      _prev: null,
+      data: { "0": "0" },
+    },
+    "001": {
+      _prev: "000",
+      _next: "002",
+      data: { "1": "1" },
+    },
+    "002": {
+      _prev: "001",
+      _next: null,
+      data: { "2": "2" },
+    },
+  },
+};
+
 describe("Running test in DoubleLinked class", () => {
   describe("Checking constructor function", () => {
     test("Empty arg", () => {
@@ -55,8 +77,6 @@ describe("Running test in DoubleLinked class", () => {
     });
   });
 
-
-
   describe("Checking hasSingleElement method", () => {
     test("Arg with one element", () => {
       const newDouble = new DoubleLinked({
@@ -73,58 +93,188 @@ describe("Running test in DoubleLinked class", () => {
     });
 
     test("Arg with no element", () => {
-        const newDouble = new DoubleLinked();
+      const newDouble = new DoubleLinked();
 
-        expect(newDouble.hasSingleElement()).toEqual(false)
-    })
+      expect(newDouble.hasSingleElement()).toEqual(false);
+    });
+
+    test("with more than one element", () => {
+      const newDouble = new DoubleLinked();
+
+      newDouble.append({ "1": "1" }, "001");
+      newDouble.append({ "2": "2" }, "002");
+
+      expect(newDouble.hasSingleElement()).toEqual(false);
+    });
   });
 
-
   describe("Checking append method", () => {
-      test("class initialised with no arg", () => {
-          const newDouble = new DoubleLinked();
+    test("class initialised with no arg", () => {
+      const newDouble = new DoubleLinked();
 
-          newDouble.append({3 : "something"}, "345");
+      newDouble.append({ 3: "something" }, "345");
 
-          expect(newDouble.data["345"]).toEqual({
-              _next : null,
-              _prev : null,
-              data : {
-                  3 : "something"
-              }
-          }) 
+      expect(newDouble.data["345"]).toEqual({
+        _next: null,
+        _prev: null,
+        data: {
+          3: "something",
+        },
+      });
+    });
+
+    test("Doing three times", () => {
+      const newDouble = new DoubleLinked();
+
+      newDouble.append({ "0": "0" }, "000");
+      newDouble.append({ "1": "1" }, "001");
+      newDouble.append({ "2": "2" }, "002");
+      expect(newDouble).toEqual(COMMON_RESULT_3);
+    });
+  });
+
+  describe("Checking Shift method", () => {
+    test("with three shifts", () => {
+      const newDouble = new DoubleLinked();
+
+      newDouble.shift({ "2": "2" }, "002");
+      newDouble.shift({ "1": "1" }, "001");
+      newDouble.shift({ "0": "0" }, "000");
+
+      expect(newDouble).toEqual(COMMON_RESULT_3);
+    });
+
+    test("With no arg during initialized", () => {
+      const newDouble = new DoubleLinked();
+
+      newDouble.shift({ "1": "1" }, "001");
+
+      expect(newDouble).toEqual({
+        start: "001",
+        end: "001",
+        data: {
+          "001": {
+            _next: null,
+            _prev: null,
+            data: { "1": "1" },
+          },
+        },
+      });
+    });
+  });
+
+  describe("Checking insertBefore method", () => {
+    test("On inserting before start element", () => {
+      const newDouble = new DoubleLinked();
+
+      newDouble.append({ "1": "1" }, "001");
+      newDouble.append({ "2": "2" }, "002");
+
+      newDouble.insertBefore({ "0": "0" }, "000", "001");
+
+      expect(newDouble).toEqual(COMMON_RESULT_3);
+    });
+
+    test("On inserting middle", () => {
+      const newDouble = new DoubleLinked();
+
+      newDouble.append({ "0": "0" }, "000");
+      newDouble.append({ "2": "2" }, "002");
+
+      newDouble.insertBefore({ "1": "1" }, "001", "002");
+
+      expect(newDouble).toEqual(COMMON_RESULT_3);
+    });
+  });
+
+  describe("Checking insertAfter method", () => {
+    test("On inserting after end element", () => {
+      const newDouble = new DoubleLinked();
+
+      newDouble.shift({ "1": "1" }, "001");
+      newDouble.shift({ "0": "0" }, "000");
+
+      newDouble.insertAfter({ "2": "2" }, "002", "001");
+
+      expect(newDouble).toEqual(COMMON_RESULT_3);
+    });
+
+    test("On inserting in middle", () => {
+      const newDouble = new DoubleLinked();
+
+      newDouble.append({ "2": "2" }, "002");
+      newDouble.shift({ "0": "0" }, "000");
+
+      newDouble.insertAfter({ "1": "1" }, "001", "000");
+
+      expect(newDouble).toEqual(COMMON_RESULT_3);
+    });
+  });
+
+  describe("Checking insert Method", () => {
+    test("On giving no options", () => {
+      const newDouble = new DoubleLinked();
+
+      newDouble.insert({ "0": "0" }, "000");
+      newDouble.insert({ "1": "1" }, "001");
+      newDouble.insert({ "2": "2" }, "002");
+
+      expect(newDouble).toEqual(COMMON_RESULT_3);
+    });
+
+    test("On giving options", () => {
+      const newDouble = new DoubleLinked();
+
+      newDouble.insert({ "1": "1" }, "001");
+      newDouble.insert({ "0": "0" }, "000", "001", {
+        before: true,
+        after: false,
+      });
+      newDouble.insert({ "2": "2" }, "002", "001", { after: true });
+
+      expect(newDouble).toEqual(COMMON_RESULT_3);
+    });
+  });
+
+  describe("Checking pop method", () => {
+    test("Using when there is only on element", () => {
+      const newDouble = new DoubleLinked();
+
+      newDouble.append({"0" : "0"}, "000");
+
+      newDouble.pop();
+
+      expect(newDouble).toEqual({
+        start : null,
+        end : null,
+        data : {}
       })
+    })
 
-      test("Doing append two times", () => {
-          const newDouble = new DoubleLinked();
+    test("When there is more than one element", () => {
+      const newDouble = new DoubleLinked();
 
-          newDouble.append({"1" : "1"}, "001")
-          newDouble.append({"2" : "2"}, "002")
-            newDouble.append({"3" : "3"}, "003")
-          expect(newDouble).toEqual({
-              start : "001",
-              end : "003",
-              data : {
-                  "001" : {
-                      _next : "002",
-                      _prev : null,
-                      data : {"1" : "1"}
-                  },
+      newDouble.insert({"0" : "0"}, "000");
+      newDouble.insert({"1" : "1"}, "001");
+      newDouble.insert({"2" : "2"}, "002");
+      newDouble.insert({"3" : "3"}, "003");
 
-                  "002" : {
-                      _next : "003",
-                      _prev : "001",
-                      data : {"2" : "2"}
-                  },
+      newDouble.pop();
 
-                  "003" : {
-                      _next : null,
-                      _prev : "002",
-                      data : {"3" : "3"}
-                  }
-              }
-          }) 
-      })
+      expect(newDouble).toEqual(COMMON_RESULT_3)
+    })
+ 
+    test("Poping while more than one element and then adding element", () => {
+      const newDouble = new DoubleLinked();
+
+      newDouble.insert({"0" :"0"}, "000");
+      newDouble.insert({"1" : "1"}, "001");
+      newDouble.append({"3" : "3"}, "003");
+      newDouble.pop();
+
+      newDouble.insert({"2" : "2"}, "002");
+
+      expect(newDouble).toEqual(COMMON_RESULT_3)
+    })
   })
-
 });
