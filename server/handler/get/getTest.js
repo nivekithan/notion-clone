@@ -1,6 +1,6 @@
 const grpQueModel = require("../../models/grpQueModel");
 
-const getGrpQue = (req, res) => {
+const getTest = (req, res) => {
 
     grpQueModel.findOne({day_id : req.query.day_id}, (err, grpQueDoc) => {
         if (err) {  
@@ -15,4 +15,4 @@ const getGrpQue = (req, res) => {
 
 }
 
-module.exports = getGrpQue;
+module.exports = getTest;

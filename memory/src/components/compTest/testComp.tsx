@@ -1,32 +1,15 @@
+import { Fragment, useState } from "react";
 import { RouteComponentProps } from "react-router-dom";
-import {useQues} from "../../hooks";
-import {DoubleLinked} from "../../api/test"
+import { createTest } from "../../api/test";
+import { useQues } from "../../hooks";
+import { DoubleLinked, Ques } from "../../api/test";
+import { SlateEditor } from "../../editor";
 // =====================================================
 interface MatchParams {
   id: string;
 }
 
 interface TestComponentTypes extends RouteComponentProps<MatchParams> {}
-
-
-
-type Page =  {
-  start : string | null,
-  end : string | null,
-  data : DoubleLinked<Ques>
-}
-
-interface Ques {
-  start : string | null,
-  end : string | null,
-  data : {
-    type : string,
-    ques : {},
-    ans : {}
-  } | {}
-}
-
-
 // --------------------------------------------------------
 export const TestComponent = ({ match }: TestComponentTypes) => {
   const allQuesQuery = useQues(match.params.id);
@@ -37,14 +20,38 @@ export const TestComponent = ({ match }: TestComponentTypes) => {
     return <h1>THere is some error {allQuesQuery.error.message}</h1>;
 
   if (allQuesQuery.isSuccess) {
-  const { data } = allQuesQuery;
-  
-    
+    console.log("I am here");
+    const { data } = allQuesQuery;
 
-  return (
-    <h1>Something</h1>
-  )
+    const Test = createTest(data);
+
+    return <PageComponent Test={Test} />;
   }
 
-  return <h1>Something is wrong</h1>
+  return <h1>Something is wrong</h1>;
+};
+
+const PageComponent = ({
+  Test,
+}: {
+  Test: DoubleLinked<DoubleLinked<Ques>>;
+}) => {
+  const [activePageID, setActivePageID] = useState(Test.start);
+  if (!activePageID) {
+    return null;
+  }
+  const pageOutput: JSX.Element[] = [];
+
+  for (let ques of Test.data[activePageID].data) {
+    const output: JSX.Element = (
+      <section key={ques?.id}>
+        <div></div>
+        <div></div>
+      </section>
+    );
+    pageOutput.push(output);
+  }
+  pageOutput.push(<SlateEditor key={'editor'} />);
+
+  return <Fragment>{pageOutput}</Fragment>;
 };

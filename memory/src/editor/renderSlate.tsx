@@ -48,7 +48,7 @@ export const Element = ({ attributes, element, children } : RenderElementProps) 
       //prettier-ignore
       return <InlineMathElement attributes={attributes} element={element} children={children} />
     default:
-      return null;
+      return <div {...attributes} >{children}</div> ;
   }
 };
 

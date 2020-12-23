@@ -264,11 +264,11 @@ const ToolButton = ({ children, onClick, setSelection }: ForToolButton) => {
 // -----------------------------------------------------------------
 const initalValue: Node[] = [
   {
-    type: "heading-1",
-    children: [
+    type : "something",
+    children : [
       {
-        text: "\\frac{3}{4}",
-      },
-    ],
-  },
+        text : ""
+      }
+    ]
+  }
 ];

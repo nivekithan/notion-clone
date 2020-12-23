@@ -240,238 +240,252 @@ describe("Running test in DoubleLinked class", () => {
     test("Using when there is only on element", () => {
       const newDouble = new DoubleLinked();
 
-      newDouble.append({"0" : "0"}, "000");
+      newDouble.append({ "0": "0" }, "000");
 
       newDouble.pop();
 
       expect(newDouble).toEqual({
-        start : null,
-        end : null,
-        data : {}
-      })
-    })
+        start: null,
+        end: null,
+        data: {},
+      });
+    });
 
     test("When there is more than one element", () => {
       const newDouble = new DoubleLinked();
 
-      newDouble.insert({"0" : "0"}, "000");
-      newDouble.insert({"1" : "1"}, "001");
-      newDouble.insert({"2" : "2"}, "002");
-      newDouble.insert({"3" : "3"}, "003");
+      newDouble.insert({ "0": "0" }, "000");
+      newDouble.insert({ "1": "1" }, "001");
+      newDouble.insert({ "2": "2" }, "002");
+      newDouble.insert({ "3": "3" }, "003");
 
       newDouble.pop();
 
-      expect(newDouble).toEqual(COMMON_RESULT_3)
-    })
- 
+      expect(newDouble).toEqual(COMMON_RESULT_3);
+    });
+
     test("Poping while more than one element and then adding element", () => {
       const newDouble = new DoubleLinked();
 
-      newDouble.insert({"0" :"0"}, "000");
-      newDouble.insert({"1" : "1"}, "001");
-      newDouble.append({"3" : "3"}, "003");
+      newDouble.insert({ "0": "0" }, "000");
+      newDouble.insert({ "1": "1" }, "001");
+      newDouble.append({ "3": "3" }, "003");
       newDouble.pop();
 
-      newDouble.insert({"2" : "2"}, "002");
+      newDouble.insert({ "2": "2" }, "002");
 
-      expect(newDouble).toEqual(COMMON_RESULT_3)
-    })
-  })
+      expect(newDouble).toEqual(COMMON_RESULT_3);
+    });
+  });
 
   describe("Checking unShift method", () => {
     test("Using when there is only on element", () => {
       const newDouble = new DoubleLinked();
 
-      newDouble.append({"0" : "0"}, "000");
+      newDouble.append({ "0": "0" }, "000");
 
       newDouble.unShift();
 
       expect(newDouble).toEqual({
-        start : null,
-        end : null,
-        data : {}
-      })
-    })
+        start: null,
+        end: null,
+        data: {},
+      });
+    });
 
     test("When there is more than one element", () => {
       const newDouble = new DoubleLinked();
 
-      newDouble.insert({"3" : "3"}, "003");
-      newDouble.insert({"0" : "0"}, "000");
-      newDouble.insert({"1" : "1"}, "001");
-      newDouble.insert({"2" : "2"}, "002");
+      newDouble.insert({ "3": "3" }, "003");
+      newDouble.insert({ "0": "0" }, "000");
+      newDouble.insert({ "1": "1" }, "001");
+      newDouble.insert({ "2": "2" }, "002");
 
       newDouble.unShift();
 
-      expect(newDouble).toEqual(COMMON_RESULT_3)
-    })
- 
+      expect(newDouble).toEqual(COMMON_RESULT_3);
+    });
+
     test("unShifting while more than one element and then adding element", () => {
       const newDouble = new DoubleLinked();
 
-      newDouble.append({"3" : "3"}, "003");
-      newDouble.insert({"0" :"0"}, "000");
-      newDouble.insert({"1" : "1"}, "001");
+      newDouble.append({ "3": "3" }, "003");
+      newDouble.insert({ "0": "0" }, "000");
+      newDouble.insert({ "1": "1" }, "001");
       newDouble.unShift();
-      newDouble.insert({"2" : "2"}, "002");
+      newDouble.insert({ "2": "2" }, "002");
 
-      expect(newDouble).toEqual(COMMON_RESULT_3)
-    })
-  })
+      expect(newDouble).toEqual(COMMON_RESULT_3);
+    });
+  });
 
   describe("Checking removeBefore method", () => {
-
-    
     test("When there is more than one element", () => {
       const newDouble = new DoubleLinked();
 
-      newDouble.insert({"3" : "3"}, "003");
-      newDouble.insert({"0" : "0"}, "000");
-      newDouble.insert({"1" : "1"}, "001");
-      newDouble.insert({"2" : "2"}, "002");
+      newDouble.insert({ "3": "3" }, "003");
+      newDouble.insert({ "0": "0" }, "000");
+      newDouble.insert({ "1": "1" }, "001");
+      newDouble.insert({ "2": "2" }, "002");
 
       newDouble.removeBefore("000");
 
-      expect(newDouble).toEqual(COMMON_RESULT_3)
-    })
- 
+      expect(newDouble).toEqual(COMMON_RESULT_3);
+    });
+
     test("removing while more than one element and then adding element", () => {
       const newDouble = new DoubleLinked();
 
-      newDouble.append({"3" : "3"}, "003");
-      newDouble.insert({"0" :"0"}, "000");
-      newDouble.insert({"1" : "1"}, "001");
+      newDouble.append({ "3": "3" }, "003");
+      newDouble.insert({ "0": "0" }, "000");
+      newDouble.insert({ "1": "1" }, "001");
 
-      newDouble.removeBefore("000")
- 
-      newDouble.insert({"2" : "2"}, "002"); 
-   
-      expect(newDouble).toEqual(COMMON_RESULT_3)   
-    })
-  })
+      newDouble.removeBefore("000");
+
+      newDouble.insert({ "2": "2" }, "002");
+
+      expect(newDouble).toEqual(COMMON_RESULT_3);
+    });
+  });
   describe("Checking removeAfter method", () => {
-
-    
     test("When there is more than one element", () => {
       const newDouble = new DoubleLinked();
 
-      newDouble.insert({"0" : "0"}, "000");
-      newDouble.insert({"3" : "3"}, "003");
-      newDouble.insert({"1" : "1"}, "001");
-      newDouble.insert({"2" : "2"}, "002");
+      newDouble.insert({ "0": "0" }, "000");
+      newDouble.insert({ "3": "3" }, "003");
+      newDouble.insert({ "1": "1" }, "001");
+      newDouble.insert({ "2": "2" }, "002");
 
       newDouble.removeAfter("000");
 
-      expect(newDouble).toEqual(COMMON_RESULT_3)
-    })
- 
+      expect(newDouble).toEqual(COMMON_RESULT_3);
+    });
+
     test("removing while more than one element and then adding element", () => {
       const newDouble = new DoubleLinked();
 
-      newDouble.insert({"0" :"0"}, "000");
-      newDouble.append({"3" : "3"}, "003");
-      newDouble.insert({"1" : "1"}, "001");
+      newDouble.insert({ "0": "0" }, "000");
+      newDouble.append({ "3": "3" }, "003");
+      newDouble.insert({ "1": "1" }, "001");
 
-      newDouble.removeAfter("000")
- 
-      newDouble.insert({"2" : "2"}, "002"); 
-   
-      expect(newDouble).toEqual(COMMON_RESULT_3)   
-    })
-  })
+      newDouble.removeAfter("000");
+
+      newDouble.insert({ "2": "2" }, "002");
+
+      expect(newDouble).toEqual(COMMON_RESULT_3);
+    });
+  });
   describe("Checking remove method", () => {
-
-    
     test("Checking remove with after options: When there is more than one element", () => {
       const newDouble = new DoubleLinked();
 
-      newDouble.insert({"0" : "0"}, "000");
-      newDouble.insert({"3" : "3"}, "003");
-      newDouble.insert({"1" : "1"}, "001");
-      newDouble.insert({"2" : "2"}, "002");
+      newDouble.insert({ "0": "0" }, "000");
+      newDouble.insert({ "3": "3" }, "003");
+      newDouble.insert({ "1": "1" }, "001");
+      newDouble.insert({ "2": "2" }, "002");
 
-      newDouble.remove("000", {after : true, before : false});
+      newDouble.remove("000", { after: true, before: false });
 
-      expect(newDouble).toEqual(COMMON_RESULT_3)
-    })
- 
+      expect(newDouble).toEqual(COMMON_RESULT_3);
+    });
+
     test("Checking remove with after options: removing while more than one element and then adding element", () => {
       const newDouble = new DoubleLinked();
 
-      newDouble.insert({"0" :"0"}, "000");
-      newDouble.append({"3" : "3"}, "003");
-      newDouble.insert({"1" : "1"}, "001");
+      newDouble.insert({ "0": "0" }, "000");
+      newDouble.append({ "3": "3" }, "003");
+      newDouble.insert({ "1": "1" }, "001");
 
-      newDouble.remove("000", {after : true})
- 
-      newDouble.insert({"2" : "2"}, "002"); 
-   
-      expect(newDouble).toEqual(COMMON_RESULT_3)   
-    })
+      newDouble.remove("000", { after: true });
+
+      newDouble.insert({ "2": "2" }, "002");
+
+      expect(newDouble).toEqual(COMMON_RESULT_3);
+    });
     test("Checking removeBefore: When there is more than one element", () => {
       const newDouble = new DoubleLinked();
 
-      newDouble.insert({"3" : "3"}, "003");
-      newDouble.insert({"0" : "0"}, "000");
-      newDouble.insert({"1" : "1"}, "001");
-      newDouble.insert({"2" : "2"}, "002");
+      newDouble.insert({ "3": "3" }, "003");
+      newDouble.insert({ "0": "0" }, "000");
+      newDouble.insert({ "1": "1" }, "001");
+      newDouble.insert({ "2": "2" }, "002");
 
-      newDouble.remove("000", {before : true});
+      newDouble.remove("000", { before: true });
 
-      expect(newDouble).toEqual(COMMON_RESULT_3)
-    })
- 
+      expect(newDouble).toEqual(COMMON_RESULT_3);
+    });
+
     test("Checking removeBefore: removing while more than one element and then adding element", () => {
       const newDouble = new DoubleLinked();
 
-      newDouble.append({"3" : "3"}, "003");
-      newDouble.insert({"0" :"0"}, "000");
-      newDouble.insert({"1" : "1"}, "001");
+      newDouble.append({ "3": "3" }, "003");
+      newDouble.insert({ "0": "0" }, "000");
+      newDouble.insert({ "1": "1" }, "001");
 
-      newDouble.remove("000", {before : true})
- 
-      newDouble.insert({"2" : "2"}, "002"); 
-   
-      expect(newDouble).toEqual(COMMON_RESULT_3)   
-    })
+      newDouble.remove("000", { before: true });
+
+      newDouble.insert({ "2": "2" }, "002");
+
+      expect(newDouble).toEqual(COMMON_RESULT_3);
+    });
     test("Checking with no options : Using when there is only on element", () => {
       const newDouble = new DoubleLinked();
 
-      newDouble.append({"0" : "0"}, "000");
+      newDouble.append({ "0": "0" }, "000");
 
       newDouble.remove();
 
       expect(newDouble).toEqual({
-        start : null,
-        end : null,
-        data : {}
-      })
-    })
+        start: null,
+        end: null,
+        data: {},
+      });
+    });
 
     test("Checking with no options :When there is more than one element", () => {
       const newDouble = new DoubleLinked();
 
-      newDouble.insert({"0" : "0"}, "000");
-      newDouble.insert({"1" : "1"}, "001");
-      newDouble.insert({"2" : "2"}, "002");
-      newDouble.insert({"3" : "3"}, "003");
+      newDouble.insert({ "0": "0" }, "000");
+      newDouble.insert({ "1": "1" }, "001");
+      newDouble.insert({ "2": "2" }, "002");
+      newDouble.insert({ "3": "3" }, "003");
 
       newDouble.remove();
 
-      expect(newDouble).toEqual(COMMON_RESULT_3)
-    })
- 
+      expect(newDouble).toEqual(COMMON_RESULT_3);
+    });
+
     test("Checking with no options : removing while more than one element and then adding element", () => {
       const newDouble = new DoubleLinked();
 
-      newDouble.insert({"0" :"0"}, "000");
-      newDouble.insert({"1" : "1"}, "001");
-      newDouble.append({"3" : "3"}, "003");
+      newDouble.insert({ "0": "0" }, "000");
+      newDouble.insert({ "1": "1" }, "001");
+      newDouble.append({ "3": "3" }, "003");
       newDouble.remove();
 
-      newDouble.insert({"2" : "2"}, "002");
+      newDouble.insert({ "2": "2" }, "002");
 
-      expect(newDouble).toEqual(COMMON_RESULT_3)
-    })
-  })
-})
+      expect(newDouble).toEqual(COMMON_RESULT_3);
+    });
+  });
+
+  describe("Checking for...of loop", () => {
+    const newDouble = new DoubleLinked();
+
+    newDouble.insert({ "0": "0" }, "000");
+    newDouble.insert({ "1": "1" }, "001");
+    newDouble.insert({ "2": "2" }, "002");
+
+    const checkObj = {};
+
+    for (let { data, id } of newDouble) {
+      checkObj[id] = data;
+    }
+
+    expect(checkObj).toEqual({
+      "000": { "0": "0" },
+      "001": { "1": "1" },
+      "002": { "2": "2" },
+    });
+  });
+});

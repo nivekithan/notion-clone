@@ -9,21 +9,17 @@ const putDay = (req, res) => {
       res.end();
     } else if (dayDoc) {
       for (let index in dayDoc.days) {
-            if (String(dayDoc.days[index]._id) === id) {
-                dayDoc.days[index].name = name ? name : dayDoc.days[index].name;
-                dayDoc.days[index].tags = tags ? tags : dayDoc.days[index].tags;
-                dayDoc.save()
-                res.json(dayDoc)
-            }
-
-        } 
-        res.end()
-     
-      }  
- 
+        if (String(dayDoc.days[index]._id) === id) {
+          dayDoc.days[index].name = name ? name : dayDoc.days[index].name;
+          dayDoc.days[index].tags = tags ? tags : dayDoc.days[index].tags;
+          dayDoc.save();
+          res.json(dayDoc);
+        }
+      }
+      res.end();
     }
-   
- 
+  };
+
   DayModel.findOne({ _id: process.env.TEST_DB_DAYS_ID }, putDayFun);
 };
 

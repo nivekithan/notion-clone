@@ -1,5 +1,7 @@
 import { nanoid } from "nanoid";
+import { TestDB } from "../types";
 
+// ---------------------------------------------------------------
 interface DoubleLinkedElements<T> {
   [index: string]: { _next: string | null; _prev: string | null; data: T };
 }
@@ -10,6 +12,7 @@ interface DoubleLinkedConsArg<T> {
   data: DoubleLinkedElements<T>;
 }
 
+// ---------------------------------------------------------------
 export class DoubleLinked<T> {
   start: string | null;
   end: string | null;
@@ -31,6 +34,27 @@ export class DoubleLinked<T> {
         ? initialState.data
         : {}
       : {};
+  }
+
+  [Symbol.iterator]() {
+    let nextID = this.start;
+    return {
+      next: () => {
+        if (nextID === null) {
+          return {
+            done: true,
+          };
+        }
+
+        let next_id = nextID;
+        nextID = this.data[next_id]._next;
+
+        return {
+          done: false,
+          value: { data: this.data[next_id].data, id: next_id },
+        };
+      },
+    };
   }
 
   isEmpty() {
@@ -336,52 +360,23 @@ export class DoubleLinked<T> {
   }
 }
 // --------------------------------------
-interface TestsArg {
-  start: string | null;
-  end: string | null;
-  data: {
-    [index: string]: {
-      _next: string | null;
-      _prev: string | null;
-      data: {
-        start: string | null;
-        end: string | null;
-        data:
-          | {
-              [index: string]: {
-                _next: string | null;
-                _prev: string | null;
-                data: {
-                  type: string;
-                  ques: {};
-                  ans: {};
-                };
-              };
-            }
-          | {};
-      };
-    };
-  };
-}
 
-interface Ques {
+export interface Ques {
   type: string;
   ques: {};
   ans: {};
 }
 // -------------------------------------------------------
 
-export const createTest = (
-  arg?: TestsArg
-): DoubleLinked<DoubleLinked<Ques>> => {
-  if (!arg) {
+export const createTest = (arg?: TestDB): DoubleLinked<DoubleLinked<Ques>> => {
+  if (!arg || !(arg.start)) {
     const firstPageID = nanoid();
 
     const initialParam = {
       start: firstPageID,
       end: firstPageID,
       data: {
-        firstPageID: {
+        [firstPageID]: {
           _next: null,
           _prev: null,
           data: {

@@ -9,5 +9,9 @@ router.put("/day", (req, res) => {
     handler.putDay(req, res)
 })
 
+router.put("/test", (req,res) => {
+    handler.putTest(req,res)
+})
+
 
 module.exports = router;
