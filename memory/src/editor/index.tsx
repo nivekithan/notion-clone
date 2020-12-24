@@ -28,7 +28,7 @@ import { CgMathMinus, CgMathPlus } from "react-icons/cg";
 
 import { withMath } from "./plugins";
 import { toggleBlock, isBlockActive, toggleMark, isMarkActive } from "./toggle";
-
+import { ButtonClick } from "../types";
 // ----------------------------------------------------------------------------------------------------------
 
 interface Hotkeys {
@@ -47,7 +47,13 @@ const HOTKEYS: Hotkeys = {
 };
 
 // --------------------------------------------------------------------------------------------------------------
-export const SlateEditor = () => {
+export const SlateEditor = ({
+  onQuesClick,
+  onAnsClick,
+}: {
+  onQuesClick: (e : React.MouseEvent<HTMLButtonElement, MouseEvent>, children : Node[]) => void,
+  onAnsClick: ButtonClick;
+}) => {
   const editor = useMemo(() => withMath(withReact(createEditor())), []);
   const [value, setValue] = useState(initalValue);
   const renderLeaf = useCallback(
@@ -100,6 +106,11 @@ export const SlateEditor = () => {
             renderElement={renderElement}
             onKeyDown={handleKeyDown}
           />
+        </div>
+        <div>
+          <button onClick={ (e) => onQuesClick(e, editor.children)}>Submit Ques</button>
+          <br />
+          <button onClick={onAnsClick}>Submit Ans</button>
         </div>
       </Slate>
     </div>
@@ -264,11 +275,11 @@ const ToolButton = ({ children, onClick, setSelection }: ForToolButton) => {
 // -----------------------------------------------------------------
 const initalValue: Node[] = [
   {
-    type : "something",
-    children : [
+    type: "something",
+    children: [
       {
-        text : ""
-      }
-    ]
-  }
+        text: "",
+      },
+    ],
+  },
 ];

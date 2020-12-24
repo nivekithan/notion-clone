@@ -1,6 +1,5 @@
 import { useQuery } from "react-query";
-import {TestDB} from "../types";
-
+import { TestDB } from "../types";
 
 // --------------------------------------------------------------------
 export const getTest = async (day_id: string) => {

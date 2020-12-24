@@ -26,3 +26,4 @@ export interface TestDB {
   };
 }
 
+export type ButtonClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
