@@ -7,7 +7,11 @@ import { QueryClientProvider, QueryClient } from "react-query";
 const queryClient = new QueryClient();
 
 ReactDOM.render(
+<<<<<<< HEAD
   <QueryClientProvider client={    queryClient}>
+=======
+  <QueryClientProvider client={ queryClient }>
+>>>>>>> gitTesting
       <App />
   </QueryClientProvider>,
   document.getElementById("root")
