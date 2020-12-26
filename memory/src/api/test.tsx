@@ -1,4 +1,6 @@
 import { nanoid } from "nanoid";
+import { Node } from "slate";
+import { useUpdateTest } from "../hooks";
 import { TestDB } from "../types";
 
 // ---------------------------------------------------------------
@@ -363,13 +365,13 @@ export class DoubleLinked<T> {
 
 export interface Ques {
   type: string;
-  ques: {};
-  ans: {};
+  ques: {children : Node[]};
+  ans: {children : Node[]};
 }
 // -------------------------------------------------------
 
 export const createTest = (arg?: TestDB): DoubleLinked<DoubleLinked<Ques>> => {
-  if (!arg || !(arg.start)) {
+  if (!arg || !arg.start) {
     const firstPageID = nanoid();
 
     const initialParam = {

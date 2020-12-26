@@ -1,3 +1,7 @@
+import { Node } from "slate";
+
+
+
 export interface TestDB {
   start: string | null;
   end: string | null;
@@ -15,8 +19,8 @@ export interface TestDB {
                 _prev: string | null;
                 data: {
                   type: string;
-                  ques: {};
-                  ans: {};
+                  ques: {children : Node[]};
+                  ans: {children : Node[]};
                 };
               };
             }

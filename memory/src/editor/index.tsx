@@ -51,8 +51,14 @@ export const SlateEditor = ({
   onQuesClick,
   onAnsClick,
 }: {
-  onQuesClick: (e : React.MouseEvent<HTMLButtonElement, MouseEvent>, children : Node[]) => void,
-  onAnsClick: ButtonClick;
+  onQuesClick: (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    children: Node[]
+  ) => void;
+  onAnsClick: (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    children: Node[]
+  ) => void;
 }) => {
   const editor = useMemo(() => withMath(withReact(createEditor())), []);
   const [value, setValue] = useState(initalValue);
@@ -108,9 +114,11 @@ export const SlateEditor = ({
           />
         </div>
         <div>
-          <button onClick={ (e) => onQuesClick(e, editor.children)}>Submit Ques</button>
+          <button onClick={(e) => onQuesClick(e, editor.children)}>
+            Submit Ques
+          </button>
           <br />
-          <button onClick={onAnsClick}>Submit Ans</button>
+          <button onClick={(e) => onAnsClick(e, editor.children)}>Submit Ans</button>
         </div>
       </Slate>
     </div>
