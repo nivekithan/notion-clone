@@ -1,4 +1,0 @@
-
-
-export {withMath} from "./withMaths";
-
