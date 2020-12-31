@@ -6,8 +6,14 @@ module.exports = {
   darkMode: false, // or 'media' or 'class'
   theme: {
     colors : {
-      "grey" : {
-        primary : "#f7f6f3"
+      "black" : {
+        primary : "rgb(55, 60, 63)",
+        secondary : "rgb(71, 76, 80)"
+      },
+      "white" : {
+        "100" : "rgba(255, 255, 255, 0.6)",
+        "200" : "rgba(255, 255, 255, 0.9)",
+
       }
     },
     maxWidth : {

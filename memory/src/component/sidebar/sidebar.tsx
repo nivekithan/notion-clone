@@ -10,7 +10,7 @@ export type SidebarProps = {
 export const Sidebar = ({children} : SidebarProps) => {
 
     return (
-        <section className="bg-grey-primary h-full w-40">
+        <section className="bg-black-primary h-full inline-flex flex-col gap-y-2 ">
             {children}
         </section>
     )
