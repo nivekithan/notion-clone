@@ -8,7 +8,7 @@ export type SingleMenuProps = {
 
 const SINGLE_MENU = [
   "px-14-px",
-  "py-2-px",
+  "pt-2-px",
   "cursor-pointer",
   "max-w-260",
   "truncate",
@@ -16,7 +16,8 @@ const SINGLE_MENU = [
   "text-white-100",
   "font-medium",
   "tracking-wider",
-  "hover:bg-black-secondary",
+  "bg-black-siderbar-normal",
+  "hover:bg-black-sidebar-onHover",
   "text-sm",
   "inline-flex",
   "items-center",

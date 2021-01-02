@@ -1,6 +1,8 @@
 import React from "react";
 import "./tailwind/base.css";
-import { Button } from "./component/button/button";
+import 'katex/dist/katex.min.css';
+
+import { Button } from "./components/button/button";
 
 function App() {
   return (
