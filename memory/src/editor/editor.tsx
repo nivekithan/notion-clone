@@ -68,23 +68,19 @@ const InlineMathElement = ({
       at: ReactEditor.findPath(editor, element),
       voids: true,
     });
-    
-    setIsEditing(false)
-    
+
+    setIsEditing(false);
   };
 
   return (
-    <span {...attributes} className="relative">
+    <span {...attributes} className="relative" contentEditable={false}>
       <span onClick={onMathClick}>
         <TeX math={mathText} />
       </span>
 
       {isEditing ? (
-        <div className="absolute">
-          <InputModal ref={mathEditableRef} defaultValue={mathText} />
-          <button className="btn-blue" onClick={onSubmit}>
-            Submit
-          </button>
+        <div className="absolute inline-flex">
+          <InputModal ref={mathEditableRef} defaultValue={mathText} label="Submit" />
         </div>
       ) : null}
 
