@@ -10,7 +10,7 @@ export default {
 
 const Template : Story<MCQProps> = args => {
     return (
-        <div className="grid w-400-px h-400-px bg-black-main-normal place-items-center">
+        <div className="grid w-full h-screen bg-black-main-normal place-items-center">
             <MCQ {...args} />
         </div>
     )

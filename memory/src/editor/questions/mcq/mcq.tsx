@@ -23,34 +23,28 @@ export const MCQ = (props: MCQProps) => {
   const { register, handleSubmit } = useForm();
 
   const onSubmit: SubmitHandler<FormValue> = (data) => {
-    const noAnswer = { one: false, two: false, three: false, four: false };
     console.log(data)
-    if ({ ...noAnswer, [answer]: true } === data) {
-      console.log(true);
-    } else {
-      console.log(false);
-    }
   };
 
   return (
-    <div className="flex flex-col text-white-white">
+    <div className="flex flex-col text-white-white gap-y-12">
       <div>{question}</div>
 
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-y-4">
         <label>
-          <input type="checkbox" name="one" ref={register} />
+          <input type="radio" name="question" value={one} ref={register} className="mr-2" />
           {one}
         </label>
         <label>
-          <input type="checkbox" name="two" ref={register} />
+          <input type="radio" name="question" value={two} ref={register} className="mr-2" />
           {two}
         </label>
         <label>
-          <input type="checkbox" name="three" ref={register} />
+          <input type="radio" name="question" value={three} ref={register} className="mr-2" />
           {three}
         </label>
         <label>
-          <input type="checkbox" name="four" ref={register} />
+          <input type="radio" name="question" value={four} ref={register} className="mr-2" />
           {four}  
         </label>
         <input type="submit" className="btn-blue" />
