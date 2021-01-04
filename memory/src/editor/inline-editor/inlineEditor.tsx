@@ -8,14 +8,19 @@ import {
   useSlate,
 } from "slate-react";
 import React, { useState } from "react";
-import { withMath } from "./plugins/withMath";
+import { withMath } from "../plugins/withMath";
 import TeX from "@matejmazur/react-katex";
-import { InputModal } from "./inputModal";
+import { InputModal } from "../inputModal";
+// --------------------------------------------------------------------------------------------
+
+export type InlineEditorProps = {
+  defaultValue : Node[]
+}
 
 // --------------------------------------------------------------------------------------------
-export const Editor = () => {
+export const InlineEditor = ({defaultValue} : InlineEditorProps) => {
   const editor = React.useMemo(() => withReact(withMath(createEditor())), []);
-  const [slateValue, setSlateValue] = useState<Node[]>(inititalValue);
+  const [slateValue, setSlateValue] = useState<Node[]>(defaultValue);
   const renderElement = React.useCallback(
     (props) => <RenderElement {...props} />,
     []
@@ -79,8 +84,13 @@ const InlineMathElement = ({
       </span>
 
       {isEditing ? (
-        <div className="absolute inline-flex">
-          <InputModal ref={mathEditableRef} defaultValue={mathText} label="Submit" />
+        <div className="absolute down-0 ">
+          <InputModal
+            ref={mathEditableRef}
+            defaultValue={mathText}
+            label="Submit"
+            onButtonClick={onSubmit}
+          />
         </div>
       ) : null}
 
@@ -92,13 +102,3 @@ const InlineMathElement = ({
 // --------------------------------------------------------------------------------------------
 // --------------------------------------------------------------------------------------------
 // --------------------------------------------------------------------------------------------
-const inititalValue: Node[] = [
-  {
-    type: "inline-math",
-    children: [
-      {
-        text: "\\frac{3}{4}",
-      },
-    ],
-  },
-];
