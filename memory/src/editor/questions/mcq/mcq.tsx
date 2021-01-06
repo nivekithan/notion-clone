@@ -10,10 +10,11 @@ export type MCQProps = {
   three: string;
   four: string;
   answer: "one" | "two" | "three" | "four";
+  
 };
 
 type FormValue = {
-  [index: string]: boolean;
+  question: string;
 };
 
 // -------------------------------------------------------------------
@@ -23,7 +24,9 @@ export const MCQ = (props: MCQProps) => {
   const { register, handleSubmit } = useForm();
 
   const onSubmit: SubmitHandler<FormValue> = (data) => {
-    console.log(data)
+    if (data.question === answer) return true;
+
+    return false;
   };
 
   return (
@@ -32,20 +35,44 @@ export const MCQ = (props: MCQProps) => {
 
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-y-4">
         <label>
-          <input type="radio" name="question" value={one} ref={register} className="mr-2" />
+          <input
+            type="radio"
+            name="question"
+            value="one"
+            ref={register}
+            className="mr-2"
+          />
           {one}
         </label>
         <label>
-          <input type="radio" name="question" value={two} ref={register} className="mr-2" />
+          <input
+            type="radio"
+            name="question"
+            value="two"
+            ref={register}
+            className="mr-2"
+          />
           {two}
         </label>
         <label>
-          <input type="radio" name="question" value={three} ref={register} className="mr-2" />
+          <input
+            type="radio"
+            name="question"
+            value="three"
+            ref={register}
+            className="mr-2"
+          />
           {three}
         </label>
         <label>
-          <input type="radio" name="question" value={four} ref={register} className="mr-2" />
-          {four}  
+          <input
+            type="radio"
+            name="question"
+            value="four"
+            ref={register}
+            className="mr-2"
+          />
+          {four}
         </label>
         <input type="submit" className="btn-blue" />
       </form>
