@@ -51,6 +51,10 @@ module.exports = {
         "400-px" : "400px",
          
       },
+
+      inset : {
+        "-outside" : "-10000000px"
+      }
     },
   },
   variants: {

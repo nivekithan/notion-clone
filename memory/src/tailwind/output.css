@@ -9963,6 +9963,13 @@ select {
   left: -100%;
 }
 
+.-inset-outside {
+  top: -10000000px;
+  right: -10000000px;
+  bottom: -10000000px;
+  left: -10000000px;
+}
+
 .inset-y-0 {
   top: 0px;
   bottom: 0px;
@@ -10931,6 +10938,16 @@ select {
 .-inset-x-full {
   right: -100%;
   left: -100%;
+}
+
+.-inset-y-outside {
+  top: -10000000px;
+  bottom: -10000000px;
+}
+
+.-inset-x-outside {
+  right: -10000000px;
+  left: -10000000px;
 }
 
 .top-0 {
@@ -12483,6 +12500,22 @@ select {
 
 .-left-full {
   left: -100%;
+}
+
+.-top-outside {
+  top: -10000000px;
+}
+
+.-right-outside {
+  right: -10000000px;
+}
+
+.-bottom-outside {
+  bottom: -10000000px;
+}
+
+.-left-outside {
+  left: -10000000px;
 }
 
 .resize-none {
@@ -27854,6 +27887,13 @@ select {
     left: -100%;
   }
 
+  .sm\:-inset-outside {
+    top: -10000000px;
+    right: -10000000px;
+    bottom: -10000000px;
+    left: -10000000px;
+  }
+
   .sm\:inset-y-0 {
     top: 0px;
     bottom: 0px;
@@ -28822,6 +28862,16 @@ select {
   .sm\:-inset-x-full {
     right: -100%;
     left: -100%;
+  }
+
+  .sm\:-inset-y-outside {
+    top: -10000000px;
+    bottom: -10000000px;
+  }
+
+  .sm\:-inset-x-outside {
+    right: -10000000px;
+    left: -10000000px;
   }
 
   .sm\:top-0 {
@@ -30374,6 +30424,22 @@ select {
 
   .sm\:-left-full {
     left: -100%;
+  }
+
+  .sm\:-top-outside {
+    top: -10000000px;
+  }
+
+  .sm\:-right-outside {
+    right: -10000000px;
+  }
+
+  .sm\:-bottom-outside {
+    bottom: -10000000px;
+  }
+
+  .sm\:-left-outside {
+    left: -10000000px;
   }
 
   .sm\:resize-none {
@@ -45702,6 +45768,13 @@ select {
     left: -100%;
   }
 
+  .md\:-inset-outside {
+    top: -10000000px;
+    right: -10000000px;
+    bottom: -10000000px;
+    left: -10000000px;
+  }
+
   .md\:inset-y-0 {
     top: 0px;
     bottom: 0px;
@@ -46670,6 +46743,16 @@ select {
   .md\:-inset-x-full {
     right: -100%;
     left: -100%;
+  }
+
+  .md\:-inset-y-outside {
+    top: -10000000px;
+    bottom: -10000000px;
+  }
+
+  .md\:-inset-x-outside {
+    right: -10000000px;
+    left: -10000000px;
   }
 
   .md\:top-0 {
@@ -48222,6 +48305,22 @@ select {
 
   .md\:-left-full {
     left: -100%;
+  }
+
+  .md\:-top-outside {
+    top: -10000000px;
+  }
+
+  .md\:-right-outside {
+    right: -10000000px;
+  }
+
+  .md\:-bottom-outside {
+    bottom: -10000000px;
+  }
+
+  .md\:-left-outside {
+    left: -10000000px;
   }
 
   .md\:resize-none {
@@ -63550,6 +63649,13 @@ select {
     left: -100%;
   }
 
+  .lg\:-inset-outside {
+    top: -10000000px;
+    right: -10000000px;
+    bottom: -10000000px;
+    left: -10000000px;
+  }
+
   .lg\:inset-y-0 {
     top: 0px;
     bottom: 0px;
@@ -64518,6 +64624,16 @@ select {
   .lg\:-inset-x-full {
     right: -100%;
     left: -100%;
+  }
+
+  .lg\:-inset-y-outside {
+    top: -10000000px;
+    bottom: -10000000px;
+  }
+
+  .lg\:-inset-x-outside {
+    right: -10000000px;
+    left: -10000000px;
   }
 
   .lg\:top-0 {
@@ -66070,6 +66186,22 @@ select {
 
   .lg\:-left-full {
     left: -100%;
+  }
+
+  .lg\:-top-outside {
+    top: -10000000px;
+  }
+
+  .lg\:-right-outside {
+    right: -10000000px;
+  }
+
+  .lg\:-bottom-outside {
+    bottom: -10000000px;
+  }
+
+  .lg\:-left-outside {
+    left: -10000000px;
   }
 
   .lg\:resize-none {
@@ -81398,6 +81530,13 @@ select {
     left: -100%;
   }
 
+  .xl\:-inset-outside {
+    top: -10000000px;
+    right: -10000000px;
+    bottom: -10000000px;
+    left: -10000000px;
+  }
+
   .xl\:inset-y-0 {
     top: 0px;
     bottom: 0px;
@@ -82366,6 +82505,16 @@ select {
   .xl\:-inset-x-full {
     right: -100%;
     left: -100%;
+  }
+
+  .xl\:-inset-y-outside {
+    top: -10000000px;
+    bottom: -10000000px;
+  }
+
+  .xl\:-inset-x-outside {
+    right: -10000000px;
+    left: -10000000px;
   }
 
   .xl\:top-0 {
@@ -83918,6 +84067,22 @@ select {
 
   .xl\:-left-full {
     left: -100%;
+  }
+
+  .xl\:-top-outside {
+    top: -10000000px;
+  }
+
+  .xl\:-right-outside {
+    right: -10000000px;
+  }
+
+  .xl\:-bottom-outside {
+    bottom: -10000000px;
+  }
+
+  .xl\:-left-outside {
+    left: -10000000px;
   }
 
   .xl\:resize-none {
@@ -99246,6 +99411,13 @@ select {
     left: -100%;
   }
 
+  .\32xl\:-inset-outside {
+    top: -10000000px;
+    right: -10000000px;
+    bottom: -10000000px;
+    left: -10000000px;
+  }
+
   .\32xl\:inset-y-0 {
     top: 0px;
     bottom: 0px;
@@ -100214,6 +100386,16 @@ select {
   .\32xl\:-inset-x-full {
     right: -100%;
     left: -100%;
+  }
+
+  .\32xl\:-inset-y-outside {
+    top: -10000000px;
+    bottom: -10000000px;
+  }
+
+  .\32xl\:-inset-x-outside {
+    right: -10000000px;
+    left: -10000000px;
   }
 
   .\32xl\:top-0 {
@@ -101766,6 +101948,22 @@ select {
 
   .\32xl\:-left-full {
     left: -100%;
+  }
+
+  .\32xl\:-top-outside {
+    top: -10000000px;
+  }
+
+  .\32xl\:-right-outside {
+    right: -10000000px;
+  }
+
+  .\32xl\:-bottom-outside {
+    bottom: -10000000px;
+  }
+
+  .\32xl\:-left-outside {
+    left: -10000000px;
   }
 
   .\32xl\:resize-none {

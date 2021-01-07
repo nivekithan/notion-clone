@@ -8,6 +8,7 @@ import {
   useSlate,
 } from "slate-react";
 import React, { Fragment, useState, useEffect } from "react";
+import {createPortal} from "react-dom"
 import { withMath } from "../plugins/withMath";
 import TeX from "@matejmazur/react-katex";
 import { InputModal } from "../inputModal";
@@ -28,6 +29,7 @@ export const InlineEditor = ({ defaultValue }: InlineEditorProps) => {
   return (
     <div>
       <Slate editor={editor} value={slateValue} onChange={setSlateValue}>
+        <HoverToolbar />
         <Editable renderElement={renderElement} />
       </Slate>
     </div>
@@ -187,8 +189,18 @@ const HoverToolbar = () => {
       rect.left + window.pageXOffset - el.offsetWidth / 2 + rect.width / 2
     }px`;
   });
+
+  return createPortal(
+    <div
+      ref={ref}
+      className="absolute w-20 h-20 opacity-0 bg-black-main-normal -top-outside -left-outside"
+    ></div>,
+    document.body
+  );
 };
 
 // --------------------------------------------------------------------------------------------
 // --------------------------------------------------------------------------------------------
 // --------------------------------------------------------------------------------------------
+
+

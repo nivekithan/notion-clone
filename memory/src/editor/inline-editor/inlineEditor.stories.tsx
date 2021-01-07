@@ -35,3 +35,17 @@ Block.args = {
     },
   ],
 };
+
+export const Text = Template.bind({});
+Text.args = {
+  defaultValue: [
+    {
+      type: "normal",
+      children: [
+        {
+          text: "Tadata",
+        },
+      ],
+    },
+  ],
+};
