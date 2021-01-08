@@ -1,4 +1,4 @@
-import { createEditor, Editor, Node, Range, Transforms } from "slate";
+import { createEditor, Editor, Element, Node, Range, Transforms } from "slate";
 import {
   Editable,
   withReact,
@@ -6,12 +6,14 @@ import {
   RenderElementProps,
   ReactEditor,
   useSlate,
+  RenderLeafProps,
 } from "slate-react";
-import React, { Fragment, useState, useEffect } from "react";
-import {createPortal} from "react-dom"
+import React, { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { withMath } from "../plugins/withMath";
 import TeX from "@matejmazur/react-katex";
 import { InputModal } from "../inputModal";
+import { CgMathPlus } from "react-icons/cg";
 // --------------------------------------------------------------------------------------------
 
 export type InlineEditorProps = {
@@ -26,11 +28,18 @@ export const InlineEditor = ({ defaultValue }: InlineEditorProps) => {
     (props) => <RenderElement {...props} />,
     []
   );
+  const renderLeaf = React.useCallback(
+    (props) => <RenderLeaf {...props} />,
+    []
+  );
+
+  console.log(slateValue);
+
   return (
-    <div>
+    <div className="inline-block bg-black-main-normal">
       <Slate editor={editor} value={slateValue} onChange={setSlateValue}>
         <HoverToolbar />
-        <Editable renderElement={renderElement} />
+        <Editable renderElement={renderElement} renderLeaf={renderLeaf} />
       </Slate>
     </div>
   );
@@ -45,15 +54,24 @@ const RenderElement = (props: RenderElementProps) => {
       return <div {...attributes}>{children}</div>;
     case "inline-math":
       return <InlineMathElement {...props} />;
-    case "block-math":
-      return <BlockMathElement {...props} />;
     default:
       return <div {...attributes}>{children}</div>;
   }
 };
+
+const RenderLeaf = (props: RenderLeafProps) => {
+  const { attributes, children, leaf } = props;
+
+  return (
+    <span {...attributes} className="text-white-white">
+      {children}
+    </span>
+  );
+};
+
 // --------------------------------------------------------------------------------------------
 
-const InlineMathElement = ({
+export const InlineMathElement = ({
   element,
   children,
   attributes,
@@ -83,7 +101,7 @@ const InlineMathElement = ({
 
   return (
     <span className="relative" contentEditable={false}>
-      <span onClick={onMathClick} {...attributes}>
+      <span onClick={onMathClick} {...attributes} className="text-white-white">
         <TeX math={mathText} />
         {children}
       </span>
@@ -99,61 +117,6 @@ const InlineMathElement = ({
         </div>
       ) : null}
     </span>
-  );
-};
-
-// --------------------------------------------------------------------------------------------
-
-const BlockMathElement = ({
-  element,
-  children,
-  attributes,
-}: RenderElementProps) => {
-  const [isEditing, setIsEditing] = useState<boolean>(false);
-  const mathEditableRef = React.useRef<HTMLDivElement>(null);
-  const editor = useSlate();
-  const mathText = Node.string(element);
-
-  const onMathClick = (e: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
-    e.preventDefault();
-    setIsEditing((s) => !s);
-  };
-
-  const onSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    e.preventDefault();
-    if (!mathEditableRef.current) return;
-
-    const text = mathEditableRef.current.innerText;
-    Transforms.insertText(editor, text, {
-      at: ReactEditor.findPath(editor, element),
-      voids: true,
-    });
-
-    setIsEditing(false);
-  };
-
-  return (
-    <div
-      {...attributes}
-      contentEditable={false}
-      className="relative"
-      id="math-block"
-    >
-      <div onClick={onMathClick}>
-        <TeX math={mathText} block />
-      </div>
-      {isEditing ? (
-        <div className="absolute mt-4 ml-32 top-4 " data-slate-editor="true">
-          <InputModal
-            ref={mathEditableRef}
-            defaultValue={mathText}
-            label="Submit"
-            onButtonClick={onSubmit}
-          />
-        </div>
-      ) : null}
-      {children}
-    </div>
   );
 };
 
@@ -193,14 +156,64 @@ const HoverToolbar = () => {
   return createPortal(
     <div
       ref={ref}
-      className="absolute w-20 h-20 opacity-0 bg-black-main-normal -top-outside -left-outside"
-    ></div>,
+      className="absolute flex items-center justify-center px-4 py-4 opacity-0 bg-black-main-normal -top-outside -left-outside"
+    >
+      <Icon>
+        <CgMathPlus color="#fff" />
+      </Icon>
+    </div>,
     document.body
   );
 };
 
 // --------------------------------------------------------------------------------------------
+
+const Icon = ({ children }: { children: React.ReactNode }) => {
+  const editor = useSlate();
+
+  const onIconClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.preventDefault();
+    toggleMath(editor);
+  };
+
+  return <button onClick={onIconClick}>{children}</button>;
+};
+
+const isMathActive = (editor: Editor) => {
+  const [match] = Editor.nodes(editor, {
+    match: (n) =>
+      !Editor.isEditor(n) && Element.isElement(n) && n.type === "inline-math",
+  });
+
+  return !!match;
+};
+
+const toggleMath = (editor: Editor) => {
+  const isActive = isMathActive(editor);
+
+  if (isActive) {
+    Transforms.unwrapNodes(editor, {
+      match: (n) =>
+        !Editor.isEditor(n) && Element.isElement(n) && n.type === "inline-math",
+    });
+  } else {
+    const { selection } = editor;
+    const isConfused = selection && Range.isCollapsed(selection);
+
+    const inlineMath = {
+      type: "inline-math",
+      children: [],
+    };
+
+    if (isConfused) {
+      Transforms.insertNodes(editor, inlineMath);
+    } else {
+      Transforms.wrapNodes(editor, inlineMath, { split: true });
+      Transforms.collapse(editor, { edge: "end" });
+    }
+  }
+};
+
 // --------------------------------------------------------------------------------------------
 // --------------------------------------------------------------------------------------------
-
-
+// --------------------------------------------------------------------------------------------

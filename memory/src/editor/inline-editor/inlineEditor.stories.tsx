@@ -1,5 +1,6 @@
 import { Meta, Story } from "@storybook/react/types-6-0";
 import { InlineEditor, InlineEditorProps } from "./inlineEditor";
+import { serialiseInlineEditor } from "./serializer";
 
 export default {
   title: "Editor/Inline Editor",
@@ -48,4 +49,31 @@ Text.args = {
       ],
     },
   ],
+};
+
+export const Serialiser: Story<InlineEditorProps> = (args) => {
+  return (
+    <div className="bg-black-main-normal">
+      {serialiseInlineEditor({
+        children: [
+          {
+            type: "normal",
+            children: [
+              {
+                text: "thats why I like you",
+              },
+              {
+                type: "inline-math",
+                children: [
+                  {
+                    text: "\\frac{3}{4}",
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      })}
+    </div>
+  );
 };

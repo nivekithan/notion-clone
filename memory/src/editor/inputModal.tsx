@@ -18,7 +18,7 @@ export const InputModal = React.forwardRef<HTMLDivElement, InputModalProps>(
           <div
             contentEditable
             suppressContentEditableWarning
-            className="flex-1 mr-2 overflow-auto outline-none text-white-white"
+            className="flex-1 mr-2 break-all outline-none text-white-white"
             ref={ref}
           >
             {defaultValue}
