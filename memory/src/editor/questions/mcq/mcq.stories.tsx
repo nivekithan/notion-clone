@@ -1,28 +1,78 @@
-import {Meta, Story} from "@storybook/react/types-6-0";
-import {MCQProps, MCQ} from "./mcq";
-
+import { Meta, Story } from "@storybook/react/types-6-0";
+import { MCQProps, MCQ } from "./mcq";
 
 export default {
-    title : "Editor/Questions/MCQ",
-    component : MCQ
-} as Meta
+  title: "Editor/Questions/MCQ",
+  component: MCQ,
+} as Meta;
 
-
-const Template : Story<MCQProps> = args => {
-    return (
-        <div className="grid w-full h-screen bg-black-main-normal place-items-center">
-            <MCQ {...args} />
-        </div>
-    )
-}
+const Template: Story<MCQProps> = (args) => {
+  return (
+    <div className="grid w-full h-screen bg-black-main-normal place-items-center">
+      <MCQ {...args} />
+    </div>
+  );
+};
 
 export const Primary = Template.bind({});
 Primary.args = {
-    question : "This is the question",
-     answer : "one",
-     four : "Something is something",
-     one : "njkfkaf",
-     three : "threee",
-     two : '23465432'
-}
-
+  question: [
+    {
+      type: "normal",
+      children: [
+        {
+          text: "This is a question",
+        },
+      ],
+    },
+  ],
+  answer: "one",
+  four: [
+    {
+      type: "inline-math",
+      children: [
+        {
+          text: "\\frac{4}{3}",
+        },
+      ],
+    },
+  ],
+  one: [
+    {
+      type: "normal",
+      children: [
+        {
+          text: "\\frac{3}{4}",
+        },
+      ],
+    },
+  ],
+  three: [
+    {
+      type: "normal",
+      children: [
+        {
+          text: "Haha This is fun",
+        },
+        {
+          type: "inline-math",
+          children: [
+            {
+              text: "\\sqrt{456}",
+            },
+          ],
+        },
+      ],
+    },
+  ],
+  two: [
+    {
+      type: "normal",
+      children: [
+        {
+          text: "\\frac{3}{4}",
+        },
+      ],
+    },
+  ],
+};

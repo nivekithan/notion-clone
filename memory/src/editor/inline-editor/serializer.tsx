@@ -1,13 +1,18 @@
 import { Text, Node } from "slate"
 import TeX from "@matejmazur/react-katex"
 
-export const serialiseInlineEditor = (node : Node) => {
+type SerialiseInlineEditorProps = {
+    node : Node
+}
+
+
+export const SerialiseInlineEditor = ({node} : SerialiseInlineEditorProps) => {
     if (Text.isText(node)) {
         return <span className="text-white-white" >{node.text}</span>
     }
     
     
-    const children = node.children.map(n => serialiseInlineEditor(n))
+    const children = node.children.map((n, i) => <SerialiseInlineEditor node={n} key={i} />)
 
     switch(node.type) {
         case "normal" :

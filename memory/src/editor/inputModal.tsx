@@ -1,4 +1,3 @@
-import ReactDOM from "react-dom";
 import React from "react";
 
 // -----------------------------------------------------------------
@@ -13,7 +12,7 @@ export type InputModalProps = {
 export const InputModal = React.forwardRef<HTMLDivElement, InputModalProps>(
   ({ defaultValue, label, onButtonClick }, ref) => {
     return (
-      <div className="flex flex-col overflow-hidden bg-black-input-normal shadow-input w-400-px rounded-3-px">
+      <div className="flex flex-col overflow-hidden  bg-black-input-normal shadow-input w-400-px rounded-3-px">
         <div className="flex items-center w-full px-2 py-10-px">
           <div
             contentEditable

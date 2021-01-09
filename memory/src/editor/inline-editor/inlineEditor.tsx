@@ -22,7 +22,7 @@ export type InlineEditorProps = {
 
 // --------------------------------------------------------------------------------------------
 export const InlineEditor = ({ defaultValue }: InlineEditorProps) => {
-  const editor = React.useMemo(() => withReact(withMath(createEditor())), []);
+  const editor = React.useMemo(() => withMath(withReact(createEditor())), []);
   const [slateValue, setSlateValue] = useState<Node[]>(defaultValue);
   const renderElement = React.useCallback(
     (props) => <RenderElement {...props} />,
@@ -33,10 +33,10 @@ export const InlineEditor = ({ defaultValue }: InlineEditorProps) => {
     []
   );
 
-  console.log(slateValue);
+  console.log({operation : editor.operations, children : editor.children});
 
   return (
-    <div className="inline-block bg-black-main-normal">
+    <div className=" bg-black-main-normal">
       <Slate editor={editor} value={slateValue} onChange={setSlateValue}>
         <HoverToolbar />
         <Editable renderElement={renderElement} renderLeaf={renderLeaf} />
@@ -60,7 +60,7 @@ const RenderElement = (props: RenderElementProps) => {
 };
 
 const RenderLeaf = (props: RenderLeafProps) => {
-  const { attributes, children, leaf } = props;
+  const { attributes, children } = props;
 
   return (
     <span {...attributes} className="text-white-white">
@@ -107,7 +107,7 @@ export const InlineMathElement = ({
       </span>
 
       {isEditing ? (
-        <div className="absolute mt-4 top-4" data-slate-editor>
+        <div className="absolute z-10 opacity-100 t-4 r top-4" data-slate-editor>
           <InputModal
             ref={mathEditableRef}
             defaultValue={mathText}
