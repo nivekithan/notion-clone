@@ -33,8 +33,11 @@ export const InlineEditor = ({ defaultValue }: InlineEditorProps) => {
     []
   );
 
-  console.log({operation : editor.operations, children : editor.children});
-
+  useEffect(() => {
+    for (let entry of Node.children(editor, [])) {
+      editor.normalizeNode(entry)
+    }
+  }, [])
   return (
     <div className=" bg-black-main-normal">
       <Slate editor={editor} value={slateValue} onChange={setSlateValue}>
@@ -99,9 +102,11 @@ export const InlineMathElement = ({
     setIsEditing(false);
   };
 
+  
+  
   return (
-    <span className="relative" contentEditable={false}>
-      <span onClick={onMathClick} {...attributes} className="text-white-white">
+    <span className="relative px-1" contentEditable={false}>
+      <span onClick={onMathClick} {...attributes} className="text-white-white ">
         <TeX math={mathText} />
         {children}
       </span>

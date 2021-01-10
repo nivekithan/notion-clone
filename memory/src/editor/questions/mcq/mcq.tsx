@@ -1,4 +1,9 @@
-import { SubmitHandler, useForm, RegisterOptions } from "react-hook-form";
+import {
+  SubmitHandler,
+  useForm,
+  RegisterOptions,
+  UseFormMethods,
+} from "react-hook-form";
 import { CheckButton } from "../../../components/button/checkButton";
 import React, { useState } from "react";
 import { Node } from "slate";
@@ -13,6 +18,8 @@ export type MCQProps = {
   three: Node[];
   four: Node[];
   answer: "one" | "two" | "three" | "four";
+  formMethod: UseFormMethods<Record<string, any>>;
+  name: string;
 };
 
 type FormValue = {
@@ -22,19 +29,12 @@ type FormValue = {
 // -------------------------------------------------------------------
 
 export const MCQ = (props: MCQProps) => {
-  const { question, one, two, three, four, answer } = props;
-  const { register, handleSubmit, watch, setValue } = useForm();
+  const { question, one, two, three, four, answer, name } = props;
+  const { register, watch, setValue } = props.formMethod;
   const [isEditable, setIsEditable] = useState<boolean>(true);
-  const name = "question";
   const watchQuestion = watch(name);
 
-  const onSubmit: SubmitHandler<FormValue> = (data) => {
-    if (data.question === answer) return true;
-
-    return false;
-  };
-
-  const onClick = (
+  const onCheckClick = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
     value: "one" | "two" | "three" | "four"
   ) => {
@@ -42,17 +42,32 @@ export const MCQ = (props: MCQProps) => {
     setValue("question", value, { shouldDirty: true });
   };
 
+  const onButtonClick = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    e.preventDefault();
+    setIsEditable((s) => !s);
+  };
+
   return (
     <div className="flex flex-col text-white-white gap-y-12">
-      {isEditable ? (
-        <InlineEditor defaultValue={question} />
-      ) : (
-        <SerialiseInlineEditor node={{ children: question }} />
-      )}
-
-      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-y-4">
+      <div className="flex">
+        {isEditable ? (
+          <span>
+            <InlineEditor defaultValue={question} />
+          </span>
+        ) : (
+          <span>
+            <SerialiseInlineEditor node={{ children: question }} />
+          </span>
+        )}
+        <button className="btn-blue" onClick={onButtonClick}>
+          {isEditable ? "Save" : "Edit"}
+        </button>
+      </div>
+      <div>
         <SingleOption
-          onClick={onClick}
+          onClick={onCheckClick}
           name={name}
           value={"one"}
           answer={one}
@@ -61,7 +76,7 @@ export const MCQ = (props: MCQProps) => {
           isEditable={isEditable}
         />
         <SingleOption
-          onClick={onClick}
+          onClick={onCheckClick}
           name={name}
           value={"two"}
           answer={two}
@@ -70,7 +85,7 @@ export const MCQ = (props: MCQProps) => {
           isEditable={isEditable}
         />
         <SingleOption
-          onClick={onClick}
+          onClick={onCheckClick}
           name={name}
           value={"three"}
           answer={three}
@@ -79,7 +94,7 @@ export const MCQ = (props: MCQProps) => {
           isEditable={isEditable}
         />
         <SingleOption
-          onClick={onClick}
+          onClick={onCheckClick}
           name={name}
           value={"four"}
           answer={four}
@@ -87,9 +102,7 @@ export const MCQ = (props: MCQProps) => {
           watchQuestion={watchQuestion}
           isEditable={isEditable}
         />
-
-        <input type="submit" className="btn-blue" />
-      </form>
+      </div>
     </div>
   );
 };

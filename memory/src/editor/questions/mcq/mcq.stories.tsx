@@ -1,15 +1,21 @@
 import { Meta, Story } from "@storybook/react/types-6-0";
 import { MCQProps, MCQ } from "./mcq";
+import { useForm } from "react-hook-form";
 
 export default {
   title: "Editor/Questions/MCQ",
   component: MCQ,
 } as Meta;
 
+
+
 const Template: Story<MCQProps> = (args) => {
+
+  const methods = useForm()
+  
   return (
     <div className="grid w-full h-screen bg-black-main-normal place-items-center">
-      <MCQ {...args} />
+      <MCQ {...args} formMethod={methods}  />
     </div>
   );
 };
@@ -75,4 +81,5 @@ Primary.args = {
       ],
     },
   ],
+  name: "question",
 };
