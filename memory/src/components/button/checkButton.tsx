@@ -2,7 +2,7 @@ import { MdCheck, MdCheckBoxOutlineBlank } from "react-icons/md";
 
 export type CheckButtonProps = {
   checked: boolean;
-  onClick : (e : React.MouseEvent<HTMLButtonElement, MouseEvent>,) => void
+  onClick : (e : React.MouseEvent<HTMLButtonElement, MouseEvent>,) => void,
 };
 
 export const CheckButton = ({ checked, onClick }: CheckButtonProps) => {

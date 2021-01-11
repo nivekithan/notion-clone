@@ -33,13 +33,24 @@ export const InlineEditor = ({ defaultValue }: InlineEditorProps) => {
     []
   );
 
+  // Will normalize the slate only when state is initialsied with default value
+  // When the slate updates the slate itself will normalize by defualt no need
+  // to specify it.
   useEffect(() => {
     for (let entry of Node.children(editor, [])) {
-      editor.normalizeNode(entry)
+      editor.normalizeNode(entry);
     }
-  }, [])
+  }, [editor]);
+
+  // Will save the slateValue to database when the component gets unmounted
+  useEffect(() => {
+    return () => {
+      console.log(slateValue);
+    };
+  }, [slateValue]);
+
   return (
-    <div className=" bg-black-main-normal">
+    <div>
       <Slate editor={editor} value={slateValue} onChange={setSlateValue}>
         <HoverToolbar />
         <Editable renderElement={renderElement} renderLeaf={renderLeaf} />
@@ -102,8 +113,6 @@ export const InlineMathElement = ({
     setIsEditing(false);
   };
 
-  
-  
   return (
     <span className="relative px-1" contentEditable={false}>
       <span onClick={onMathClick} {...attributes} className="text-white-white ">
@@ -112,7 +121,10 @@ export const InlineMathElement = ({
       </span>
 
       {isEditing ? (
-        <div className="absolute z-10 opacity-100 t-4 r top-4" data-slate-editor>
+        <div
+          className="absolute z-10 opacity-100 t-4 r top-4"
+          data-slate-editor
+        >
           <InputModal
             ref={mathEditableRef}
             defaultValue={mathText}

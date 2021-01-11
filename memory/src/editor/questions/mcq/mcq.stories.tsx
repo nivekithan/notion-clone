@@ -7,15 +7,14 @@ export default {
   component: MCQ,
 } as Meta;
 
-
-
 const Template: Story<MCQProps> = (args) => {
+  const methods = useForm();
 
-  const methods = useForm()
-  
   return (
-    <div className="grid w-full h-screen bg-black-main-normal place-items-center">
-      <MCQ {...args} formMethod={methods}  />
+    <div className="grid w-full h-screen bg-black-main-normal place-items-center ">
+      <div className="w-400-px bg-black-sidebar-normal max-w-400-px">
+        <MCQ {...args} formMethod={methods} />
+      </div>
     </div>
   );
 };

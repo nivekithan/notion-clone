@@ -1,9 +1,4 @@
-import {
-  SubmitHandler,
-  useForm,
-  RegisterOptions,
-  UseFormMethods,
-} from "react-hook-form";
+import { get, RegisterOptions, UseFormMethods } from "react-hook-form";
 import { CheckButton } from "../../../components/button/checkButton";
 import React, { useState } from "react";
 import { Node } from "slate";
@@ -22,15 +17,12 @@ export type MCQProps = {
   name: string;
 };
 
-type FormValue = {
-  question: string;
-};
-
 // -------------------------------------------------------------------
 
 export const MCQ = (props: MCQProps) => {
-  const { question, one, two, three, four, answer, name } = props;
-  const { register, watch, setValue } = props.formMethod;
+  const { question, one, two, three, four, name } = props;
+  const { register, watch, setValue, getValues } = props.formMethod;
+
   const [isEditable, setIsEditable] = useState<boolean>(true);
   const watchQuestion = watch(name);
 
@@ -39,33 +31,34 @@ export const MCQ = (props: MCQProps) => {
     value: "one" | "two" | "three" | "four"
   ) => {
     e.preventDefault();
-    setValue("question", value, { shouldDirty: true });
+    setValue(name, value, { shouldDirty: true });
   };
 
   const onButtonClick = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
     e.preventDefault();
+    if (isEditable) {
+      console.log(getValues(name))
+    }
     setIsEditable((s) => !s);
   };
 
   return (
     <div className="flex flex-col text-white-white gap-y-12">
       <div className="flex">
-        {isEditable ? (
-          <span>
-            <InlineEditor defaultValue={question} />
-          </span>
-        ) : (
-          <span>
+        <span className="flex-1 break-all">
+          {isEditable ? (
+            <InlineEditor defaultValue={question}  />
+          ) : (
             <SerialiseInlineEditor node={{ children: question }} />
-          </span>
-        )}
-        <button className="btn-blue" onClick={onButtonClick}>
+          )}
+        </span>
+        <button className="self-start btn-blue" onClick={onButtonClick}>
           {isEditable ? "Save" : "Edit"}
         </button>
       </div>
-      <div>
+      <div className="flex flex-col gap-y-3">
         <SingleOption
           onClick={onCheckClick}
           name={name}
@@ -121,10 +114,14 @@ type SingleOptionProps = {
 };
 
 const SingleOption = (props: SingleOptionProps) => {
+
+  
+
+
   return (
     <div className="flex flex-row gap-x-2">
       <CheckButton
-        checked={!!(props.watchQuestion === props.value)}
+        checked={ !!(props.watchQuestion === props.value)}
         onClick={(e) => props.onClick(e, props.value)}
       />
       <input
@@ -137,7 +134,9 @@ const SingleOption = (props: SingleOptionProps) => {
       />
 
       {props.isEditable ? (
-        <InlineEditor defaultValue={props.answer} />
+        <InlineEditor
+          defaultValue={props.answer}
+        />
       ) : (
         <label htmlFor={props.value} className="cursor-pointer">
           <SerialiseInlineEditor node={{ children: props.answer }} />

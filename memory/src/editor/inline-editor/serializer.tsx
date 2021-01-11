@@ -18,7 +18,7 @@ export const SerialiseInlineEditor = ({node} : SerialiseInlineEditorProps) => {
         case "normal" :
             return <div>{children}</div>
         case "inline-math":
-            return <TeX math={Node.string(node)} className="text-white-white" />
+            return <TeX math={Node.string(node)} className="px-1 text-white-white" />
         default:
             return <div>{children}</div>
     }
