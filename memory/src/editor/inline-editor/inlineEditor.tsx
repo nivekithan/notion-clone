@@ -33,8 +33,8 @@ export const InlineEditor = ({ defaultValue }: InlineEditorProps) => {
     []
   );
 
-  // Will normalize the slate only when state is initialsied with default value
-  // When the slate updates the slate itself will normalize by defualt no need
+  // Will normalize the slate only when state is initialsied with default value.
+  // When the slate updates, the slate itself will normalize by defualt, so no need
   // to specify it.
   useEffect(() => {
     for (let entry of Node.children(editor, [])) {

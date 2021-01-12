@@ -1,22 +1,33 @@
 import React, { useState } from "react";
 import { RenderElementProps } from "slate-react";
-
+import { RenderMCQ } from "../questions";
 // --------------------------------------------------------------
 import { BsPlus, BsGridFill } from "react-icons/bs";
-
 // --------------------------------------------------------------
-export const RenderElement = (props: RenderElementProps) => {
+import { SlateRenderElementProps } from "/home/nivekithan/work/memory/memory/src/type";
+// --------------------------------------------------------------
+export const RenderElement = (props: SlateRenderElementProps<any>) => {
   switch (props.element.type) {
     case "normal":
       return (
         <CreateMenu>
-          <div {...props.attributes}>{props.children}</div>
+          <div {...props.attributes} className="mt-4">
+            {props.children}
+          </div>
+        </CreateMenu>
+      );
+    case "mcq":
+      return (
+        <CreateMenu>
+          <RenderMCQ {...props} />
         </CreateMenu>
       );
     default:
       return (
         <CreateMenu>
-          <div {...props.attributes}>{props.children}</div>
+          <div {...props.attributes} className="mt-4">
+            {props.children}
+          </div>
         </CreateMenu>
       );
   }
@@ -44,7 +55,7 @@ const CreateMenu = ({ children }: CreateMenuProps) => {
 
   if (isMenuShowing) {
     return (
-      <div onMouseOut={onMouseOutside} className="relative">
+      <div onMouseLeave={onMouseOutside} className="relative">
         {children}
 
         <div className="absolute top-0 flex pr-10 -left-10">

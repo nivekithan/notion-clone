@@ -1,22 +1,38 @@
-import { Editor, Path, Node, Element } from "slate";
+import { Editor, Node } from "slate";
 import { ReactEditor } from "slate-react";
 
+// --------------------------------------------------
 export const CustomEditor = {
   ...ReactEditor,
 
-  isInlineMathLast(node: Element) {
-    const { children } = node;
-    
-    if (children[children.length - 1].type === "inline-math") return true;
+  insertEditor(editor: Editor) {
+    const defualtNode = [
+      {
+        type: "normal",
+        children: [
+          {
+            text: "",
+          },
+        ],
+      },
+    ];
 
-    return false;
-  },
-
-  isInlineMathFirst(node: Element) {
-    const { children } = node;
-
-    if (children[0].type === "inline-math") return true;
-
-    return false;
+    const NewMCQ : Node = {
+      type : "mcq",
+      data : {
+        answer : "one",
+        isEditable : true,
+        one : defualtNode,
+        two : defualtNode,
+        three : defualtNode,
+        four : defualtNode,
+        question : defualtNode
+      },
+      children : [
+        {
+          text : ""
+        }
+      ]
+    }
   },
 };
