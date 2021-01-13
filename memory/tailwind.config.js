@@ -11,9 +11,9 @@ module.exports = {
         main: {
           normal: "rgb(47,52,55)",
         },
-        input : {
-          normal : "rgb(63, 68, 71)"
-        }
+        input: {
+          normal: "rgb(63, 68, 71)",
+        },
       },
       white: {
         "100": "rgba(255, 255, 255, 0.6)",
@@ -28,8 +28,8 @@ module.exports = {
     boxShadow: {
       button:
         "rgba(15, 15, 15, 0.2) 0px 0px 0px 1px inset, rgba(15, 15, 15, 0.1) 0px 1px 2px",
-      input :
-      "rgba(15, 15, 15, 0.1) 0px 0px 0px 1px, rgba(15, 15, 15, 0.2) 0px 3px 6px, rgba(15, 15, 15, 0.4) 0px 9px 24px"
+      input:
+        "rgba(15, 15, 15, 0.1) 0px 0px 0px 1px, rgba(15, 15, 15, 0.2) 0px 3px 6px, rgba(15, 15, 15, 0.4) 0px 9px 24px",
     },
     maxWidth: {
       "260": "260px",
@@ -40,27 +40,37 @@ module.exports = {
       full: "9999px",
     },
 
+    fontSize: {
+      small : "12px",
+      normal: "14px",
+    },
+
+    minHeight: {
+      menu: "45px",
+    },
+
+    minWidth: {
+      menu: "45px",
+    },
 
     extend: {
       spacing: {
         "14-px": "14px",
         "2-px": "2px",
-        "3-px" : "3px",
+        "3-px": "3px",
+        "1-px" : "1px",
         "260-px": "260px",
-        "10-px" : "10px",
-        "400-px" : "400px",
-         
+        "10-px": "10px",
+        "400-px": "400px",
       },
 
-      inset : {
-        "-outside" : "-10000000px"
-      }
+      inset: {
+        "-outside": "-10000000px",
+      },
     },
   },
   variants: {
     extend: {},
   },
-  plugins: [
-    require('@tailwindcss/forms'),
-  ],
+  plugins: [require("@tailwindcss/forms")],
 };

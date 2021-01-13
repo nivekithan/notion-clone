@@ -1,10 +1,9 @@
 import React, { useState } from "react";
-import { RenderElementProps } from "slate-react";
 import { RenderMCQ } from "../questions";
 // --------------------------------------------------------------
 import { BsPlus, BsGridFill } from "react-icons/bs";
 // --------------------------------------------------------------
-import { SlateRenderElementProps } from "/home/nivekithan/work/memory/memory/src/type";
+import { SlateRenderElementProps } from "type";
 // --------------------------------------------------------------
 export const RenderElement = (props: SlateRenderElementProps<any>) => {
   switch (props.element.type) {
