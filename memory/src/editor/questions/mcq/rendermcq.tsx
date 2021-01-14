@@ -1,4 +1,4 @@
-import { MCQ } from "./";
+import { MCQ } from ".";
 import { RenderElementProps } from "slate-react";
 import { SlateRenderElementProps } from "/home/nivekithan/work/memory/memory/src/type";
 import { Node } from "slate";

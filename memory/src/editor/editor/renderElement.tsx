@@ -3,7 +3,7 @@ import { RenderMCQ } from "../questions";
 // --------------------------------------------------------------
 import { BsPlus, BsGridFill } from "react-icons/bs";
 // --------------------------------------------------------------
-import { SlateRenderElementProps } from "type";
+import { SlateRenderElementProps } from "src/type";
 // --------------------------------------------------------------
 export const RenderElement = (props: SlateRenderElementProps<any>) => {
   switch (props.element.type) {

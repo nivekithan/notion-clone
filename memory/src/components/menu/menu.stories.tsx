@@ -1,17 +1,16 @@
 import { Meta, Story } from "@storybook/react/types-6-0";
-import { SingleOption, SingleOptionProps } from "./menu";
+import { Menu, MenuProps } from "./menu";
 // -------------------------------------------------------------------
 
-// -------------------------------------------------------------------
 export default {
   title: "Editor/Menu",
-  component: SingleOption,
+  component: Menu,
 } as Meta;
 
-const Template: Story<SingleOptionProps> = (args) => <SingleOption {...args} />;
+const Template: Story<MenuProps> = (args) => <Menu {...args} />;
 
-export const Single = Template.bind({});
-Single.args = {
-  name: "This some really long name",
-  label: "This is a label",
-};
+export const Math = Template.bind({});
+Math.args = { queryString: "math", maxOption: 4 };
+
+export const Heading = Template.bind({});
+Heading.args = { queryString: "h", maxOption: 4 };
