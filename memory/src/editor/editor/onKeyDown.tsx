@@ -13,6 +13,9 @@ export const onKeyDown = (
     }>
   >
 ) => {
+
+  
+
   if (!menuState) {
     if (!MENU_STATE_FALSE.includes(e.key)) return;
 
@@ -32,7 +35,8 @@ export const onKeyDown = (
           menuQuery: "",
           menuShould: false,
         };
-      });
+      }
+      );
 
       if (e.key === "Enter") {
         e.preventDefault();
