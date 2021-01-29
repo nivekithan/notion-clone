@@ -1,9 +1,0 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-@layer components {
-  .btn-blue {
-    @apply grid px-3 font-medium text-normal rounded-3-px h-7 bg-blue-primary hover:bg-blue-secondary place-items-center text-white-white;
-  }
-}
