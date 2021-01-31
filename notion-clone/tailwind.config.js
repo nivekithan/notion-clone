@@ -16,9 +16,21 @@ module.exports = {
       screen: "100vh",
       cent10: "10%",
       cent20: "20%",
+      1 : "0.25rem",
+      4 : "1rem",
+      6 : "1.5rem",
+      8 : "2rem",
+      px1 : "1px",
+  
     },
     maxWidth: {
       sidebar: "16.25rem",
+    },
+    fontSize : {
+      normal : ["1rem", "1.5rem"],
+      heading1 : ["1.825rem", "2.5rem"],
+      heading2 : ["1.5rem", "1.875rem"],
+      heading3 : ["1.25rem", "1.625rem"]
     },
     extend: {},
   },
