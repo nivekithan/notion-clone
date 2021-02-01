@@ -1,5 +1,15 @@
 import { RenderElementProps } from "slate-react";
 import React from "react";
+import { FaCircle, FaLongArrowAltRight } from "react-icons/fa";
+
+type iconsType = {
+  [index: string]: JSX.Element;
+};
+
+const icons: iconsType = {
+  bullet: <FaCircle size={"0.5rem"} />,
+  arrow: <FaLongArrowAltRight />,
+};
 
 export const RenderElement = ({
   element,
@@ -31,12 +41,18 @@ export const RenderElement = ({
           {children}
         </h3>
       );
-    case "list-item":
-      return <li {...attributes}>{children}</li>;
-    case "number-list":
-        return <ol {...attributes}>{children}</ol>
-    case "bullet-list":
-        return <ul {...attributes}>{children}</ul>
+    case "unordered-list":
+      return (
+        <ListItem slate={{ element, attributes, children }}>
+          <span>{icons[element.icon as string]}</span>
+        </ListItem>
+      );
+    case "numbered-list":
+      return (
+        <ListItem slate={{ element, attributes, children }}>
+          <span>{element.number as number}.</span>
+        </ListItem>
+      );
     default:
       return (
         <div {...attributes} className="text-normal">
@@ -44,4 +60,29 @@ export const RenderElement = ({
         </div>
       );
   }
+};
+/**
+ 
+ListItem  extracts components common to both numberes-list and 
+unordered-list and it requires a child element which will render
+label of the list. 
+
+Numbers in numbered-list and bullet in unordered-list are examples of label in list
+
+**/
+const ListItem = ({
+  children,
+  slate,
+}: {
+  children: React.ReactNode;
+  slate: RenderElementProps;
+}) => {
+  return (
+    <div {...slate.attributes} className="flex items-center gap-x-4">
+      <div className="flex justify-end w-6" contentEditable={false}>
+        {children}
+      </div>
+      <div className="text-normal">{slate.children}</div>
+    </div>
+  );
 };

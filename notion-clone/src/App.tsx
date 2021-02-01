@@ -18,77 +18,39 @@ export const App = () => {
 
 const defaultValue: Node[] = [
   {
-    type: "normal",
-    children: [
+    type : "numbered-list",
+    number : 3,
+    children : [
       {
-        text: "Hello this is new",
-      },
-    ],
+        text : "This is numbered list"
+      }
+    ]
   },
   {
-    type: "heading-1",
-    children: [
+    type : "numbered-list",
+    number : 3333,
+    children : [
       {
-        text: "Heading 1",
-      },
-    ],
+        text : "This is numbered list"
+      }
+    ]
   },
   {
-    type: "heading-2",
-    children: [
+    type : "unordered-list",
+    icon : "bullet",
+    children : [
       {
-        text: "Heading 2",
-      },
-    ],
+        text : "This is numbered list"
+      }
+    ]
   },
   {
-    type: "heading-3",
-    children: [
+    type : "unordered-list",
+    icon : "arrow",
+    children : [
       {
-        text: "Heading 3",
-      },
-    ],
+        text : "This is numbered list"
+      }
+    ]
   },
-  {
-    type: "number-list",
-    children: [
-      {
-        type: "list-item",
-        children: [
-          {
-            text: "This is first",
-          },
-        ],
-      },
-      {
-        type: "list-item",
-        children: [
-          {
-            text: "This is second",
-          },
-        ],
-      },
-    ],
-  },
-  {
-    type: "bullet-list",
-    children: [
-      {
-        type: "list-item",
-        children: [
-          {
-            text: "This is first",
-          },
-        ],
-      },
-      {
-        type: "list-item",
-        children: [
-          {
-            text: "This is second",
-          },
-        ],
-      },
-    ],
-  }
 ];
