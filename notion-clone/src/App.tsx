@@ -26,31 +26,5 @@ const defaultValue: Node[] = [
       }
     ]
   },
-  {
-    type : "numbered-list",
-    number : 3333,
-    children : [
-      {
-        text : "This is numbered list"
-      }
-    ]
-  },
-  {
-    type : "unordered-list",
-    icon : "bullet",
-    children : [
-      {
-        text : "This is numbered list"
-      }
-    ]
-  },
-  {
-    type : "unordered-list",
-    icon : "arrow",
-    children : [
-      {
-        text : "This is numbered list"
-      }
-    ]
-  },
+
 ];

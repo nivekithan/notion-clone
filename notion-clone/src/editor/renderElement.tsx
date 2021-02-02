@@ -49,9 +49,9 @@ export const RenderElement = ({
       );
     case "numbered-list":
       return (
-        <ListItem slate={{ element, attributes, children }}>
-          <span>{element.number as number}.</span>
-        </ListItem>
+          <ListItem slate={{ element, attributes, children }}>
+            <span>{element.number as number}.</span>
+          </ListItem>
       );
     default:
       return (
@@ -78,7 +78,7 @@ const ListItem = ({
   slate: RenderElementProps;
 }) => {
   return (
-    <div {...slate.attributes} className="flex items-center gap-x-4">
+    <div {...slate.attributes} className="flex items-center gap-x-4 ">
       <div className="flex justify-end w-6" contentEditable={false}>
         {children}
       </div>
