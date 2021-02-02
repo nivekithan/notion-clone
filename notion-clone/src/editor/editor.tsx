@@ -1,50 +1,27 @@
 import React, { useState } from "react";
-import { createEditor, Node, Path, Range, Transforms } from "slate";
-import { Editable, Slate, withReact } from "slate-react";
+import { FaNeos } from "react-icons/fa";
+import { createEditor, Node, Editor as NormalEditor } from "slate";
+import { Editable, ReactEditor, Slate, withReact } from "slate-react";
 import { RenderElement } from "./renderElement";
-// import {useGetNodeSelected} from "./hooks"
+import { withIds } from "./plugins";
+import { SlateEditor } from "./slateEditor";
 
 export const Editor = ({ defaultValue }: { defaultValue: Node[] }) => {
-  const editor = React.useMemo(() => withReact(createEditor()), []);
+  const editor = React.useMemo(() => withIds(withReact(createEditor())), []);
   const [slateValue, setValue] = useState(defaultValue);
   const renderElement = React.useCallback(
     (props) => <RenderElement {...props} />,
     []
   );
-  // const selectedNode = useGetNodeSelected(editor)
-  const insertBreakNumber = () => {
-    if (!editor.selection) {
-      return;
+
+  // Normalizing the editor once its initalized with defualt values
+  React.useEffect(() => {
+    for (let entry of Node.nodes(editor)) {
+      editor.normalizeNode(entry);
     }
+  }, []);
 
-    const [start, end] = [...Range.edges(editor.selection)].map((point) => {
-      point.path.length--;
-      return point.path;
-    });
-
-    console.log({start, end})
-
-    const isSameNode = start === end;
-
-    const startNode = Node.get(editor, start);
-    Transforms.splitNodes(editor, { always: true });
-    Transforms.setNodes(editor, { number: (startNode.number as number) + 1 });
-    synNumber(start)
-  };
-
-  const synNumber = (start: Path) => {
-    const node = Node.get(editor, start);
-    if (!(node.type === "numbered-list"))
-      throw new Error(
-        "The given path does not return a node which is of type numbered-list \n the given path is" +
-          JSON.stringify(start)
-      );
-      
-   for (let [node, path] of Node.levels(editor, start)) {
-     console.log(node,path)
-   } 
-    
-  };
+  // console.log(slateValue);
 
   return (
     <Slate editor={editor} value={slateValue} onChange={(n) => setValue(n)}>
@@ -53,7 +30,7 @@ export const Editor = ({ defaultValue }: { defaultValue: Node[] }) => {
         onKeyDown={(e) => {
           if (e.key === "Enter") {
             e.preventDefault();
-            insertBreakNumber();
+            SlateEditor.insertBreakNumber(editor);
           }
         }}
       />

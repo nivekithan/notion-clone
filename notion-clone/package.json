@@ -9,6 +9,7 @@
     "build-storybook": "build-storybook"
   },
   "dependencies": {
+    "nanoid": "^3.1.20",
     "react": "^17.0.0",
     "react-dom": "^17.0.0",
     "react-icons": "^4.1.0",
