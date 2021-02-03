@@ -18,32 +18,10 @@ export const App = () => {
 
 const defaultValue: Node[] = [
   {
-    type: "numbered-list",
-    number: 3,
-    _userDefined: false,
-    children: [
-      {
-        text: "This is numbered list",
-      },
-    ],
-  },
-  {
-    type: "numbered-list",
-    number: 4,
-    _userDefined: false,
-    children: [
-      {
-        text: "This is numbered list",
-      },
-    ],
-  },
-  {
-    type : "numbered-list",
-    number : 1,
-    _userDefined : true,
+    type : "inline-math",
     children : [
       {
-        text : "It is userDefined"
+        text : "\\frac{3}{4}"
       }
     ]
   }

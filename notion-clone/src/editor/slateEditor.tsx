@@ -23,31 +23,52 @@ export const SlateEditor = {
     return false;
   },
 
-  *siblings(editor: ReactEditor, path: Path): Generator<[Node, Path]> {
-    console.log(path);
+  *siblings(
+    editor: ReactEditor,
+    path: Path,
+    reverse: boolean = false
+  ): Generator<[Node, Path]> {
     // Figure out if the path is root
     if (path.length === 0) return;
-    console.log(path);
 
-    // Find out if the element is last
-    const [lastNode] = Node.last(
-      editor,
-      ReactEditor.findPath(editor, Node.parent(editor, path))
-    );
-    const isLast = Node.matches(lastNode, Node.get(editor, path));
-    if (isLast) return;
+    if (!reverse) {
+      // Find out if the element is last
+      const [lastNode] = Node.last(
+        editor,
+        ReactEditor.findPath(editor, Node.parent(editor, path))
+      );
+      const isLast = Node.matches(lastNode, Node.get(editor, path));
+      if (isLast) return;
 
-    // Creating a newPath since callling Node.elements with option {from : path}
-    // Will return the node with that path also
-    // We need node after that path.
-    const newPath = [...path];
-    const location = newPath.pop(); // Unable to come up with good name thats why location
+      // Creating a newPath since calling Node.elements with option {from : path}
+      // Will return the node with that path also
+      // We need node after that path.
+      const newPath = [...path];
+      const location = newPath.pop(); // Unable to come up with good name thats why location
 
-    if (!location && location !== 0) return;
-    newPath.push(location + 1);
+      if (!location && location !== 0) return;
+      newPath.push(location + 1);
 
-    for (const entry of Node.elements(editor, { from: newPath })) {
-      yield entry;
+      for (const entry of Node.elements(editor, { from: newPath })) {
+        yield entry;
+      }
+    } else if (reverse) {
+      // Find out if the element is first
+
+      const [firstNode] = Node.first(
+        editor,
+        ReactEditor.findPath(editor, Node.parent(editor, path))
+      
+      );
+
+      const isFirst = Node.matches(firstNode, Node.get(editor, path));
+
+      if (isFirst) return;
+
+      // Creating a newPath since calling Node.elements with option {fron : path}
+      // will return the node with path also
+      // But we need before that
+
     }
   },
 
@@ -104,5 +125,13 @@ export const SlateEditor = {
     Transforms.splitNodes(editor, { always: true });
     Transforms.setNodes(editor, { number: start.number + 1 });
     this.synNumber(editor, ReactEditor.findPath(editor, start), isUserDefined);
+  },
+
+  deleteNumber(editor: ReactEditor) {
+    const { selection } = editor;
+
+    if (!selection) {
+      return;
+    }
   },
 };

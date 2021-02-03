@@ -1,6 +1,8 @@
-import { RenderElementProps } from "slate-react";
-import React from "react";
+import { RenderElementProps, useSlate } from "slate-react";
+import React, { useState } from "react";
 import { FaCircle, FaLongArrowAltRight } from "react-icons/fa";
+import TeX from "@matejmazur/react-katex";
+import { Node } from "slate";
 
 type iconsType = {
   [index: string]: JSX.Element;
@@ -49,10 +51,14 @@ export const RenderElement = ({
       );
     case "numbered-list":
       return (
-          <ListItem slate={{ element, attributes, children }}>
-            <span>{element.number as number}.</span>
-          </ListItem>
+        <ListItem slate={{ element, attributes, children }}>
+          <span>{element.number as number}.</span>
+        </ListItem>
       );
+    case "inline-math":
+      return (
+        <InlineMath attributes={attributes} children={children} element={element} />
+      )
     default:
       return (
         <div {...attributes} className="text-normal">
@@ -84,5 +90,31 @@ const ListItem = ({
       </div>
       <div className="text-normal">{slate.children}</div>
     </div>
+  );
+};
+
+// Inline Math
+const InlineMath = ({ element, attributes, children }: RenderElementProps) => {
+
+  console.log("I am here")
+
+  const [isModal, setIsModal] = useState<boolean>(false);
+  const mathString = Node.string(element);
+
+  return (
+    <span
+      {...attributes}
+      contentEditable={false}
+      onClick={(e) => {
+        e.preventDefault();
+        setIsModal((s) => !s);
+      }}
+    >
+      <span>{children}</span>
+      <span>
+        <TeX math={mathString} />
+      </span>
+      {isModal ? <span>Modal is showing</span> : null}
+    </span>
   );
 };
