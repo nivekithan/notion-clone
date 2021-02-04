@@ -3,18 +3,23 @@ import { ReactEditor } from "slate-react";
 import { nanoid } from "nanoid";
 
 export const withIds = (editor: ReactEditor) => {
-  const { normalizeNode } = editor;
+  const { normalizeNode, insertBreak } = editor;
 
   editor.normalizeNode = (entry) => {
     const [node, path] = entry;
 
     if (!Editor.isEditor(node) && Element.isElement(node) && !node._id) {
-      Transforms.setNodes(editor, {_id : nanoid()}, {at : path})
+      Transforms.setNodes(editor, { _id: nanoid() }, { at: path });
       return;
     }
 
     normalizeNode(entry);
   };
 
-  return editor
+  editor.insertBreak = () => {
+    Transforms.splitNodes(editor, { always: true });
+    Transforms.unsetNodes(editor, "_id");
+  };
+
+  return editor;
 };

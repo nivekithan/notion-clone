@@ -1,5 +1,5 @@
 import { Node } from "slate";
-
+import {nanoid} from "nanoid"
 import React from "react";
 import { Editor } from "./editor";
 
@@ -16,12 +16,19 @@ export const App = () => {
   );
 };
 
+const id = "nanoid()"
+
+
 const defaultValue: Node[] = [
   {
-    type : "inline-math",
+    type : "numbered-list",
+    number: 3,
+    _startId : id,
+    _id : id,
+    _userDefined : true,
     children : [
       {
-        text : "\\frac{3}{4}"
+        text : "It is a numbered-list"
       }
     ]
   }

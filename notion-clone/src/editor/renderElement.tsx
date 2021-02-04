@@ -1,8 +1,9 @@
-import { RenderElementProps, useSlate } from "slate-react";
+import { Editable, RenderElementProps, useEditor, useSlate } from "slate-react";
 import React, { useState } from "react";
 import { FaCircle, FaLongArrowAltRight } from "react-icons/fa";
 import TeX from "@matejmazur/react-katex";
 import { Node } from "slate";
+import { SlateEditor } from "./slateEditor";
 
 type iconsType = {
   [index: string]: JSX.Element;
@@ -51,14 +52,16 @@ export const RenderElement = ({
       );
     case "numbered-list":
       return (
-        <ListItem slate={{ element, attributes, children }}>
-          <span>{element.number as number}.</span>
-        </ListItem>
+        <NumberedList element={element} children={children} attributes={attributes} />
       );
     case "inline-math":
       return (
-        <InlineMath attributes={attributes} children={children} element={element} />
-      )
+        <InlineMath
+          attributes={attributes}
+          children={children}
+          element={element}
+        />
+      );
     default:
       return (
         <div {...attributes} className="text-normal">
@@ -93,11 +96,38 @@ const ListItem = ({
   );
 };
 
+// Need for specific Function componenet for numbered-list unlike for
+// unordered-list is for cleanup function
+
+const NumberedList = ({
+  element,
+  children,
+  attributes,
+}: RenderElementProps) => {
+  const editor = useSlate();
+  const { _startId, _userDefined } = element;
+
+  if (!(typeof _startId === "string")) {
+    throw new Error("There is no _startId");
+  } else if (!(typeof _userDefined === "boolean")) {
+    throw new Error("There is no _userDefined");
+  }
+
+  React.useEffect(() => {
+    return () => {
+      SlateEditor.synNumber(editor, _startId, _userDefined);
+    };
+  }, []);
+
+  return (
+    <ListItem slate={{ element, attributes, children }}>
+      <span>{element.number as number}.</span>
+    </ListItem>
+  );
+};
+
 // Inline Math
 const InlineMath = ({ element, attributes, children }: RenderElementProps) => {
-
-  console.log("I am here")
-
   const [isModal, setIsModal] = useState<boolean>(false);
   const mathString = Node.string(element);
 
