@@ -16,7 +16,7 @@ export const App = () => {
   );
 };
 
-const id = "nanoid()"
+const id = nanoid()
 
 
 const defaultValue: Node[] = [
@@ -25,10 +25,33 @@ const defaultValue: Node[] = [
     number: 3,
     _startId : id,
     _id : id,
+    depth : 0,
     _userDefined : true,
     children : [
       {
         text : "It is a numbered-list"
+      }
+    ]
+  },
+  {
+    
+    type : "numbered-list",
+    number: 3,
+    depth : 0,
+    _startId : id,
+    _id : nanoid(),
+    _userDefined : true,
+    children : [
+      {
+        text : "It is a numbered-list 2"
+      }
+    ]
+  }, {
+    type : "heading-1",
+    depth : 0,
+    children : [
+      {
+        text : "Heading 2"
       }
     ]
   }

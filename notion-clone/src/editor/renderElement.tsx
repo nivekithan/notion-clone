@@ -1,8 +1,8 @@
 import { Editable, RenderElementProps, useEditor, useSlate } from "slate-react";
-import React, { useState } from "react";
+import React, { ReactNode, useState } from "react";
 import { FaCircle, FaLongArrowAltRight } from "react-icons/fa";
 import TeX from "@matejmazur/react-katex";
-import { Node } from "slate";
+import { Element, Node } from "slate";
 import { SlateEditor } from "./slateEditor";
 
 type iconsType = {
@@ -22,61 +22,116 @@ export const RenderElement = ({
   switch (element.type) {
     case "normal":
       return (
-        <div {...attributes} className="text-normal">
-          {children}
-        </div>
+        <Common element={element}>
+          <div {...attributes} className="text-normal">
+            {children}
+          </div>
+        </Common>
       );
     case "heading-1":
       return (
-        <h1 {...attributes} className="mt-8 mb-1 font-semibold text-heading1">
-          {children}
-        </h1>
+        <Common element={element}>
+          <h1 {...attributes} className="mt-8 mb-1 font-semibold text-heading1">
+            {children}
+          </h1>
+        </Common>
       );
     case "heading-2":
       return (
-        <h2 {...attributes} className="mt-6 font-semibold mb-px1 text-heading2">
-          {children}
-        </h2>
+        <Common element={element}>
+          <h2
+            {...attributes}
+            className="mt-6 font-semibold mb-px1 text-heading2"
+          >
+            {children}
+          </h2>
+        </Common>
       );
     case "heading-3":
       return (
-        <h3 {...attributes} className="mt-4 font-semibold mb-px1 text-heading3">
-          {children}
-        </h3>
+        <Common element={element}>
+          <h3
+            {...attributes}
+            className="mt-4 font-semibold mb-px1 text-heading3"
+          >
+            {children}
+          </h3>
+        </Common>
       );
     case "unordered-list":
       return (
-        <ListItem slate={{ element, attributes, children }}>
-          <span>{icons[element.icon as string]}</span>
-        </ListItem>
+        <Common element={element}>
+          <ListItem slate={{ element, attributes, children }}>
+            <span>{icons[element.icon as string]}</span>
+          </ListItem>
+        </Common>
       );
     case "numbered-list":
       return (
-        <NumberedList element={element} children={children} attributes={attributes} />
+        <Common element={element}>
+          <NumberedList
+            element={element}
+            children={children}
+            attributes={attributes}
+          />
+        </Common>
       );
     case "inline-math":
       return (
-        <InlineMath
-          attributes={attributes}
-          children={children}
-          element={element}
-        />
+        <Common element={element}>
+          <InlineMath
+            attributes={attributes}
+            children={children}
+            element={element}
+          />
+        </Common>
       );
     default:
       return (
-        <div {...attributes} className="text-normal">
-          {children}
-        </div>
+        <Common element={element}>
+          <div {...attributes} className="text-normal">
+            {children}
+          </div>
+        </Common>
       );
   }
 };
+
+/*
+Common component will contain style, logic common to all the compoenents
+this includes
+        * Indenent using depth
+        * Margin top 0.25rem
+        * 
+*/
+
+const Common = ({
+  element,
+  children,
+}: {
+  element: Element;
+  children: ReactNode;
+}) => {
+  const { depth } = element;
+
+  if (typeof depth === "number") {
+    return (
+      <div style={{ marginLeft: `${depth * 1.5}rem` }} className="mt-1">
+        {children}
+      </div>
+    );
+  } else {
+    return <React.Fragment>{children}</React.Fragment>;
+  }
+};
+
 /**
  
-ListItem  extracts components common to both numberes-list and 
+ListItem  extracts components and logic common to both numberes-list and 
 unordered-list and it requires a child element which will render
 label of the list. 
 
-Numbers in numbered-list and bullet in unordered-list are examples of label in list
+Numbers in numbered-list is an example of label.
 
 **/
 const ListItem = ({
@@ -112,8 +167,9 @@ const NumberedList = ({
   } else if (!(typeof _userDefined === "boolean")) {
     throw new Error("There is no _userDefined");
   }
-
-  React.useEffect(() => {
+  // When the component gets unmounted the function will call synNumber
+  // to syn the number
+  React.useLayoutEffect(() => {
     return () => {
       SlateEditor.synNumber(editor, _startId, _userDefined);
     };

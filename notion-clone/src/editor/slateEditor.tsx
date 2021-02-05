@@ -1,4 +1,12 @@
-import { Editor, Element, Range, Node, Path, Transforms } from "slate";
+import {
+  Editor,
+  Element,
+  Range,
+  Node,
+  Path,
+  Transforms,
+  NodeEntry,
+} from "slate";
 import { ReactEditor } from "slate-react";
 
 export const SlateEditor = {
@@ -101,14 +109,22 @@ export const SlateEditor = {
       if (
         Editor.isEditor(siblingNode) ||
         !Element.isElement(siblingNode) ||
-        !(siblingNode.type === "numbered-list") ||
-        !(siblingNode._userDefined === userDefined)
+        (siblingNode.depth === startNode.depth &&
+          (siblingNode.type !== "numbered-list" ||
+            siblingNode._startId !== startNode._startId)) ||
+        (siblingNode.depth as number) < (startNode.depth as number)
       ) {
         break;
+      } else if ((siblingNode.depth as number) > (startNode.depth as number)) {
+        continue;
+      } else {
+        Transforms.setNodes(
+          editor,
+          { number: currentNumber + 1 },
+          { at: path }
+        );
+        currentNumber++;
       }
-
-      Transforms.setNodes(editor, { number: currentNumber + 1 }, { at: path });
-      currentNumber++;
     }
   },
 
@@ -119,6 +135,7 @@ export const SlateEditor = {
   //
   // Else function wil throw error
   insertBreakNumber(editor: ReactEditor) {
+
     if (!editor.selection) {
       return;
     }
@@ -134,22 +151,113 @@ export const SlateEditor = {
       throw new Error("There is no startID");
 
     const isUserDefined = !!start._userDefined;
-    const { _startId } = start;
-
-
+    const { _startId, _id } = start;
 
     if (Node.string(start) === "") {
-
-      // If user typed no content on list and Entered "Enter" then 
+      // If user typed no content on list and Entered "Enter" then
       // We will convert the list and convert it to type : "normal"
 
       Transforms.setNodes(editor, { type: "normal" });
-      Transforms.unsetNodes(editor, ["_startId", "number"]);
+      Transforms.unsetNodes(editor, ["_startId", "number", "_userDefined"]);
+
+       // if the _startId and _id is same then we dont need to call 
+       // synNumber since there is no element which we need to convert  
+      if (!(_startId === _id))
+
+
+      try {
       this.synNumber(editor, _startId, isUserDefined);
+      } catch (err) {
+      
+      }
     } else {
       editor.insertBreak();
       Transforms.setNodes(editor, { number: start.number + 1 });
       this.synNumber(editor, _startId, isUserDefined);
+    }
+  },
+
+  /*
+  This is function will change the depth to depth + 1
+  */
+
+  indent(editor: ReactEditor) {
+    const { selection } = editor;
+
+    if (!selection) return;
+
+    const [start, end] = Range.edges(selection).map((point) => point.path);
+
+    for (let [node, path] of Node.elements(editor, { from: start, to: end })) {
+      const currentDepth = node.depth;
+      if (typeof currentDepth !== "number") continue;
+
+      Transforms.setNodes(editor, { depth: currentDepth + 1 }, { at: path });
+      if (node.type === "numbered-list") {
+        SlateEditor.indentNumber(editor, [Node.get(editor, path), path]);
+      }
+    }
+  },
+
+  /*
+ Function which will change the depth to depth + 1 
+ 
+ if there is no immedidate numbered-list with same depth
+ above the indented element then
+
+ It will change the number to one, _startId to its own id 
+
+ if there is immedidate numbered-list above the indented element then
+
+ it will change the _startId to above elements one and call synNumber
+
+ */
+
+  indentNumber(editor: ReactEditor, nodeEntry: NodeEntry) {
+    const [node, path] = nodeEntry;
+
+    const copyPath = [...path];
+    const location = copyPath[copyPath.length - 1]; // Location becuase cant come up with better name
+    const isFirst = location === 0;
+
+    // console.log({isFirst})
+    if (!isFirst) {
+      const immediateAbovePath = copyPath.slice(0, copyPath.length - 1);
+      immediateAbovePath.push(location - 1);
+
+      const immediateAboveNode = Node.get(editor, immediateAbovePath);
+      // console.log({ immediateAboveNode });
+      if (
+        immediateAboveNode.type === "numbered-list" &&
+        immediateAboveNode.depth === node.depth
+      ) {
+        // console.log("I am inside");
+        const { _startId, _userDefined } = immediateAboveNode;
+
+        if (typeof _startId !== "string" || typeof _userDefined !== "boolean")
+          return;
+
+        Transforms.setNodes(
+          editor,
+          { _startId: _startId, _userDefined: _userDefined },
+          { at: path }
+        );
+        SlateEditor.synNumber(editor, _startId, _userDefined);
+      } else {
+        const { _id, _userDefined } = node;
+
+        if (typeof _id !== "string" || typeof _userDefined !== "boolean")
+          return;
+
+        Transforms.setNodes(editor, { _startId: _id, number: 1 }, { at: path });
+        SlateEditor.synNumber(editor, _id, _userDefined);
+      }
+    } else {
+      const { _id, _userDefined } = node;
+      if (typeof _id !== "string" || typeof _userDefined !== "boolean") return;
+
+      Transforms.setNodes(editor, { number: 1, _startId: _id }, { at: path });
+      SlateEditor.synNumber(editor, _id, _userDefined);
     }
   },
 };

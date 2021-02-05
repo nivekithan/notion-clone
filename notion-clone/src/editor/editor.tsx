@@ -1,13 +1,22 @@
 import React, { useState } from "react";
-import { createEditor, Node, Editor as NormalEditor, Descendant } from "slate";
+import {
+  createEditor,
+  Node,
+  Editor as NormalEditor,
+  Descendant,
+  Range,
+} from "slate";
 import { Editable, ReactEditor, Slate, withReact } from "slate-react";
 import { RenderElement } from "./renderElement";
-import { withIds, withMath } from "./plugins";
+import { withIds, withMath, withIndent } from "./plugins";
 import { SlateEditor } from "./slateEditor";
 import { useSelectedFragment } from "./hooks";
 
 export const Editor = ({ defaultValue }: { defaultValue: Node[] }) => {
-  const editor = React.useMemo(() => withIds(withReact(createEditor())), []);
+  const editor = React.useMemo(
+    () => withIndent(withIds(withReact(createEditor()))),
+    []
+  );
   const [slateValue, setValue] = useState(defaultValue);
 
   const updateFragment = () => useSelectedFragment(editor);
@@ -29,8 +38,7 @@ export const Editor = ({ defaultValue }: { defaultValue: Node[] }) => {
   //   selectedFragment;
   // });
 
-  console.dir(slateValue)
-  // console.log(editor.operations)
+  console.log(slateValue)
   return (
     <Slate
       editor={editor}
@@ -86,9 +94,16 @@ const onKeyDown = (
     if (e.key === "Enter") {
       e.preventDefault();
       SlateEditor.insertBreakNumber(editor);
+    } else if (e.key === "Tab") {
+      e.preventDefault();
+      SlateEditor.indent(editor);
     }
   } else if (currentState === "normal") {
+    if (e.key === "Tab") {
+      e.preventDefault();
+      SlateEditor.indent(editor);
+    }
   } else {
-    throw Error("The state is undectable");
+    throw Error("The state is undetectable");
   }
 };
