@@ -1,8 +1,14 @@
-import { Editable, RenderElementProps, useEditor, useSlate } from "slate-react";
+import {
+  Editable,
+  ReactEditor,
+  RenderElementProps,
+  useEditor,
+  useSlate,
+} from "slate-react";
 import React, { ReactNode, useState } from "react";
 import { FaCircle, FaLongArrowAltRight } from "react-icons/fa";
 import TeX from "@matejmazur/react-katex";
-import { Element, Node } from "slate";
+import { Element, Node, Path } from "slate";
 import { SlateEditor } from "./slateEditor";
 
 type iconsType = {
@@ -18,11 +24,12 @@ export const RenderElement = ({
   element,
   children,
   attributes,
-}: RenderElementProps) => {
+  ID_TO_PATH,
+}: RenderElementProps & { ID_TO_PATH: Map<string, Path> }) => {
   switch (element.type) {
     case "normal":
       return (
-        <Common element={element}>
+        <Common element={element} ID_TO_PATH={ID_TO_PATH}>
           <div {...attributes} className="text-normal">
             {children}
           </div>
@@ -30,7 +37,7 @@ export const RenderElement = ({
       );
     case "heading-1":
       return (
-        <Common element={element}>
+        <Common element={element} ID_TO_PATH={ID_TO_PATH}>
           <h1 {...attributes} className="mt-8 mb-1 font-semibold text-heading1">
             {children}
           </h1>
@@ -38,7 +45,7 @@ export const RenderElement = ({
       );
     case "heading-2":
       return (
-        <Common element={element}>
+        <Common element={element} ID_TO_PATH={ID_TO_PATH}>
           <h2
             {...attributes}
             className="mt-6 font-semibold mb-px1 text-heading2"
@@ -49,7 +56,7 @@ export const RenderElement = ({
       );
     case "heading-3":
       return (
-        <Common element={element}>
+        <Common element={element} ID_TO_PATH={ID_TO_PATH}>
           <h3
             {...attributes}
             className="mt-4 font-semibold mb-px1 text-heading3"
@@ -60,7 +67,7 @@ export const RenderElement = ({
       );
     case "unordered-list":
       return (
-        <Common element={element}>
+        <Common element={element} ID_TO_PATH={ID_TO_PATH}>
           <ListItem slate={{ element, attributes, children }}>
             <span>{icons[element.icon as string]}</span>
           </ListItem>
@@ -68,7 +75,7 @@ export const RenderElement = ({
       );
     case "numbered-list":
       return (
-        <Common element={element}>
+        <Common element={element} ID_TO_PATH={ID_TO_PATH}>
           <NumberedList
             element={element}
             children={children}
@@ -78,7 +85,7 @@ export const RenderElement = ({
       );
     case "inline-math":
       return (
-        <Common element={element}>
+        <Common element={element} ID_TO_PATH={ID_TO_PATH}>
           <InlineMath
             attributes={attributes}
             children={children}
@@ -88,7 +95,7 @@ export const RenderElement = ({
       );
     default:
       return (
-        <Common element={element}>
+        <Common element={element} ID_TO_PATH={ID_TO_PATH}>
           <div {...attributes} className="text-normal">
             {children}
           </div>
@@ -102,27 +109,39 @@ Common component will contain style, logic common to all the compoenents
 this includes
         * Indenent using depth
         * Margin top 0.25rem
-        * 
+        * Maintaning Map which sets _id to path
 */
 
 const Common = ({
   element,
   children,
+  ID_TO_PATH,
 }: {
   element: Element;
   children: ReactNode;
+  ID_TO_PATH: Map<string, Path>;
 }) => {
-  const { depth } = element;
+  const { depth, _id } = element;
+  const editor = useSlate();
+  const path = ReactEditor.findPath(editor, element);
 
-  if (typeof depth === "number") {
-    return (
-      <div style={{ marginLeft: `${depth * 1.5}rem` }} className="mt-1">
-        {children}
-      </div>
-    );
-  } else {
-    return <React.Fragment>{children}</React.Fragment>;
-  }
+  React.useEffect(() => {
+    ID_TO_PATH.set(_id + "", path);
+    return () => {
+      ID_TO_PATH.delete(_id + "");
+    };
+  }, [_id]);
+
+  return (
+    <div
+      style={{
+        marginLeft: typeof depth === "number" ? `${depth * 1.5}rem` : `0rem`,
+      }}
+      className="mt-1"
+    >
+      {children}
+    </div>
+  );
 };
 
 /**
@@ -171,9 +190,10 @@ const NumberedList = ({
   // to syn the number
   React.useLayoutEffect(() => {
     return () => {
-      SlateEditor.synNumber(editor, _startId, _userDefined);
+      console.log("I am here :" + _startId)
+      SlateEditor.synNumber(editor, _startId);
     };
-  }, []);
+  }, [_startId]);
 
   return (
     <ListItem slate={{ element, attributes, children }}>

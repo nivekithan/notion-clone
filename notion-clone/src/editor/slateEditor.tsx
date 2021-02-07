@@ -6,8 +6,11 @@ import {
   Path,
   Transforms,
   NodeEntry,
+  Location,
 } from "slate";
 import { ReactEditor } from "slate-react";
+
+import { isSubsetOf } from "is-subset-of";
 
 export const SlateEditor = {
   ...Editor,
@@ -76,32 +79,118 @@ export const SlateEditor = {
     }
   },
 
+  *getNodeWithProperties(
+    editor: ReactEditor,
+    properties: Partial<Element>,
+    options: {
+      no?: number;
+      at?: Location;
+      match?: (node: Node) => boolean;
+    } = {}
+  ) {
+    const { no = 1, at = [] } = options;
+    let currentNumber = 0;
+    for (const entry of Editor.nodes(editor, { ...options, at })) {
+      if (currentNumber >= no) break;
+
+      const [node, path] = entry;
+      const isSubset = isSubsetOf(properties, node);
+
+      if (isSubset) {
+        currentNumber++;
+        yield entry;
+      } else {
+        continue;
+      }
+    }
+  },
+
+  replace(
+    editor: ReactEditor,
+    properties: Partial<Node>,
+    options: {
+      match?: (node: Node) => boolean;
+      at?: Location;
+    } = {}
+  ) {
+    const { at = [] } = options;
+
+    for (const entry of Editor.nodes(editor, { ...options, at })) {
+      const [node, path] = entry;
+      Transforms.setNodes(editor, properties, { at: path });
+    }
+  },
+
   synNumber(
     editor: ReactEditor,
     startId: string,
-    userDefined: boolean,
-    endId?: string
+    options?: {
+      endId?: string;
+    }
   ) {
+    // When the numbered-list whose _startId and _id are same gets removed
+    // We need to update the second node _id as _startId for every single node
+    // whose _startId is deleted one
+
+    // Thats what this function does
+    const updateStartId = () => {
+      for (const [node, path] of this.getNodeWithProperties(
+        editor,
+        { _startId: startId },
+        {
+          match: (node) =>
+            Element.isElement(node) && node.type === "numbered-list",
+        }
+      )) {
+        const newStartId = node._id as string;
+
+        this.replace(
+          editor,
+          { _startId: newStartId },
+          {
+            match: (node) => {
+              return (
+                Element.isElement(node) &&
+                node.type === "numbered-list" &&
+                !!node._startId &&
+                node._startId === startId
+              );
+            },
+          }
+        );
+
+        return newStartId;
+      }
+    };
     let startNodeEntry: [Element, Path] | null = null;
 
     // Find out the Node with _id as startId
-    for (const [node, path] of Node.elements(editor)) {
-      if (node._id === startId) {
-        startNodeEntry = [node, path];
-        break;
-      }
+    for (const [node, path] of Editor.nodes(editor, {
+      at: [],
+      match: (node) => Element.isElement(node) && node._id === startId,
+    })) {
+      startNodeEntry = [node as Element, path];
+      break;
     }
 
-    if (!startNodeEntry)
-      throw new Error("There is no element with _id " + startId);
+    if (!startNodeEntry) {
+      const newStartId = updateStartId();
+
+      if (!newStartId) throw new Error("There is no new Start Id");
+
+      this.synNumber(editor, newStartId);
+      return;
+    }
 
     const [startNode, startPath] = startNodeEntry;
+    if (!(startNode.type === "numbered-list")) {
+      const newStartId = updateStartId();
+      if (!newStartId) throw new Error("There is no new Start Id");
 
-    if (!(startNode.type === "numbered-list"))
-      throw new Error(
-        "The given path does not return a node which is of type numbered-list \n the given path is" +
-          JSON.stringify(startPath)
-      );
+      this.synNumber(editor, newStartId);
+
+      return;
+    }
 
     let currentNumber = startNode.number as number;
 
@@ -135,7 +224,6 @@ export const SlateEditor = {
   //
   // Else function wil throw error
   insertBreakNumber(editor: ReactEditor) {
-
     if (!editor.selection) {
       return;
     }
@@ -150,7 +238,6 @@ export const SlateEditor = {
     if (!(typeof start._startId === "string"))
       throw new Error("There is no startID");
 
-    const isUserDefined = !!start._userDefined;
     const { _startId, _id } = start;
 
     if (Node.string(start) === "") {
@@ -160,20 +247,16 @@ export const SlateEditor = {
       Transforms.setNodes(editor, { type: "normal" });
       Transforms.unsetNodes(editor, ["_startId", "number", "_userDefined"]);
 
-       // if the _startId and _id is same then we dont need to call 
-       // synNumber since there is no element which we need to convert  
+      // if the _startId and _id is same then we dont need to call
+      // synNumber since there is no element which we need to convert
       if (!(_startId === _id))
-
-
-      try {
-      this.synNumber(editor, _startId, isUserDefined);
-      } catch (err) {
-      
-      }
+        try {
+          this.synNumber(editor, _startId);
+        } catch (err) {}
     } else {
       editor.insertBreak();
       Transforms.setNodes(editor, { number: start.number + 1 });
-      this.synNumber(editor, _startId, isUserDefined);
+      this.synNumber(editor, _startId);
     }
   },
 
@@ -242,7 +325,7 @@ export const SlateEditor = {
           { _startId: _startId, _userDefined: _userDefined },
           { at: path }
         );
-        SlateEditor.synNumber(editor, _startId, _userDefined);
+        SlateEditor.synNumber(editor, _startId);
       } else {
         const { _id, _userDefined } = node;
 
@@ -250,14 +333,14 @@ export const SlateEditor = {
           return;
 
         Transforms.setNodes(editor, { _startId: _id, number: 1 }, { at: path });
-        SlateEditor.synNumber(editor, _id, _userDefined);
+        SlateEditor.synNumber(editor, _id);
       }
     } else {
       const { _id, _userDefined } = node;
       if (typeof _id !== "string" || typeof _userDefined !== "boolean") return;
 
       Transforms.setNodes(editor, { number: 1, _startId: _id }, { at: path });
-      SlateEditor.synNumber(editor, _id, _userDefined);
+      SlateEditor.synNumber(editor, _id);
     }
   },
 };

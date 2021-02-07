@@ -5,16 +5,20 @@ import {
   Editor as NormalEditor,
   Descendant,
   Range,
+  Path,
 } from "slate";
 import { Editable, ReactEditor, Slate, withReact } from "slate-react";
 import { RenderElement } from "./renderElement";
-import { withIds, withMath, withIndent } from "./plugins";
+import { withIds, withMath, withIndent, withNumber } from "./plugins";
 import { SlateEditor } from "./slateEditor";
 import { useSelectedFragment } from "./hooks";
 
+// It maintains the path of the elment for id of element
+const ID_TO_PATH = new Map<string, Path>();
+
 export const Editor = ({ defaultValue }: { defaultValue: Node[] }) => {
   const editor = React.useMemo(
-    () => withIndent(withIds(withReact(createEditor()))),
+    () => withNumber(withIndent(withIds(withReact(createEditor())))),
     []
   );
   const [slateValue, setValue] = useState(defaultValue);
@@ -23,7 +27,7 @@ export const Editor = ({ defaultValue }: { defaultValue: Node[] }) => {
   const state = () => calculateState(updateFragment);
 
   const renderElement = React.useCallback(
-    (props) => <RenderElement {...props} />,
+    (props, map) => <RenderElement {...props} ID_TO_PATH={map} />,
     []
   );
 
@@ -34,11 +38,8 @@ export const Editor = ({ defaultValue }: { defaultValue: Node[] }) => {
     }
   }, []);
 
-  // React.useEffect(() => {
-  //   selectedFragment;
-  // });
+    console.log(slateValue)
 
-  console.log(slateValue)
   return (
     <Slate
       editor={editor}
@@ -48,7 +49,7 @@ export const Editor = ({ defaultValue }: { defaultValue: Node[] }) => {
       }}
     >
       <Editable
-        renderElement={renderElement}
+        renderElement={(props) => renderElement(props, ID_TO_PATH)}
         onKeyDown={(e) => {
           onKeyDown(e, state, editor);
         }}
