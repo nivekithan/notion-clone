@@ -179,19 +179,21 @@ const NumberedList = ({
   attributes,
 }: RenderElementProps) => {
   const editor = useSlate();
-  const { _startId, _userDefined } = element;
+  const { _startId, _userDefined,depth } = element;
 
   if (!(typeof _startId === "string")) {
     throw new Error("There is no _startId");
-  } else if (!(typeof _userDefined === "boolean")) {
-    throw new Error("There is no _userDefined");
   }
+  
+  if (typeof depth !== "number") {
+    throw new Error("The depth is not number")
+  }
+
   // When the component gets unmounted the function will call synNumber
   // to syn the number
   React.useLayoutEffect(() => {
     return () => {
-      console.log("I am here :" + _startId)
-      SlateEditor.synNumber(editor, _startId);
+      SlateEditor.synNumber(editor, _startId, depth);
     };
   }, [_startId]);
 

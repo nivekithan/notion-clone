@@ -14,7 +14,7 @@ import { SlateEditor } from "./slateEditor";
 import { useSelectedFragment } from "./hooks";
 
 // It maintains the path of the elment for id of element
-const ID_TO_PATH = new Map<string, Path>();
+export const ID_TO_PATH = new Map<string, Path>();
 
 export const Editor = ({ defaultValue }: { defaultValue: Node[] }) => {
   const editor = React.useMemo(
@@ -38,7 +38,7 @@ export const Editor = ({ defaultValue }: { defaultValue: Node[] }) => {
     }
   }, []);
 
-    console.log(slateValue)
+  // console.log({slateValue})
 
   return (
     <Slate
