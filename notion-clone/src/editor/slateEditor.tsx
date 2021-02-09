@@ -77,7 +77,6 @@ export const SlateEditor = {
     Get an elements path from the id
   */
   getPathById(id: string) {
-    debugger;
     const path = ID_TO_PATH.get(id);
 
     if (path) {
@@ -238,7 +237,6 @@ export const SlateEditor = {
       const [, path] = entry;
 
       Transforms.setNodes(editor, properties, { at: path });
-      console.log(Node.get(editor, path));
     }
   },
 
@@ -246,12 +244,6 @@ export const SlateEditor = {
     editor: ReactEditor,
     startId: string,
     depth: number  ) {
-    // When the numbered-list whose _startId and _id are same gets removed
-    // We need to update the second node _id as _startId for every single node
-    // whose _startId is deleted one
-
-    // Thats what this function does
-    console.log("I am here");
     let startNodeEntry: NodeEntry | null = null;
 
     try {
@@ -360,7 +352,6 @@ export const SlateEditor = {
               !!node._startId &&
               node._startId === startId &&
               node.depth === depth;
-            console.log({ bo, node });
             return bo;
           },
         }

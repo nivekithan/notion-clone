@@ -8,7 +8,7 @@ import { SlateEditor } from "./slateEditor";
 // It maintains the path of the elment for id of element
 export const ID_TO_PATH = new Map<string, Path>();
 
-export const Editor = ({ defaultValue }: { defaultValue: Node[] }) => {
+export const MainEditor = ({ defaultValue }: { defaultValue: Node[] }) => {
   const editor = React.useMemo(
     () => withNumber(withIndent(withIds(withReact(createEditor())))),
     []
@@ -21,14 +21,14 @@ export const Editor = ({ defaultValue }: { defaultValue: Node[] }) => {
 
   // Normalizing the editor once its initalized with defualt values
 
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     for (const entry of Node.nodes(editor)) {
       editor.normalizeNode(entry);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  console.log({ slateValue });
+  // console.log({ slateValue });
 
   return (
     <Slate
