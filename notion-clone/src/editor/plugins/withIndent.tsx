@@ -21,5 +21,5 @@ export const withIndent = (editor: ReactEditor) => {
     normalizeNode(entry);
   };
 
-  return editor
+  return editor;
 };

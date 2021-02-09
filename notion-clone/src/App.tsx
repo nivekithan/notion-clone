@@ -1,5 +1,5 @@
 import { Node } from "slate";
-import {nanoid} from "nanoid"
+import {nanoid} from "nanoid";
 import React from "react";
 import { Editor } from "./editor";
 
@@ -16,7 +16,7 @@ export const App = () => {
   );
 };
 
-const id = nanoid()
+const id = nanoid();
 
 
 const defaultValue: Node[] = [

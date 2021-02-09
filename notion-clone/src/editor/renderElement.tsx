@@ -1,8 +1,6 @@
 import {
-  Editable,
   ReactEditor,
   RenderElementProps,
-  useEditor,
   useSlate,
 } from "slate-react";
 import React, { ReactNode, useState } from "react";
@@ -25,7 +23,7 @@ export const RenderElement = ({
   children,
   attributes,
   ID_TO_PATH,
-}: RenderElementProps & { ID_TO_PATH: Map<string, Path> }) => {
+}: RenderElementProps & { ID_TO_PATH: Map<string, Path> }): JSX.Element => {
   switch (element.type) {
     case "normal":
       return (
@@ -78,6 +76,7 @@ export const RenderElement = ({
         <Common element={element} ID_TO_PATH={ID_TO_PATH}>
           <NumberedList
             element={element}
+            // eslint-disable-next-line react/no-children-prop
             children={children}
             attributes={attributes}
           />
@@ -88,6 +87,7 @@ export const RenderElement = ({
         <Common element={element} ID_TO_PATH={ID_TO_PATH}>
           <InlineMath
             attributes={attributes}
+            // eslint-disable-next-line react/no-children-prop
             children={children}
             element={element}
           />
@@ -125,17 +125,17 @@ const Common = ({
   const editor = useSlate();
   const path = ReactEditor.findPath(editor, element);
 
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     ID_TO_PATH.set(_id + "", path);
     return () => {
       ID_TO_PATH.delete(_id + "");
     };
-  }, [_id]);
+  }, [path, _id, ID_TO_PATH]);
 
   return (
     <div
       style={{
-        marginLeft: typeof depth === "number" ? `${depth * 1.5}rem` : `0rem`,
+        marginLeft: typeof depth === "number" ? `${depth * 1.5}rem` : "0rem",
       }}
       className="mt-1"
     >
@@ -179,23 +179,23 @@ const NumberedList = ({
   attributes,
 }: RenderElementProps) => {
   const editor = useSlate();
-  const { _startId, _userDefined,depth } = element;
+  const { _startId, depth } = element;
 
   if (!(typeof _startId === "string")) {
     throw new Error("There is no _startId");
   }
-  
+
   if (typeof depth !== "number") {
-    throw new Error("The depth is not number")
+    throw new Error("The depth is not number");
   }
 
   // When the component gets unmounted the function will call synNumber
   // to syn the number
-  React.useLayoutEffect(() => {
+  React.useEffect(() => {
     return () => {
       SlateEditor.synNumber(editor, _startId, depth);
     };
-  }, [_startId]);
+  }, [_startId, depth, editor]);
 
   return (
     <ListItem slate={{ element, attributes, children }}>

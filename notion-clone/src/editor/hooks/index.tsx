@@ -1,1 +1,1 @@
-export * from "./useSelectedFragment";
+export const SOMETHING = "";

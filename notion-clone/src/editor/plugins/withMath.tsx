@@ -1,4 +1,4 @@
-import { Editor, Element, Node, Transforms } from "slate";
+import { Element, Transforms } from "slate";
 import { ReactEditor } from "slate-react";
 
 export const withMath = (editor: ReactEditor) => {
@@ -22,7 +22,7 @@ export const withMath = (editor: ReactEditor) => {
 
   editor.normalizeNode = (entry) => {
     const [node, path] = entry;
-    console.log({node, path})
+    console.log({node, path});
     
     
     if (
@@ -31,7 +31,7 @@ export const withMath = (editor: ReactEditor) => {
       // Editor.isEditor(Node.parent(editor, path))
     ) {
 
-      console.log("I inside normalizeNode")
+      console.log("I inside normalizeNode");
       Transforms.wrapNodes(
         editor,
         { type: "normal", children: [] },
@@ -40,7 +40,7 @@ export const withMath = (editor: ReactEditor) => {
       return;
     } 
 
-    normalizeNode(entry)
+    normalizeNode(entry);
   };
 
   return editor;

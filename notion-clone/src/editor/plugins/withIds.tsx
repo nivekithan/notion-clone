@@ -3,7 +3,7 @@ import { ReactEditor } from "slate-react";
 import { nanoid } from "nanoid";
 
 export const withIds = (editor: ReactEditor) => {
-  const { normalizeNode, insertBreak } = editor;
+  const { normalizeNode } = editor;
 
   editor.normalizeNode = (entry) => {
     const [node, path] = entry;

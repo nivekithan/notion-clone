@@ -12,10 +12,27 @@ import { ReactEditor } from "slate-react";
 
 import { isSubsetOf } from "is-subset-of";
 import { ID_TO_PATH } from "./editor";
-import { ReactFragment } from "react";
+
+type state = "normal" | "numbered-list";
 
 export const SlateEditor = {
   ...Editor,
+
+  /*
+	  Calculates keyboard state based on current selection
+	*/
+
+  calculateState(editor: ReactEditor): state {
+    const { selection } = editor;
+
+    if (!selection) return "normal";
+
+    const start = Editor.start(editor, selection);
+
+    if (start.type === "numbered-list") return "numbered-list";
+
+    return "normal";
+  },
 
   // Get the start and end element from given range
   getEdgeElement(editor: ReactEditor, range: Range): [Element, Element] {
@@ -28,7 +45,7 @@ export const SlateEditor = {
     return [start, end];
   },
   // Compares two element and returns if both element are same element
-  isSameElement(editor: ReactEditor, elementOne: Element, elementTwo: Element) {
+  isSameElement(elementOne: Element, elementTwo: Element) {
     if (elementOne._id === elementTwo._id) {
       return true;
     }
@@ -40,7 +57,7 @@ export const SlateEditor = {
     Finds if the given the path would lead to node which is first child
   */
 
-  isFirst(editor: ReactEditor, path: Path) {
+  isFirst(path: Path) {
     /*
       Check if the given path is root
     */
@@ -59,7 +76,8 @@ export const SlateEditor = {
   /*
     Get an elements path from the id
   */
-  getPathById(editor: ReactEditor, id: string) {
+  getPathById(id: string) {
+    debugger;
     const path = ID_TO_PATH.get(id);
 
     if (path) {
@@ -70,7 +88,7 @@ export const SlateEditor = {
   },
 
   getNodeById(editor: ReactEditor, id: string): NodeEntry {
-    const path = this.getPathById(editor, id);
+    const path = this.getPathById(id);
 
     if (path) {
       try {
@@ -99,7 +117,7 @@ export const SlateEditor = {
   *siblings(
     editor: ReactEditor,
     path: Path,
-    reverse: boolean = false
+    reverse = false
   ): Generator<[Node, Path]> {
     // Figure out if the path is root
     if (path.length === 0) return;
@@ -117,6 +135,7 @@ export const SlateEditor = {
         for (const entry of Node.elements(editor, { from: newPath })) {
           yield entry;
         }
+        // eslint-disable-next-line no-empty
       } catch (err) {}
     } else if (reverse) {
       // Find out if the element is first
@@ -137,6 +156,7 @@ export const SlateEditor = {
         })) {
           yield entry;
         }
+        // eslint-disable-next-line no-empty
       } catch (err) {}
     }
   },
@@ -155,7 +175,7 @@ export const SlateEditor = {
     for (const entry of Editor.nodes(editor, { ...options, at })) {
       if (currentNumber >= no) break;
 
-      const [node, path] = entry;
+      const [node] = entry;
       const isSubset = isSubsetOf(properties, node);
 
       if (isSubset) {
@@ -215,25 +235,23 @@ export const SlateEditor = {
     const { at = [] } = options;
 
     for (const entry of Editor.nodes(editor, { ...options, at })) {
-      const [node, path] = entry;
+      const [, path] = entry;
+
       Transforms.setNodes(editor, properties, { at: path });
+      console.log(Node.get(editor, path));
     }
   },
 
   synNumber(
     editor: ReactEditor,
     startId: string,
-    depth: number,
-    options: {
-      endId?: string;
-    } = {}
-  ) {
+    depth: number  ) {
     // When the numbered-list whose _startId and _id are same gets removed
     // We need to update the second node _id as _startId for every single node
     // whose _startId is deleted one
 
     // Thats what this function does
-
+    console.log("I am here");
     let startNodeEntry: NodeEntry | null = null;
 
     try {
@@ -330,19 +348,20 @@ export const SlateEditor = {
       }
     )) {
       const newStartId = node._id as string;
-
+      debugger;
       this.replace(
         editor,
         { _startId: newStartId },
         {
           match: (node) => {
-            return (
+            const bo =
               Element.isElement(node) &&
               node.type === "numbered-list" &&
               !!node._startId &&
               node._startId === startId &&
-              node.depth === depth
-            );
+              node.depth === depth;
+            console.log({ bo, node });
+            return bo;
           },
         }
       );
@@ -365,13 +384,13 @@ export const SlateEditor = {
 
     if (!(typeof start.number === "number"))
       throw new Error(
-        'function is called when selected Text does not start from type === "numbered-list"'
+        "function is called when selected Text does not start from type === \"numbered-list\""
       );
 
     if (!(typeof start._startId === "string"))
       throw new Error("There is no startID");
 
-    const { _startId, _id, depth } = start;
+    const { _startId, depth } = start;
 
     if (Node.string(start) === "") {
       // If user typed no content on list and Entered "Enter" then
@@ -399,7 +418,10 @@ export const SlateEditor = {
 
     const [start, end] = Range.edges(selection).map((point) => point.path);
 
-    for (let [node, path] of Node.elements(editor, { from: start, to: end })) {
+    for (const [node, path] of Node.elements(editor, {
+      from: start,
+      to: end,
+    })) {
       const currentDepth = node.depth;
       if (typeof currentDepth !== "number") continue;
 
@@ -427,8 +449,11 @@ export const SlateEditor = {
   indentNumber(editor: ReactEditor, nodeEntry: NodeEntry) {
     const [node, path] = nodeEntry;
 
-    if (this.isFirst(editor, path)) {
-     const [immediateAboveNode, immediateAbovePath] = this.getImmediateAbove(editor, path)
+    if (!this.isFirst(path)) {
+      const [immediateAboveNode] = this.getImmediateAbove(
+        editor,
+        path
+      );
 
       if (
         immediateAboveNode.type === "numbered-list" &&
@@ -436,42 +461,41 @@ export const SlateEditor = {
       ) {
         const { _startId, depth } = immediateAboveNode;
 
-        if (
-          typeof _startId !== "string" ||
-          typeof depth !== "number"
-        )
-          return;
+        if (typeof _startId !== "string" || typeof depth !== "number") return;
 
-        Transforms.setNodes(
-          editor,
-          { _startId: _startId},
-          { at: path }
-        );
+        Transforms.setNodes(editor, { _startId: _startId }, { at: path });
         this.synNumber(editor, _startId, depth);
-        this.synNumber(editor, node._startId as string, node.depth as number )
+        this.synNumber(
+          editor,
+          node._startId as string,
+          (node.depth as number) - 1
+        );
       } else {
-        const { _id, depth } = immediateAboveNode;
+        const { _id, depth, _startId } = node;
 
         if (
           typeof _id !== "string" ||
-          typeof depth !== "number"
+          typeof depth !== "number" ||
+          typeof _startId !== "string"
         )
           return;
 
         Transforms.setNodes(editor, { _startId: _id, number: 1 }, { at: path });
         this.synNumber(editor, _id, depth);
+        this.synNumber(editor, _startId, depth - 1);
       }
     } else {
-      const { _id, _userDefined, depth } = node;
+      const { _id, depth, _startId } = node;
       if (
         typeof _id !== "string" ||
-        typeof _userDefined !== "boolean" ||
-        typeof depth !== "number"
+        typeof depth !== "number" ||
+        typeof _startId !== "string"
       )
         return;
 
       Transforms.setNodes(editor, { number: 1, _startId: _id }, { at: path });
       this.synNumber(editor, _id, depth);
+      this.synNumber(editor, _startId, depth - 1);
     }
   },
 };
