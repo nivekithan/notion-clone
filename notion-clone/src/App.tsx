@@ -23,7 +23,7 @@ export const defaultValue: Node[] = [
 {
   children : [
     {
-      text : ""
+      text : " "
     }
   ]
 }
