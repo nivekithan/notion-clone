@@ -7,11 +7,11 @@ dist-ssr
 # Created by https://www.toptal.com/developers/gitignore/api/node,code,visualstudiocode,react,storybookjs
 # Edit at https://www.toptal.com/developers/gitignore?templates=node,code,visualstudiocode,react,storybookjs
 
-# ### Code ###
-# .vscode/*
-# !.vscode/tasks.json
-# !.vscode/launch.json
-# *.code-workspace
+### Code ###
+.vscode/*
+!.vscode/tasks.json
+!.vscode/launch.json
+*.code-workspace
 
 ### Node ###
 # Logs

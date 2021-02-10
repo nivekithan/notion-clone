@@ -1,7 +1,7 @@
-import { Node } from "slate";
-import {nanoid} from "nanoid";
+import { nanoid } from "nanoid";
 import React from "react";
-import { MainEditor  } from "./editor";
+import { Node } from "slate";
+import { MainEditor } from "./editor";
 
 export const App = () => {
   return (
@@ -16,15 +16,13 @@ export const App = () => {
   );
 };
 
-const id = nanoid();
-
-
-export const defaultValue: Node[] = [
-{
-  children : [
-    {
-      text : " "
-    }
-  ]
-}
+const defaultValue: Node[] = [
+  {
+    type: "normal",
+    children: [
+      {
+        text: " ",
+      },
+    ],
+  },
 ];
