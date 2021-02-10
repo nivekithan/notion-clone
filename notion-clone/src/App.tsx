@@ -18,7 +18,8 @@ export const App = () => {
 
 const defaultValue: Node[] = [
   {
-    type: "normal",
+    type: "unordered-list",
+    icon : "bullet",
     children: [
       {
         text: " ",

@@ -21,7 +21,7 @@ export const MainEditor = ({ defaultValue }: MainEditorProps) => {
 
   return (
     <Slate value={slateValue} editor={edtior} onChange={setSlateValue}>
-      <Editable renderElement={(props) => renderElement(props, ID_TO_PATH)} />
+      <Editable renderElement={(props) => renderElement(props, ID_TO_PATH)} data-cy-type="editor" />
     </Slate>
   );
 };
