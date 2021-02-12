@@ -1,6 +1,5 @@
 /// <reference types="cypress" />
 
-
 // ***********************************************
 // This example commands.js shows you how to
 // create various custom commands and overwrite
@@ -27,4 +26,16 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 
+// Parent Command
+Cypress.Commands.add("getByAttr", (key, value) => {
+  return cy.get(`[data-cy-${key}=${value}]`);
+});
 
+// Child Command
+Cypress.Commands.add(
+  "findByAttr",
+  { prevSubject: "element" },
+  (subject, key, value) => {
+    return cy.wrap(subject).find(`[data-cy-${key}=${value}]`);
+  }
+);

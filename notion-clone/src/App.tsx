@@ -16,13 +16,17 @@ export const App = () => {
   );
 };
 
+const id = nanoid()
+
 const defaultValue: Node[] = [
   {
-    type: "unordered-list",
-    icon : "bullet",
+    type: "number-list",
+    id : id,
+    startId : id,
+    number: 1,
     children: [
       {
-        text: " ",
+        text: "",
       },
     ],
   },

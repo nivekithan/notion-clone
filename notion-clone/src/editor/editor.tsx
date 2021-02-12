@@ -1,27 +1,47 @@
-import { useCallback, useMemo, useState } from "react";
-import { createEditor, Node } from "slate";
-import { Editable, Slate, withReact } from "slate-react";
+import { useCallback, useMemo, useRef, useState } from "react";
+import { createEditor, Editor, Node, Path } from "slate";
+import { Editable, ReactEditor, Slate, withReact } from "slate-react";
 import React from "react";
 import { RenderElement } from "./renderElement";
-
+import { withIds, withNumber } from "./plugins";
+import { SlateEditor } from "./slateEditor";
 type MainEditorProps = {
   defaultValue: Node[];
 };
 
-const ID_TO_PATH = new Map();
 
 export const MainEditor = ({ defaultValue }: MainEditorProps) => {
-  const edtior = useMemo(() => withReact(createEditor()), []);
-
-  const [slateValue, setSlateValue] = useState<Node[]>(defaultValue);
-  const renderElement = useCallback(
-    (props, map) => <RenderElement {...props} ID_TO_PATH={map} />,
+  const editor = useMemo(
+    () => withNumber(withIds(withReact(createEditor()))),
     []
   );
+  const [slateValue, setSlateValue] = useState<Node[]>(defaultValue);
+  const renderElement = useCallback(
+    (props) => <RenderElement {...props}  />,
+    []
+  );
+  // Normalazing the element after the first render since slate doesnt do that by
+  // default
+  React.useLayoutEffect(() => {
+    Editor.normalize(editor);
+  }, []);
 
+  // console.log(slateValue)
   return (
-    <Slate value={slateValue} editor={edtior} onChange={setSlateValue}>
-      <Editable renderElement={(props) => renderElement(props, ID_TO_PATH)} data-cy-type="editor" />
+    <Slate value={slateValue} editor={editor} onChange={setSlateValue}>
+      <Editable
+        renderElement={(props) => renderElement(props)}
+        data-cy-type="editor"
+        onKeyDown={(e) => onKeyDown(e, editor)}
+      />
     </Slate>
   );
 };
+
+
+const onKeyDown = (e : React.KeyboardEvent<HTMLDivElement>, editor : ReactEditor) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      SlateEditor.insertBreakNumber(editor)
+    }
+} 

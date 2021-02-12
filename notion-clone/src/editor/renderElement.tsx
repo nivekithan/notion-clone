@@ -1,8 +1,15 @@
-import { ReactEditor, RenderElementProps, useSlate } from "slate-react";
-import React, { ReactNode, useState } from "react";
+import {
+  Editable,
+  ReactEditor,
+  RenderElementProps,
+  useSlate,
+} from "slate-react";
+import React, { ReactNode, useLayoutEffect, useState } from "react";
 import { FaCircle, FaLongArrowAltRight } from "react-icons/fa";
 import TeX from "@matejmazur/react-katex";
-import { Element, Node, Path } from "slate";
+import { Element, Node, Path, Transforms } from "slate";
+import { SlateEditor } from "./slateEditor";
+import { useEffect } from "react";
 
 type iconsType = {
   [index: string]: JSX.Element;
@@ -17,12 +24,12 @@ export const RenderElement = ({
   element,
   children,
   attributes,
-  ID_TO_PATH,
-}: RenderElementProps & { ID_TO_PATH: Map<string, Path> }): JSX.Element => {
+  
+}: RenderElementProps): JSX.Element => {
   switch (element.type) {
     case "normal":
       return (
-        <Common element={element} ID_TO_PATH={ID_TO_PATH} type="normal">
+        <Common element={element} type="normal">
           <div {...attributes} className="text-normal">
             {children}
           </div>
@@ -30,7 +37,7 @@ export const RenderElement = ({
       );
     case "heading-1":
       return (
-        <Common element={element} ID_TO_PATH={ID_TO_PATH} type="heading-1">
+        <Common element={element} type="heading-1">
           <h1 {...attributes} className="mt-8 mb-1 font-semibold text-heading1">
             {children}
           </h1>
@@ -38,7 +45,7 @@ export const RenderElement = ({
       );
     case "heading-2":
       return (
-        <Common element={element} ID_TO_PATH={ID_TO_PATH} type="heading-2">
+        <Common element={element} type="heading-2">
           <h2
             {...attributes}
             className="mt-6 font-semibold mb-px1 text-heading2"
@@ -49,7 +56,7 @@ export const RenderElement = ({
       );
     case "heading-3":
       return (
-        <Common element={element} ID_TO_PATH={ID_TO_PATH} type="heading-3">
+        <Common element={element} type="heading-3">
           <h3
             {...attributes}
             className="mt-4 font-semibold mb-px1 text-heading3"
@@ -60,17 +67,25 @@ export const RenderElement = ({
       );
     case "unordered-list":
       return (
-        <Common element={element} ID_TO_PATH={ID_TO_PATH} type="unordered-list">
+        <Common element={element} type="unordered-list">
           <ListItem slate={{ element, attributes, children }}>
-            <span data-cy-icon={element.icon as string}>
+            <span data-cy-label-icon={element.icon as string}>
               {icons[element.icon as string]}
             </span>
           </ListItem>
         </Common>
       );
+
+    case "number-list":
+      return (
+        <Common element={element} type="number-list">
+          <NumberList {...{ element, children, attributes }} />
+        </Common>
+      );
+
     default:
       return (
-        <Common element={element} ID_TO_PATH={ID_TO_PATH} type="normal">
+        <Common element={element} type="normal">
           <div {...attributes} className="text-normal">
             {children}
           </div>
@@ -90,21 +105,14 @@ export const RenderElement = ({
 type Common = {
   element: Element;
   children: ReactNode;
-  ID_TO_PATH: Map<string, Path>;
   type: string;
 };
 
-const Common = ({ element, children, ID_TO_PATH, type }: Common) => {
-  const { depth, _id } = element;
+const Common = ({ element, children,  type }: Common) => {
+  const { depth, id } = element;
   const editor = useSlate();
   const path = ReactEditor.findPath(editor, element);
 
-  React.useLayoutEffect(() => {
-    ID_TO_PATH.set(_id + "", path);
-    return () => {
-      ID_TO_PATH.delete(_id + "");
-    };
-  }, [path, _id, ID_TO_PATH]);
 
   return (
     <div
@@ -133,8 +141,10 @@ const ListItem = ({
   children: React.ReactNode;
   slate: RenderElementProps;
 }) => {
+
+  
   return (
-    <div {...slate.attributes} className="flex items-center gap-x-4 ">
+    <div {...slate.attributes} data-cy-label={slate.element.number ? slate.element.number : slate.element.icon} className="flex items-center gap-x-4 ">
       <div className="flex justify-end w-6" contentEditable={false}>
         {children}
       </div>
@@ -145,3 +155,25 @@ const ListItem = ({
 
 // Need for specific Function componenet for numbered-list unlike for
 // unordered-list is for cleanup function
+
+type NumberList = RenderElementProps;
+
+const NumberList = ({ element, children, attributes }: NumberList) => {
+  const { number, startId, id } = element;
+  const editor = useSlate();
+
+  useLayoutEffect(() => {
+    return () => {
+      if (typeof startId !== "string") {
+        throw new Error("There is no startId");
+      }
+
+      SlateEditor.synNumber(editor, startId);
+    };
+  }, [id, startId, number]);
+  return (
+    <ListItem slate={{ element, children, attributes }}>
+      <span data-cy-label-number={number}>{number}.</span>
+    </ListItem>
+  );
+};
