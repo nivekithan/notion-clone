@@ -88,7 +88,7 @@ export const SlateEditor = {
     } = {}
   ) {
     const newMatch = (node: Node): boolean => {
-      const path = ReactEditor.findPath(editor, node);
+      const path = this.findPathById(editor, node.id as string);
 
       /*
         If the path of node is not of same length of given `at : Path` length then the node is not sibling. 
@@ -181,7 +181,7 @@ export const SlateEditor = {
       } else {
         Transforms.setNodes(
           editor,
-          { number: currentNumber},
+          { number: currentNumber },
           { at: siblingPath }
         );
         currentNumber++;

@@ -20,6 +20,14 @@ const id = nanoid()
 
 const defaultValue: Node[] = [
   {
+    type : "normal",
+    children : [
+      {
+        text : "p"
+      }
+    ]
+  },
+  {
     type: "number-list",
     id : id,
     startId : id,
