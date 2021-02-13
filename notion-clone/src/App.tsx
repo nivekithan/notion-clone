@@ -16,22 +16,23 @@ export const App = () => {
   );
 };
 
-const id = nanoid()
+const id = nanoid();
 
 const defaultValue: Node[] = [
   {
-    type : "normal",
-    children : [
+    type: "normal",
+    children: [
       {
-        text : "p"
-      }
-    ]
+        text: "p",
+      },
+    ],
   },
   {
     type: "number-list",
-    id : id,
-    startId : id,
+    id: id,
+    startId: id,
     number: 1,
+    depth : 0,
     children: [
       {
         text: "",

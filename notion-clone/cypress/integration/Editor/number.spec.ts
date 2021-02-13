@@ -28,11 +28,10 @@
 
 describe("Tesitng number-list behaviour", () => {
   describe("The number should stay syn", () => {
-    const firstNumberText = "The number should be one";
-    const secondNumberText = "The number Should be two";
-    const thirdNumberText = "THe number should be three";
-
     it("The number should increase with value", () => {
+      const firstNumberText = "The number should be one";
+      const secondNumberText = "The number Should be two";
+      const thirdNumberText = "THe number should be three";
       cy.visit("/");
 
       // Typing the text content
@@ -236,6 +235,182 @@ describe("Tesitng number-list behaviour", () => {
               .should("have.length", 1);
           }
         });
+
+      /*
+          Checking if we can delete entire number-list
+        */
+
+      cy.getByAttr("type", "editor")
+
+        // Deleting the complete number-list
+        .type(
+          Array(
+            firstNumberText.length +
+              secondNumberText.length +
+              thirdNumberText.length +
+              3
+          )
+            .fill("{backspace}")
+            .join("")
+        )
+        .end();
+
+      // If there is no error then the test passed
+    });
+
+    it.only("The number should not break with indention", () => {
+      const firstNumberText = "The number is  1";
+      const secondNumberText = "THe number is 2";
+      const thirdNumberText = "THe number is 3";
+      const fourthNumberText = "The number is 4";
+      const fifthNumberText = "The number is 5";
+
+      cy.visit("/");
+
+      cy.getByAttr("type", "editor")
+        .type(firstNumberText)
+        .type("{enter}")
+        .type(secondNumberText)
+        .type("{enter}")
+        .type(thirdNumberText)
+        .type("{enter}")
+        .type(fourthNumberText);
+
+      /*
+        The test above tested the normal behaviour of number so there is no need to do it again.
+
+        we have to test only if number-list doesnt break order with indentation
+      */
+
+      /*
+        Checking if tying "Tab" in last will break order in number-list
+      */
+
+      cy.getByAttr("label", "4").typeTab().type("{enter}").type(fifthNumberText);
+
+      /*
+        After this the number list should ressemble this format
+
+            1. firstNumberText
+            2. secondNumberText
+            3. thirdNumberText
+                1. fourthNumberText
+                2. fifthNumberText
+
+      */
+
+      /*
+        Asserting the above order
+    */
+
+      cy.getByAttr("type", "editor")
+        .findByAttr("type", "number-list")
+        .each(($el, i, $list) => {
+          cy.wrap($list)
+            .should("have.length", 5)
+            .filterByAttr("depth", 0)
+            .should("have.length", 3);
+          cy.wrap($list).filterByAttr("depth", 1).should("have.length", 2);
+
+          if (i === 0) {
+            cy.wrap($el)
+              .should("contain.text", firstNumberText)
+              .should("have.attr", "data-cy-depth", "0")
+              .findByAttr("label-number", 1)
+              .should("have.length", 1);
+          } else if (i === 1) {
+            cy.wrap($el)
+              .should("contain.text", secondNumberText)
+              .should("have.attr", "data-cy-depth", "0")
+              .findByAttr("label-number", 2)
+              .should("have.length", 1);
+          } else if (i === 2) {
+            cy.wrap($el)
+              .should("contain.text", thirdNumberText)
+              .should("have.attr", "data-cy-depth", "0")
+              .findByAttr("label-number", 3)
+              .should("have.length", 1);
+          } else if (i === 3) {
+            cy.wrap($el)
+              .should("contain.text", fourthNumberText)
+              .should("have.attr", "data-cy-depth", "1")
+              .findByAttr("label-number", 1)
+              .should("have.length", 1);
+          } else if (i === 4) {
+            cy.wrap($el)
+              .should("contain.text", fifthNumberText)
+              .should("have.attr", "data-cy-depth", "1")
+              .findByAttr("label-number", 2)
+              .should("have.length", 1);
+          }
+        });
+
+      cy.getByAttr("type", "editor")
+        .type(
+          Array(fifthNumberText.length + fourthNumberText.length + 2)
+            .fill("{backspace}")
+            .join("")
+        )
+        .type("{enter}")
+        .type(fifthNumberText)
+        .type("{uparrow}").typeTab()
+        .type("{enter}").type(fourthNumberText)
+
+        /*
+          The order should resemble this
+              1. firstNumberText
+              2. SecondNumberText
+                1. thirdNumberText
+                2. fourthNumberText
+              3. fifthNumberText
+        */
+
+        /*
+          Asserting the above order
+        */
+
+        
+      cy.getByAttr("type", "editor")
+      .findByAttr("type", "number-list")
+      .each(($el, i, $list) => {
+        cy.wrap($list)
+          .should("have.length", 5)
+          .filterByAttr("depth", 0)
+          .should("have.length", 3);
+        cy.wrap($list).filterByAttr("depth", 1).should("have.length", 2);
+
+        if (i === 0) {
+          cy.wrap($el)
+            .should("contain.text", firstNumberText)
+            .should("have.attr", "data-cy-depth", "0")
+            .findByAttr("label-number", 1)
+            .should("have.length", 1);
+        } else if (i === 1) {
+          cy.wrap($el)
+            .should("contain.text", secondNumberText)
+            .should("have.attr", "data-cy-depth", "0")
+            .findByAttr("label-number", 2)
+            .should("have.length", 1);
+        } else if (i === 2) {
+          cy.wrap($el)
+            .should("contain.text", thirdNumberText)
+            .should("have.attr", "data-cy-depth", "1")
+            .findByAttr("label-number", 1)
+            .should("have.length", 1);
+        } else if (i === 3) {
+          cy.wrap($el)
+            .should("contain.text", fourthNumberText)
+            .should("have.attr", "data-cy-depth", "1")
+            .findByAttr("label-number", 2)
+            .should("have.length", 1);
+        } else if (i === 4) {
+          cy.wrap($el)
+            .should("contain.text", fifthNumberText)
+            .should("have.attr", "data-cy-depth", "0")
+            .findByAttr("label-number", 3)
+            .should("have.length", 1);
+        }
+      });
     });
   });
 });

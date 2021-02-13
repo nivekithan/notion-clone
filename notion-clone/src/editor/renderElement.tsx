@@ -8,7 +8,7 @@ import React, { ReactNode, useLayoutEffect, useState } from "react";
 import { FaCircle, FaLongArrowAltRight } from "react-icons/fa";
 import TeX from "@matejmazur/react-katex";
 import { Element, Node, Path, Transforms } from "slate";
-import { SlateEditor } from "./slateEditor";
+import { SlateEditor } from "./utils/";
 import { useEffect } from "react";
 
 type iconsType = {
@@ -24,7 +24,6 @@ export const RenderElement = ({
   element,
   children,
   attributes,
-  
 }: RenderElementProps): JSX.Element => {
   switch (element.type) {
     case "normal":
@@ -108,11 +107,9 @@ type Common = {
   type: string;
 };
 
-const Common = ({ element, children,  type }: Common) => {
-  const { depth, id } = element;
+const Common = ({ element, children, type }: Common) => {
+  const { depth } = element;
   const editor = useSlate();
-  const path = ReactEditor.findPath(editor, element);
-
 
   return (
     <div
@@ -121,6 +118,7 @@ const Common = ({ element, children,  type }: Common) => {
       }}
       className="mt-1"
       data-cy-type={type}
+      data-cy-depth={depth}
     >
       {children}
     </div>
@@ -141,10 +139,14 @@ const ListItem = ({
   children: React.ReactNode;
   slate: RenderElementProps;
 }) => {
-
-  
   return (
-    <div {...slate.attributes} data-cy-label={slate.element.number ? slate.element.number : slate.element.icon} className="flex items-center gap-x-4 ">
+    <div
+      {...slate.attributes}
+      data-cy-label={
+        slate.element.number ? slate.element.number : slate.element.icon
+      }
+      className="flex items-center gap-x-4 "
+    >
       <div className="flex justify-end w-6" contentEditable={false}>
         {children}
       </div>
@@ -159,16 +161,22 @@ const ListItem = ({
 type NumberList = RenderElementProps;
 
 const NumberList = ({ element, children, attributes }: NumberList) => {
-  const { number, startId, id } = element;
+  const { number, startId, id, depth } = element;
   const editor = useSlate();
 
   useLayoutEffect(() => {
     return () => {
       if (typeof startId !== "string") {
-        throw new Error("There is no startId");
+        throw new Error(
+          `There is no depth in startId  ${JSON.stringify(element)}`
+        );
+      } else if (typeof depth !== "number") {
+        throw new Error(
+          `There is no depth in element  ${JSON.stringify(element)}`
+        );
       }
 
-      SlateEditor.synNumber(editor, startId);
+      SlateEditor.synNumber(editor, startId, depth);
     };
   }, [id, startId, number]);
   return (

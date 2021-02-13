@@ -39,3 +39,20 @@ Cypress.Commands.add(
     return cy.wrap(subject).find(`[data-cy-${key}=${value}]`);
   }
 );
+
+Cypress.Commands.add('typeTab', (shiftKey=false, ctrlKey=false) => {
+  cy.focused().trigger('keydown', {
+      keyCode: 9,
+      which: 9,
+      shiftKey: shiftKey,
+      ctrlKey: ctrlKey
+  });
+});
+
+Cypress.Commands.add(
+  "filterByAttr",
+  { prevSubject: "element" },
+  (subject, key, value) => {
+    return cy.wrap(subject).filter(`[data-cy-${key}=${value}]`);
+  }
+);
