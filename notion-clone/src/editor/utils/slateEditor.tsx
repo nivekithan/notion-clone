@@ -261,6 +261,19 @@ export const SlateEditor = {
 
     try {
       startIdElementEntry = this.findElementEntryById(editor, startId);
+      if (startIdElementEntry[0].depth !== depth) throw new Error(" ")
+
+      /*
+        We throw this empty error so that it will catched by below code.
+
+        when startIdElementEntry[0].depth is not equal given depth. It means there is an element 
+        with id as given startId but it has different depth than given depth.
+        This case usually heppens when user tired to indent the first entry in number-list.
+
+        In that case we want to break order between indented number-list and non- idented number-list. 
+        Throwing an error will accomplish that
+      */  
+
     } catch (err) {
       const newStartId = this.updateStartId(editor, startId, depth);
       if (!newStartId) {
