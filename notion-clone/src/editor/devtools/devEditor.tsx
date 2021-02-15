@@ -1,14 +1,18 @@
 import React, { useCallback, useMemo, useEffect, useState } from "react";
-import { withReact, Slate, Editable } from "slate-react";
+import { withReact, Slate, Editable, ReactEditor } from "slate-react";
 import { Node, createEditor } from "slate";
 import { RenderElement } from "./renderElement";
+import { withHistory, HistoryEditor } from "slate-history";
+import useDeepCompareEffect from 'use-deep-compare-effect'
+
 
 type DevEditor = {
+  editor: ReactEditor;
+  onChange: (n: Node[]) => void;
   slateValue: Node[];
-  setSlateValue: React.Dispatch<React.SetStateAction<Node[]>>;
 };
 
-export const DevEditor = ({ slateValue, setSlateValue }: DevEditor) => {
+export const DevEditor = ({ editor, onChange, slateValue }: DevEditor) => {
   const content: Node[] = JSON.stringify(slateValue, null, 4)
     .split("\n")
     .map((firstEntry) => {
@@ -21,7 +25,7 @@ export const DevEditor = ({ slateValue, setSlateValue }: DevEditor) => {
       };
     });
 
-  const devEditor = useMemo(() => withReact(createEditor()), []);
+  const devEditor = useMemo(() => withHistory(withReact(createEditor())), []);
   const [devSlateValue, setDevSlateValue] = useState<Node[]>([
     { type: "list-wrapper", children: content },
   ]);
@@ -33,18 +37,33 @@ export const DevEditor = ({ slateValue, setSlateValue }: DevEditor) => {
     []
   );
 
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     try {
       const newSlateValue = JSON.parse(Node.string(devEditor));
-      setSlateValue(newSlateValue);
+
+      if (Node.isNodeList(newSlateValue))  {
+        onChange(newSlateValue);
       setIsSyntaxError(false);
+      } else {
+        throw new Error("The newSlateValue is not Node[]")
+      }
+      
     } catch (err) {
       setIsSyntaxError(true);
     }
-  }, [devSlateValue]);
+  }, [devSlateValue, devEditor, setIsSyntaxError]);
+
+  useDeepCompareEffect(() => {
+    setDevSlateValue([{type : "list-wrapper", children : content}])
+  }, [slateValue])
+
 
   return (
-    <Slate editor={devEditor} value={devSlateValue} onChange={setDevSlateValue}>
+    <Slate
+      editor={devEditor}
+      value={devSlateValue}
+      onChange={setDevSlateValue}
+    >
       <Editable spellCheck={false} renderElement={renderElement} />
       {isSyntaxError ? <h1>There is syntax error</h1> : null}
     </Slate>

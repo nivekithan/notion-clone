@@ -24,7 +24,8 @@
     "slate": "^0.59.0",
     "slate-history": "^0.59.0",
     "slate-hyperscript": "^0.59.0",
-    "slate-react": "^0.59.0"
+    "slate-react": "^0.59.0",
+    "use-deep-compare-effect": "^1.6.1"
   },
   "devDependencies": {
     "@types/react": "^17.0.0",

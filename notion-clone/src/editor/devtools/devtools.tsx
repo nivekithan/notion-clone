@@ -1,15 +1,16 @@
-import React from "react";
-import { Node } from "slate";
+import React, { useMemo } from "react";
+import { Node, createEditor, Transforms } from "slate";
+import { ReactEditor, withReact } from "slate-react";
 import { DevEditor } from "./devEditor";
-import {ScriptRunner} from "./scriptRunner";
-
+import { ScriptRunner } from "./scriptRunner";
 
 type DevTools = {
-  slateValue: Node[];
-  setSlateValue: React.Dispatch<React.SetStateAction<Node[]>>;
+  editor: ReactEditor;
+  onChange: (n: Node[]) => void;
+  slateValue : Node[]
 };
 
-export const Devtools = ({ slateValue, setSlateValue }: DevTools) => {
+export const Devtools = ({ editor, onChange, slateValue }: DevTools) => {
   return (
     <div
       style={{
@@ -20,7 +21,7 @@ export const Devtools = ({ slateValue, setSlateValue }: DevTools) => {
         maxHeight: "400px",
         minWidth: "400px",
         borderRadius: "30px",
-        display : "flex"
+        display: "flex",
       }}
     >
       <div
@@ -28,17 +29,17 @@ export const Devtools = ({ slateValue, setSlateValue }: DevTools) => {
           padding: "40px 40px",
           overflow: "auto",
           minHeight: "400px",
-          height : "400px",
-          width : "400px",
+          height: "400px",
+          width: "400px",
           minWidth: "100px",
           maxWidth: "100%",
-          resize : "horizontal"
+          resize: "horizontal",
         }}
       >
-        <DevEditor setSlateValue={setSlateValue} slateValue={slateValue} />
+        <DevEditor onChange={onChange} editor={editor} slateValue={slateValue}/>
       </div>
-      <div style={{backgroundColor: "rgb(40, 42, 54)",}}>
-          <ScriptRunner />
+      <div style={{ backgroundColor: "rgb(40, 42, 54)" }}>
+        <ScriptRunner parameters={{ Node, Transforms }}  editor={editor}/>
       </div>
     </div>
   );

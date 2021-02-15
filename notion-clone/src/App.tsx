@@ -4,12 +4,11 @@ import { Node } from "slate";
 import { MainEditor } from "./editor";
 import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
 import { Devtools } from "./editor/devtools/devtools";
-import {withDepth, withIds, withNumber,} from "./editor/plugins"
-import {withReact} from "slate-react";
-import {createEditor} from "slate"
+import { withDepth, withIds, withNumber } from "./editor/plugins";
+import { withReact } from "slate-react";
+import { createEditor } from "slate";
 
 export const App = () => {
-
   const editor = useMemo(
     () => withDepth(withNumber(withIds(withReact(createEditor())))),
     []
@@ -24,13 +23,27 @@ export const App = () => {
             <div className="min-h-screen w-sidebar max-w-sidebar bg-black-sidebar"></div>
             <div className="flex-1 min-h-screen bg-black-content">
               <div className="mx-cent20 mt-cent10 pb-cent10">
-                <MainEditor slateValue={slateValue} setSlateValue={setSlateValue} editor={editor} />
+                <MainEditor
+                  slateValue={slateValue}
+                  setSlateValue={setSlateValue}
+                  editor={editor}
+                />
               </div>
             </div>
           </div>
         </Route>
         <Route exact path="/devtools">
-          <Devtools slateValue={slateValue} setSlateValue={setSlateValue} />
+          <MainEditor
+            slateValue={slateValue}
+            setSlateValue={setSlateValue}
+            editor={editor}
+          />
+
+          <Devtools
+            editor={editor}
+            onChange={setSlateValue}
+            slateValue={slateValue}
+          />
         </Route>
       </Switch>
     </Router>
@@ -62,7 +75,7 @@ const defaultValue: Node[] = [
   },
 ];
 
-const secondDefault : Node[] = [
+const secondDefault: Node[] = [
   {
     type: "normal",
     children: [
@@ -71,5 +84,4 @@ const secondDefault : Node[] = [
       },
     ],
   },
- 
 ];
