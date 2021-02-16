@@ -16,10 +16,7 @@ export const ScriptRunner = ({ parameters, editor }: ScriptRunnerProps) => {
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    let x = 10;
-
     console.log(exceute(parameters || {}, editor,  scriptValue))
-
     setScriptValue("");
   };
 

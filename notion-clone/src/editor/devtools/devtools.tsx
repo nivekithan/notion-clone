@@ -1,5 +1,5 @@
-import React, { useMemo } from "react";
-import { Node, createEditor, Transforms } from "slate";
+import React, { } from "react";
+import { Node, Transforms } from "slate";
 import { ReactEditor, withReact } from "slate-react";
 import { DevEditor } from "./devEditor";
 import { ScriptRunner } from "./scriptRunner";
@@ -42,7 +42,7 @@ export const Devtools = ({ editor, onChange, slateValue }: DevTools) => {
           slateValue={slateValue}
         />
       </div>
-      <div style={{ backgroundColor: "rgb(40, 42, 54)" }}>
+      <div style={{ backgroundColor: "rgb(40, 42, 54)", resize : "horizontal"  }}>
         <ScriptRunner parameters={{ Node, Transforms }} editor={editor} />
       </div>
     </div>
