@@ -7,7 +7,7 @@ import { ScriptRunner } from "./scriptRunner";
 type DevTools = {
   editor: ReactEditor;
   onChange: (n: Node[]) => void;
-  slateValue : Node[]
+  slateValue: Node[];
 };
 
 export const Devtools = ({ editor, onChange, slateValue }: DevTools) => {
@@ -36,10 +36,14 @@ export const Devtools = ({ editor, onChange, slateValue }: DevTools) => {
           resize: "horizontal",
         }}
       >
-        <DevEditor onChange={onChange} editor={editor} slateValue={slateValue}/>
+        <DevEditor
+          onChange={onChange}
+          editor={editor}
+          slateValue={slateValue}
+        />
       </div>
       <div style={{ backgroundColor: "rgb(40, 42, 54)" }}>
-        <ScriptRunner parameters={{ Node, Transforms }}  editor={editor}/>
+        <ScriptRunner parameters={{ Node, Transforms }} editor={editor} />
       </div>
     </div>
   );

@@ -1,10 +1,17 @@
-import React, { useCallback, useMemo, useEffect, useState } from "react";
+import React, {
+  useCallback,
+  useMemo,
+  useEffect,
+  useState,
+  ReactChild,
+} from "react";
 import { withReact, Slate, Editable, ReactEditor } from "slate-react";
 import { Node, createEditor } from "slate";
 import { RenderElement } from "./renderElement";
-import { withHistory, HistoryEditor } from "slate-history";
-import useDeepCompareEffect from 'use-deep-compare-effect'
-
+import { withHistory } from "slate-history";
+import useDeepCompareEffect from "use-deep-compare-effect";
+import { DevNode } from "./utils/node";
+import { ErrorBoundary } from "./ErrorBoundry";
 
 type DevEditor = {
   editor: ReactEditor;
@@ -37,35 +44,41 @@ export const DevEditor = ({ editor, onChange, slateValue }: DevEditor) => {
     []
   );
 
+  console.log(devSlateValue);
+
   useDeepCompareEffect(() => {
     try {
-      const newSlateValue = JSON.parse(Node.string(devEditor));
+      const newSlateValue = JSON.parse(Node.string(devEditor)) as unknown;
 
-      if (Node.isNodeList(newSlateValue))  {
+      /*
+        In slate v0.59.0 Node.isNodeList has a bug see
+        https://github.com/ianstormtaylor/slate/issues/4077
+       */
+      if (DevNode.isNodeList(newSlateValue)) {
         onChange(newSlateValue);
-      setIsSyntaxError(false);
+        setIsSyntaxError(false);
       } else {
-        throw new Error("The newSlateValue is not Node[]")
+        throw new Error("The newSlateValue is not Node[]");
       }
-      
     } catch (err) {
       setIsSyntaxError(true);
     }
   }, [devSlateValue, devEditor, setIsSyntaxError]);
 
   useDeepCompareEffect(() => {
-    setDevSlateValue([{type : "list-wrapper", children : content}])
-  }, [slateValue])
-
+    setDevSlateValue([{ type: "list-wrapper", children: content }]);
+  }, [slateValue]);
 
   return (
-    <Slate
-      editor={devEditor}
-      value={devSlateValue}
-      onChange={setDevSlateValue}
-    >
-      <Editable spellCheck={false} renderElement={renderElement} />
-      {isSyntaxError ? <h1>There is syntax error</h1> : null}
-    </Slate>
+    <ErrorBoundary editor={devEditor} devSlateValue={devSlateValue}>
+      <Slate
+        editor={devEditor}
+        value={devSlateValue}
+        onChange={setDevSlateValue}
+      >
+        <Editable spellCheck={false} renderElement={renderElement} />
+        {isSyntaxError ? <h1>There is syntax error</h1> : null}
+      </Slate>
+    </ErrorBoundary>
   );
 };
