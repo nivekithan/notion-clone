@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@matejmazur/react-katex": "^3.1.3",
-    "@popperjs/core": "^2.6.0",
+    "@popperjs/core": "^2.7.2",
     "is-subset-of": "^3.1.2",
     "katex": "^0.12.0",
     "match-sorter": "^6.2.0",
@@ -17,6 +17,7 @@
     "react": "^17.0.0",
     "react-dom": "^17.0.0",
     "react-icons": "^4.2.0",
+    "react-inline-editing": "^1.0.10",
     "react-popper": "^2.2.4",
     "react-query": "^3.8.1",
     "react-router-dom": "^5.2.0",
