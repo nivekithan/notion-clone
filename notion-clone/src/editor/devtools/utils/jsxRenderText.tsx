@@ -1,17 +1,20 @@
-import { RenderLeafProps } from "slate-react";
+import { ReactEditor, RenderLeafProps, useSlate } from "slate-react";
 import React, { useState } from "react";
 import { BsArrowDownShort, BsArrowUpShort } from "react-icons/bs";
-import { Node } from "slate";
+import { Node, Path } from "slate";
 
 export const JsxRenderText = ({
   attributes,
   text,
   setSelectedProperties,
 }: RenderLeafProps & {
-  setSelectedProperties: React.Dispatch<React.SetStateAction<Node | null>>;
+  setSelectedProperties: React.Dispatch<React.SetStateAction<{
+    node: Node;
+    path: Path;
+} | null>>
 }) => {
   const [shouldShowChildren, setShouldShowChildren] = useState<boolean>(false);
-
+  const editor = useSlate();
   const Icon = () => {
     return (
       <span>
@@ -27,7 +30,8 @@ export const JsxRenderText = ({
 
   const onJsxClick = (e: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
     e.preventDefault();
-    setSelectedProperties(text);
+    const path = ReactEditor.findPath(editor, text);
+    setSelectedProperties({node : text, path : path });
   };
 
   let { devtools_depth: depth } = text;

@@ -51,10 +51,11 @@ export const App = () => {
 };
 
 const id = nanoid();
-
+const idNew = nanoid()
 const defaultValue: Node[] = [
   {
     type: "normal",
+    id : idNew,
     children: [
       {
         text: "p",

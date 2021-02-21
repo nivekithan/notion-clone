@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { Node, Transforms } from "slate";
+import { Node, Path, Transforms } from "slate";
 import { ReactEditor, withReact } from "slate-react";
 import { ScriptRunner } from "./scriptRunner";
 import { ViewJSX } from "./viewJSX";
@@ -11,7 +11,7 @@ type DevTools = {
 };
 
 export const Devtools = ({ editor, onChange, slateValue }: DevTools) => {
-  const [selectedProperties, setSelectedProperties] = useState<null | Node>(
+  const [selectedProperties, setSelectedProperties] = useState<null | {node : Node, path : Path}>(
     null
   );
 

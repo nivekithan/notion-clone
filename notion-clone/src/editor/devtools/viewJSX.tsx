@@ -1,4 +1,4 @@
-import { Node, createEditor, Editor } from "slate";
+import { Node, createEditor, Editor, Path } from "slate";
 import { Editable, ReactEditor, Slate, withReact } from "slate-react";
 import React, { useState, useMemo, useCallback, useLayoutEffect } from "react";
 import { withHistory } from "slate-history";
@@ -10,8 +10,11 @@ import {PropertiesEditor} from "./propertiesEditor";
 
 type ViewJSXProps = {
   slateValue: Node[];
-  setSelectedProperties: React.Dispatch<React.SetStateAction<Node | null>>;
-  selectedProperties : Node | null
+  setSelectedProperties: React.Dispatch<React.SetStateAction<{
+    node: Node;
+    path: Path;
+} | null>>
+  selectedProperties : null | {node : Node, path : Path}
 };
 
 export const ViewJSX = ({
@@ -43,8 +46,8 @@ export const ViewJSX = ({
   );
 
   useLayoutEffect(() => {
-    for (let entry of Node.nodes(jsxEditor)) {
-      jsxEditor.normalizeNode(entry);
+    for (const entry of Node.nodes(jsxEditor)) {
+      jsxEditor.normalizeNode(entry)
     }
   }, []);
 
@@ -62,7 +65,7 @@ export const ViewJSX = ({
         />
       </Slate>
       <div>
-        <PropertiesEditor selectedProperties={selectedProperties} />
+        <PropertiesEditor selectedProperties={selectedProperties} editor={jsxEditor} />
       </div>
     </div>
   );
