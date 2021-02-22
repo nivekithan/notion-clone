@@ -2,14 +2,7 @@ import { Node, Path, Transforms } from "slate";
 import React, { useRef, useState } from "react";
 import { InlineEdit } from "./utils/InlineEdit";
 import { ReactEditor } from "slate-react";
-import {
-  DragDropContext,
-  DropResult,
-  ResponderProvided,
-  Droppable,
-  Draggable,
-  DraggableProvidedDragHandleProps,
-} from "react-beautiful-dnd";
+
 
 type PropertiesEditorProps = {
   selectedProperties: null | { node: Node; path: Path };
@@ -24,50 +17,22 @@ export const PropertiesEditor = ({
   // console.log(selectedProperties)
   const { node, path } = selectedProperties;
 
-  const onDragEnd = (res: DropResult, provided: ResponderProvided) => {
-    const {draggableId, source, destination} = res;
-
-    if (!destination) return;
-
-    if (destination.droppableId === source.droppableId && destination.index === source.index) return
-  };
-
   return (
-    <DragDropContext onDragEnd={onDragEnd}>
-      <Droppable droppableId="ONLY_ONE_DROPPABLE">
-        {(provided) => (
-          <div {...provided.droppableProps} ref={provided.innerRef} key={`${node.id}_top`}>
-            {Object.keys(node).map((keys, i) => {
-              if (keys === "devtools_depth" || keys === "devtools_id")
-                return null;
-              return (
-                <Draggable
-                  draggableId={`${node.devtools_id}_${keys}`}
-                  index={i}
-                >
-                  {(provided) => (
-                    <div
-                      key={`${node.devtools_id}_${keys}`}
-                      {...provided.draggableProps}
-                      ref={provided.innerRef}
-                    >
-                      <SingleProperty
-                        keys={keys}
-                        value={JSON.stringify(node[keys])}
-                        path={path}
-                        editor={editor}
-                        dragHandleProps={provided.dragHandleProps}
-                      />
-                    </div>
-                  )}
-                </Draggable>
-              );
-            })}
-            {provided.placeholder}
+    <div key={`${node.id}_top`}>
+      {Object.keys(node).map((keys, i) => {
+        if (keys === "devtools_depth" || keys === "devtools_id") return null;
+        return (
+          <div key={`${node.devtools_id}_${keys}`}>
+            <SingleProperty
+              keys={keys}
+              value={JSON.stringify(node[keys])}
+              path={path}
+              editor={editor}
+            />
           </div>
-        )}
-      </Droppable>
-    </DragDropContext>
+        );
+      })}
+    </div>
   );
 };
 
@@ -76,18 +41,10 @@ type SingleProperty = {
   value: string;
   path: Path;
   editor: ReactEditor;
-  dragHandleProps: DraggableProvidedDragHandleProps | undefined;
 };
 
-const SingleProperty = ({
-  keys,
-  value,
-  path,
-  editor,
-  dragHandleProps,
-}: SingleProperty) => {
+const SingleProperty = ({ keys, value, path, editor }: SingleProperty) => {
   const [valueInputValue, setValueInputValue] = useState<string>(value);
-  const [isHovering, setIsHovering] = useState<boolean>(false);
   const prevValidState = useRef<string>(valueInputValue);
 
   const onBlurUpdateSlateValue = (e: React.FocusEvent<HTMLInputElement>) => {
@@ -119,35 +76,8 @@ const SingleProperty = ({
     }
   };
 
-  /*
-    OnMouseOver update the isHovering to true
-  */
-  const onMouseOver = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    e.preventDefault();
-    setIsHovering(true);
-  };
-
-  const onMouseOut = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    e.preventDefault();
-    setIsHovering(false);
-  };
-
   return (
-    <div
-      style={{ display: "flex", columnGap: "10px" }}
-      onMouseOver={onMouseOver}
-      onMouseOut={onMouseOut}
-    >
-      {isHovering ? (
-        <span
-          style={{ color: "orange", width: "20px", height: "20px" }}
-          {...dragHandleProps}
-        >
-          %
-        </span>
-      ) : (
-        <span style={{ width: "20px", height: "20px" }}> </span>
-      )}
+    <div style={{ display: "flex", columnGap: "10px" }}>
       <span style={{ color: "blue", cursor: "text" }}>
         <span
           style={{
