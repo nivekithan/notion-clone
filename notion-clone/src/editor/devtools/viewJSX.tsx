@@ -38,7 +38,7 @@ export const ViewJSX = ({
   );
   const renderText = useCallback(
     (props : RenderLeafProps) => (
-      <JsxRenderText {...props} setSelectedProperties={setSelectedProperties} />
+      <JsxRenderText {...props} setSelectedProperties={setSelectedProperties} selectedProperties={selectedProperties} />
     ),
     [selectedProperties, setSelectedProperties]
   );

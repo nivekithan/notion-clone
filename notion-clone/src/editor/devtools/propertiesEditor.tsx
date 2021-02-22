@@ -174,7 +174,7 @@ const SingleProperty = ({ keys, value, path, editor }: SingleProperty) => {
         )}
       </span>
 
-      <span style={{ height: "20px", width: "20px" }}>
+      <span style={{ height: "10px", width: "10px" }}>
         {/*
             This component renders the remove icon to remove the properties. Excepth for children key and text key
           */}
@@ -182,15 +182,17 @@ const SingleProperty = ({ keys, value, path, editor }: SingleProperty) => {
           <span
             style={{
               color: "red",
+              height: "10px",
+              width: "10px",
               cursor: "pointer",
-              height : "20px",
-              width : "20px"
             }}
             onClick={onRemoveButtonClick}
           >
             X
           </span>
-        ) : null}
+        ) : (
+          <span></span>
+        )}
       </span>
     </div>
   );
@@ -287,7 +289,7 @@ const AddPropertiesEditor = ({
         throw new Error(`Key is ${key}: Change the key`);
 
       Transforms.setNodes(editor, { [key]: value }, { at: path });
-      setIsCreatingNewProperty(false)
+      setIsCreatingNewProperty(false);
     } catch (err) {}
   };
 
@@ -337,7 +339,9 @@ const AddPropertiesEditor = ({
             onChange={(e) => setValueInputValue(e.currentTarget.value)}
           />{" "}
         </span>
-        <button style={{ color: "ButtonFace" }} onClick={onOkayClick}>OK</button>
+        <button style={{ color: "ButtonFace" }} onClick={onOkayClick}>
+          OK
+        </button>
         <button style={{ color: "red" }} onClick={onCancelClick}>
           X
         </button>
