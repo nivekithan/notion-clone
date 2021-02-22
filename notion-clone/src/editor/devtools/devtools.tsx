@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useLayoutEffect, useState } from "react";
 import { Node, Path, Transforms } from "slate";
 import { ReactEditor, withReact } from "slate-react";
 import { ScriptRunner } from "./scriptRunner";
@@ -11,11 +11,6 @@ type DevTools = {
 };
 
 export const Devtools = ({ editor, onChange, slateValue }: DevTools) => {
-  const [selectedProperties, setSelectedProperties] = useState<null | {node : Node, path : Path}>(
-    null
-  );
-
-  // console.log(selectedProperties);
 
   return (
     <div
@@ -44,8 +39,6 @@ export const Devtools = ({ editor, onChange, slateValue }: DevTools) => {
       >
         <ViewJSX
           slateValue={slateValue}
-          setSelectedProperties={setSelectedProperties}
-          selectedProperties={selectedProperties}
           
         />
       </div>

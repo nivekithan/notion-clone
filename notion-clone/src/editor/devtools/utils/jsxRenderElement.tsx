@@ -2,12 +2,14 @@ import { RenderElementProps, ReactEditor, useSlate } from "slate-react";
 import React, { useState } from "react";
 import { BsAlarm, BsArrowDownShort, BsArrowUpShort } from "react-icons/bs";
 import { Node, Path } from "slate";
+import useDeepCompareEffect from "use-deep-compare-effect";
 
 export const JsxRenderElement = ({
   attributes,
   children: slateChildren,
   element,
   setSelectedProperties,
+  selectedProperties,
 }: RenderElementProps & {
   setSelectedProperties: React.Dispatch<
     React.SetStateAction<{
@@ -15,11 +17,38 @@ export const JsxRenderElement = ({
       path: Path;
     } | null>
   >;
+  selectedProperties: { node: Node; path: Path } | null;
 }) => {
-  let { type, devtools_depth } = element;
+  let { type, devtools_depth, devtools_id } = element;
+  const editor = useSlate();
+  const path = ReactEditor.findPath(editor, element);
+  // Updating the selctedProperties everytime the value of element changes
+  useDeepCompareEffect(() => {
+    /*
+      if the selectedProperties is null do nothing
+    */
+
+    if (!selectedProperties) return;
+
+    /*
+      If selectedProperties devtools_id and element's devtools_id didnt match do nothing
+    */
+
+    if (selectedProperties.node.devtools_id !== devtools_id) return;
+
+    /*
+      Now update the selectedProperties with current version of element and path
+    */
+
+    setSelectedProperties({ node: element, path: path });
+
+    /*
+      For deepcomparing we wil ignore the children since the only way the see the effect when the children 
+      is changed to select that childElement 
+    */
+  }, [path, devtools_id, { ...element, children: null }, selectedProperties]);
 
   const [showChildren, setShowChildren] = useState<boolean>(false);
-  const editor = useSlate();
   const Icon = () => {
     return showChildren ? (
       <span>{<BsArrowDownShort />}</span>
@@ -35,7 +64,6 @@ export const JsxRenderElement = ({
 
   const onJsxClick = (e: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
     e.preventDefault();
-    const path = ReactEditor.findPath(editor, element);
     setSelectedProperties({ node: element, path: path });
   };
 

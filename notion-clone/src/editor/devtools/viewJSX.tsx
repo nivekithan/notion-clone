@@ -1,5 +1,5 @@
 import { Node, createEditor, Editor, Path } from "slate";
-import { Editable, ReactEditor, Slate, withReact } from "slate-react";
+import { Editable, ReactEditor, RenderElementProps, RenderLeafProps, Slate, withReact } from "slate-react";
 import React, { useState, useMemo, useCallback, useLayoutEffect } from "react";
 import { withHistory } from "slate-history";
 import { withJSX } from "./utils/withJSX";
@@ -10,19 +10,16 @@ import {PropertiesEditor} from "./propertiesEditor";
 
 type ViewJSXProps = {
   slateValue: Node[];
-  setSelectedProperties: React.Dispatch<React.SetStateAction<{
-    node: Node;
-    path: Path;
-} | null>>
-  selectedProperties : null | {node : Node, path : Path}
+  
 };
 
 export const ViewJSX = ({
   slateValue,
-  setSelectedProperties,
-  selectedProperties
 }: ViewJSXProps) => {
   const [jsxSlateValue, setJsxSlateValue] = useState<Node[]>(slateValue);
+  const [selectedProperties, setSelectedProperties] = useState<null | {node : Node, path : Path}>(
+    null
+  );
 
   const jsxEditor = useMemo(
     () => withJSX(withHistory(withReact(createEditor()))),
@@ -30,19 +27,20 @@ export const ViewJSX = ({
   );
 
   const renderElement = useCallback(
-    (props) => (
+    (props : RenderElementProps) => (
       <JsxRenderElement
         {...props}
         setSelectedProperties={setSelectedProperties}
+        selectedProperties={selectedProperties}
       />
     ),
-    []
+    [selectedProperties, setSelectedProperties]
   );
   const renderText = useCallback(
-    (props) => (
+    (props : RenderLeafProps) => (
       <JsxRenderText {...props} setSelectedProperties={setSelectedProperties} />
     ),
-    []
+    [selectedProperties, setSelectedProperties]
   );
 
   useLayoutEffect(() => {
