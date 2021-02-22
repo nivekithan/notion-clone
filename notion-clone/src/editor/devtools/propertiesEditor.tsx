@@ -1,8 +1,9 @@
 import { Node, Path, Transforms } from "slate";
-import React, { useRef, useState } from "react";
+import React, { CSSProperties, useRef, useState } from "react";
 import { InlineEdit } from "./utils/InlineEdit";
 import { ReactEditor } from "slate-react";
-
+import { usePopper } from "react-popper";
+import ReactDOM from "react-dom";
 type PropertiesEditorProps = {
   selectedProperties: null | { node: Node; path: Path };
   editor: ReactEditor;
@@ -16,7 +17,16 @@ export const PropertiesEditor = ({
   const { node, path } = selectedProperties;
 
   return (
-    <div >
+    <div>
+      <div
+        style={{ display: "flex", width: "100%", justifyContent: "flex-end" }}
+      >
+        {/*
+            Renders the component that allows to add properties to the selected node
+          */}
+        <AddProperties editor={editor} path={path} />
+      </div>
+
       <div>
         {/*
             This component renderes the properties and also it makes the values editable
@@ -164,7 +174,7 @@ const SingleProperty = ({ keys, value, path, editor }: SingleProperty) => {
         )}
       </span>
 
-      <span>
+      <span style={{ height: "20px", width: "20px" }}>
         {/*
             This component renders the remove icon to remove the properties. Excepth for children key and text key
           */}
@@ -172,19 +182,167 @@ const SingleProperty = ({ keys, value, path, editor }: SingleProperty) => {
           <span
             style={{
               color: "red",
-              height: "10px",
-              width: "10px",
               cursor: "pointer",
+              height : "20px",
+              width : "20px"
             }}
-
             onClick={onRemoveButtonClick}
           >
             X
           </span>
-        ) : (
-          <span style={{ height: "10px", width: "10px" }}></span>
-        )}
+        ) : null}
       </span>
     </div>
+  );
+};
+
+type AddPropertiesProps = {
+  editor: ReactEditor;
+  path: Path;
+};
+
+const AddProperties = ({ editor, path }: AddPropertiesProps) => {
+  const [
+    referenceElement,
+    setReferenceElement,
+  ] = useState<HTMLButtonElement | null>(null);
+  const [popperElement, setPopperElemenet] = useState<HTMLElement | null>(null);
+  const { styles, attributes } = usePopper(referenceElement, popperElement);
+  const [isCreatingNewProperty, setIsCreatingNewProperty] = useState<boolean>(
+    false
+  );
+
+  // onClickingPlusButton  set isCreatingeNewProperty to true
+  const onClickingPlusButton = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    e.preventDefault();
+    setIsCreatingNewProperty(true);
+  };
+
+  return (
+    <div>
+      <button ref={setReferenceElement} onClick={onClickingPlusButton}>
+        +
+      </button>
+      {isCreatingNewProperty ? (
+        <AddPropertiesEditor
+          innerRef={setPopperElemenet}
+          styles={styles}
+          attributes={attributes}
+          setIsCreatingNewProperty={setIsCreatingNewProperty}
+          editor={editor}
+          path={path}
+        />
+      ) : null}
+    </div>
+  );
+};
+
+type AddPropertiesEditorProps = {
+  innerRef: React.Dispatch<React.SetStateAction<HTMLElement | null>>;
+  styles: {
+    [key: string]: React.CSSProperties;
+  };
+  attributes: {
+    [key: string]:
+      | {
+          [key: string]: string;
+        }
+      | undefined;
+  };
+  setIsCreatingNewProperty: React.Dispatch<React.SetStateAction<boolean>>;
+  editor: ReactEditor;
+  path: Path;
+};
+
+const AddPropertiesEditor = ({
+  innerRef,
+  styles,
+  attributes,
+  setIsCreatingNewProperty,
+  editor,
+  path,
+}: AddPropertiesEditorProps) => {
+  const [keyInputValue, setKeyInputValue] = useState<string>('""');
+  const [valueInputValue, setValueInputValue] = useState<string>('""');
+
+  const onCancelClick = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    e.preventDefault();
+    setIsCreatingNewProperty(false);
+  };
+
+  const onOkayClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.preventDefault();
+
+    try {
+      const key = JSON.parse(keyInputValue);
+      const value = JSON.parse(valueInputValue);
+
+      // Checking if the key is of valid key i.e key is not either children or text
+
+      if (key === "children" || key === "text")
+        throw new Error(`Key is ${key}: Change the key`);
+
+      Transforms.setNodes(editor, { [key]: value }, { at: path });
+      setIsCreatingNewProperty(false)
+    } catch (err) {}
+  };
+
+  const inputStyle: CSSProperties = {
+    backgroundColor: "inherit",
+    color: "white",
+    padding: "0px 2px",
+    fontSize: "14px",
+  };
+
+  return ReactDOM.createPortal(
+    <div
+      style={{
+        ...styles.popper,
+        backgroundColor: "blue",
+        borderRadius: "5px",
+        zIndex: 999,
+        boxShadow: "3px 1px 7px 2px rgb(40, 42, 54)",
+      }}
+      ref={innerRef}
+      {...attributes.popper}
+    >
+      <div
+        style={{
+          display: "flex",
+          columnGap: "10px",
+          alignItems: "center",
+          padding: "5px",
+        }}
+      >
+        <span>
+          <input
+            placeholder="Key"
+            type="text"
+            style={{ ...inputStyle, width: "100px" }}
+            value={keyInputValue}
+            onChange={(e) => setKeyInputValue(e.currentTarget.value)}
+          />
+        </span>
+        <span style={{ color: "white" }}>:</span>
+        <span>
+          <input
+            placeholder="value"
+            type="text"
+            style={{ ...inputStyle, width: "100px" }}
+            value={valueInputValue}
+            onChange={(e) => setValueInputValue(e.currentTarget.value)}
+          />{" "}
+        </span>
+        <button style={{ color: "ButtonFace" }} onClick={onOkayClick}>OK</button>
+        <button style={{ color: "red" }} onClick={onCancelClick}>
+          X
+        </button>
+      </div>
+    </div>,
+    document.body
   );
 };
