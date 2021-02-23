@@ -27,7 +27,7 @@ export function withJSX<T extends Editor>(editor: T): T {
       (!DevEditor.isEditor(node) && !node.devtools_index) ||
       node.devtools_id !== path[path.length - 1]
     ) {
-      Transforms.setNodes(editor, { devtools_index: path[path.length - 1] });
+      Transforms.setNodes(editor, { devtools_index: path[path.length - 1] }, {at : path});
     }
 
     // // Checking  first node in whole editor has devtools_index 1
