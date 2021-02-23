@@ -4,6 +4,8 @@ import { InlineEdit } from "./utils/InlineEdit";
 import { ReactEditor } from "slate-react";
 import { usePopper } from "react-popper";
 import ReactDOM from "react-dom";
+
+
 type PropertiesEditorProps = {
   selectedProperties: null | { node: Node; path: Path };
   editor: ReactEditor;
@@ -33,7 +35,7 @@ export const PropertiesEditor = ({
           */}
 
         {Object.keys(node).map((keys, i) => {
-          if (keys === "devtools_depth" || keys === "devtools_id") return null;
+          if (keys === "devtools_depth" || keys === "devtools_id" || keys === "devtools_index") return null;
           return (
             <div key={`${node.devtools_id}_${keys}`}>
               <SingleProperty
