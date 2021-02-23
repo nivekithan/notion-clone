@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { BsArrowDownShort, BsArrowUpShort } from "react-icons/bs";
 import { Node, Path } from "slate";
 import useDeepCompareEffect from "use-deep-compare-effect";
+import { Draggable } from "react-beautiful-dnd";
 
 export const JsxRenderText = ({
   attributes,
@@ -20,7 +21,7 @@ export const JsxRenderText = ({
 }) => {
   const [shouldShowChildren, setShouldShowChildren] = useState<boolean>(false);
   const editor = useSlate();
-  let { devtools_id, devtools_depth: depth } = text;
+  let { devtools_id, devtools_depth: depth, devtools_index } = text;
   const path = ReactEditor.findPath(editor, text);
 
   /*
@@ -74,18 +75,35 @@ export const JsxRenderText = ({
   }
 
   return (
-    <div {...attributes}>
-      <div
-        style={{ display: "flex", marginLeft: `${(depth as number) * 1.5}rem` }}
-      >
-        <span onClick={onIconClick} style={{ cursor: "pointer" }}>
-          <Icon />
-        </span>
-        <span onClick={onJsxClick}>{"<Text />"}</span>
-      </div>
-      <div style={{ marginLeft: `${((depth as number) + 1) * 1.5}rem` }}>
-        {shouldShowChildren ? `"${text.text}"` : null}
-      </div>
-    </div>
+    <Draggable
+      draggableId={`${devtools_id}_draggable`}
+      key={`${devtools_id}_draggable`}
+      index={devtools_index as number}
+    >
+      {(provided) => (
+        <div
+          {...provided.draggableProps}
+          {...provided.dragHandleProps}
+          ref={provided.innerRef}
+        >
+          <div {...attributes}>
+            <div
+              style={{
+                display: "flex",
+                marginLeft: `${(depth as number) * 1.5}rem`,
+              }}
+            >
+              <span onClick={onIconClick} style={{ cursor: "pointer" }}>
+                <Icon />
+              </span>
+              <span onClick={onJsxClick}>{"<Text />"}</span>
+            </div>
+            <div style={{ marginLeft: `${((depth as number) + 1) * 1.5}rem` }}>
+              {shouldShowChildren ? `"${text.text}"` : null}
+            </div>
+          </div>
+        </div>
+      )}
+    </Draggable>
   );
 };

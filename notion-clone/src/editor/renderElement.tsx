@@ -179,6 +179,8 @@ const NumberList = ({ element, children, attributes }: NumberList) => {
       SlateEditor.synNumber(editor, startId, depth);
     };
   }, [id, startId, number]);
+
+  
   return (
     <ListItem slate={{ element, children, attributes }}>
       <span data-cy-label-number={number}>{number}.</span>

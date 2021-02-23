@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { BsAlarm, BsArrowDownShort, BsArrowUpShort } from "react-icons/bs";
 import { Node, Path } from "slate";
 import useDeepCompareEffect from "use-deep-compare-effect";
+import { Draggable, Droppable } from "react-beautiful-dnd";
 
 export const JsxRenderElement = ({
   attributes,
@@ -19,7 +20,7 @@ export const JsxRenderElement = ({
   >;
   selectedProperties: { node: Node; path: Path } | null;
 }) => {
-  let { type, devtools_depth, devtools_id } = element;
+  let { type, devtools_depth, devtools_id, devtools_index } = element;
   const editor = useSlate();
   const path = ReactEditor.findPath(editor, element);
   // Updating the selctedProperties everytime the value of element changes
@@ -76,18 +77,42 @@ export const JsxRenderElement = ({
   }
 
   return (
-    <div
-      {...attributes}
-      style={{ marginLeft: `${(devtools_depth as number) * 1.5}rem` }}
+    <Draggable
+      draggableId={`${devtools_id}_draggable`}
+      index={devtools_index as number}
+      key={`${devtools_id}_draggable`}
     >
-      <div style={{ display: "flex" }}>
-        <span onClick={onIconClick} style={{ cursor: "pointer" }}>
-          <Icon />
-        </span>
-        <span onClick={onJsxClick}>{`<${type} />`}</span>
-      </div>
+      {(provided) => (
+        <div
+          {...provided.dragHandleProps}
+          {...provided.draggableProps}
+          ref={provided.innerRef}
+        >
+          <div
+            {...attributes}
+            style={{ marginLeft: `${(devtools_depth as number) * 1.5}rem` }}
+          >
+            <div style={{ display: "flex" }}>
+              <span onClick={onIconClick} style={{ cursor: "pointer" }}>
+                <Icon />
+              </span>
+              <span onClick={onJsxClick}>{`<${type} />`}</span>
+            </div>
 
-      {showChildren ? slateChildren : null}
-    </div>
+            <Droppable
+              droppableId={`${devtools_id}_droppable`}
+              key={`${devtools_id}_droppable`}
+            >
+              {(provided) => (
+                <div ref={provided.innerRef} {...provided.droppableProps}>
+                  {showChildren ? slateChildren : null}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          </div>
+        </div>
+      )}
+    </Draggable>
   );
 };
