@@ -58,7 +58,13 @@ const defaultValue: Node[] = [
     id : idNew,
     children: [
       {
-        text: "p",
+        type: "normal",
+        id : "fafadf",
+        children: [
+          {
+            text: "p",
+          },
+        ],
       },
     ],
   },
