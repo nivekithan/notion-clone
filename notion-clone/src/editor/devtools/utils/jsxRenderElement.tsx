@@ -83,20 +83,19 @@ export const JsxRenderElement = ({
       key={`${devtools_id}_draggable`}
     >
       {(provided) => (
-        <div
-          {...provided.dragHandleProps}
-          {...provided.draggableProps}
-          ref={provided.innerRef}
-        >
+        <div {...provided.draggableProps} ref={provided.innerRef}>
           <div
             {...attributes}
             style={{ marginLeft: `${(devtools_depth as number) * 1.5}rem` }}
           >
             <div style={{ display: "flex" }}>
-              <span onClick={onIconClick} style={{ cursor: "pointer" }}>
+              <div style={{ color: "red" }} {...provided.dragHandleProps}>
+                =
+              </div>
+              <div onClick={onIconClick} style={{ cursor: "pointer" }}>
                 <Icon />
-              </span>
-              <span onClick={onJsxClick}>{`<${type} />`}</span>
+              </div>
+              <div onClick={onJsxClick}>{`<${type} />`}</div>
             </div>
 
             <Droppable

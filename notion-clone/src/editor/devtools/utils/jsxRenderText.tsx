@@ -81,11 +81,7 @@ export const JsxRenderText = ({
       index={devtools_index as number}
     >
       {(provided) => (
-        <div
-          {...provided.draggableProps}
-          {...provided.dragHandleProps}
-          ref={provided.innerRef}
-        >
+        <div {...provided.draggableProps} ref={provided.innerRef}>
           <div {...attributes}>
             <div
               style={{
@@ -93,10 +89,13 @@ export const JsxRenderText = ({
                 marginLeft: `${(depth as number) * 1.5}rem`,
               }}
             >
-              <span onClick={onIconClick} style={{ cursor: "pointer" }}>
+              <div style={{ color: "red" }} {...provided.dragHandleProps}>
+                =
+              </div>
+              <div onClick={onIconClick} style={{ cursor: "pointer" }}>
                 <Icon />
-              </span>
-              <span onClick={onJsxClick}>{"<Text />"}</span>
+              </div>
+              <div onClick={onJsxClick}>{"<Text />"}</div>
             </div>
             <div style={{ marginLeft: `${((depth as number) + 1) * 1.5}rem` }}>
               {shouldShowChildren ? `"${text.text}"` : null}
