@@ -10,6 +10,7 @@
     "react": "^17.0.0",
     "react-dom": "^17.0.0",
     "slate": "^0.59.0",
+    "slate-devtools": "^0.0.13",
     "slate-react": "^0.59.0"
   },
   "devDependencies": {

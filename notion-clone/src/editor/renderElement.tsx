@@ -5,7 +5,7 @@ import {
   Heading3Element,
   ParagraphElement,
   TitleElement,
-} from "./components";
+} from "./elements";
 import React from "react";
 
 const RenderElementByTypes: {
