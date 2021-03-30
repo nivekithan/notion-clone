@@ -1,5 +1,11 @@
 import { RenderElementProps } from "slate-react";
-import { ParagraphElement, TitleElement } from "./components";
+import {
+  Heading1Element,
+  Heading2Element,
+  Heading3Element,
+  ParagraphElement,
+  TitleElement,
+} from "./components";
 import React from "react";
 
 const RenderElementByTypes: {
@@ -7,6 +13,9 @@ const RenderElementByTypes: {
 } = {
   title: TitleElement,
   paragraph: ParagraphElement,
+  "heading-1": Heading1Element,
+  "heading-2": Heading2Element,
+  "heading-3": Heading3Element,
 };
 
 export const RenderElement = (props: RenderElementProps) => {
