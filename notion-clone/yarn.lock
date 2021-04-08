@@ -327,6 +327,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@popperjs/core@npm:^2.9.2":
+  version: 2.9.2
+  resolution: "@popperjs/core@npm:2.9.2"
+  checksum: cc4de8b46fc190805619224f1c683bee6a162276430af3728d35087099ad83a80da3c11c4eac7cb2b5aa2fa59d4c7c689e211a3e955136588ed6dedb5bff32c5
+  languageName: node
+  linkType: hard
+
 "@types/esrever@npm:^0.2.0":
   version: 0.2.0
   resolution: "@types/esrever@npm:0.2.0"
@@ -2377,7 +2384,7 @@ fsevents@~2.3.1:
   languageName: node
   linkType: hard
 
-"loose-envify@npm:^1.1.0, loose-envify@npm:^1.4.0":
+"loose-envify@npm:^1.0.0, loose-envify@npm:^1.1.0, loose-envify@npm:^1.4.0":
   version: 1.4.0
   resolution: "loose-envify@npm:1.4.0"
   dependencies:
@@ -2587,6 +2594,7 @@ fsevents@~2.3.1:
   version: 0.0.0-use.local
   resolution: "notion-clone@workspace:."
   dependencies:
+    "@popperjs/core": ^2.9.2
     "@types/react": ^17.0.0
     "@types/react-dom": ^17.0.0
     "@typescript-eslint/eslint-plugin": ^4.16.1
@@ -2601,8 +2609,9 @@ fsevents@~2.3.1:
     prettier: 2.2.1
     react: ^17.0.0
     react-dom: ^17.0.0
+    react-popper: ^2.2.5
     slate: ^0.59.0
-    slate-devtools: ^0.0.13
+    slate-devtools: ^0.0.15
     slate-react: ^0.59.0
     typescript: ^4.1.2
     vite: ^2.1.3
@@ -2982,10 +2991,30 @@ fsevents@~2.3.1:
   languageName: node
   linkType: hard
 
+"react-fast-compare@npm:^3.0.1":
+  version: 3.2.0
+  resolution: "react-fast-compare@npm:3.2.0"
+  checksum: 6fe65c889eb4f326e97769135f97b3d63ac68737866f9c37f9625c9de4f5eaa9abed6f748eb3fd6a66808392118842916309cab7cfa99c67991f0c837433d6d2
+  languageName: node
+  linkType: hard
+
 "react-is@npm:^16.8.1":
   version: 16.13.1
   resolution: "react-is@npm:16.13.1"
   checksum: 11bcf1267a314a522615f626f3ce3727a3a24cdbf61c4d452add3550a7875326669631326cfb1ba3e92b6f72244c32ffecf93ad21c0cad8455d3e169d0e3f060
+  languageName: node
+  linkType: hard
+
+"react-popper@npm:^2.2.5":
+  version: 2.2.5
+  resolution: "react-popper@npm:2.2.5"
+  dependencies:
+    react-fast-compare: ^3.0.1
+    warning: ^4.0.2
+  peerDependencies:
+    "@popperjs/core": ^2.0.0
+    react: ^16.8.0 || ^17
+  checksum: 5cac009001e2a7c640ba931afedbbf33c94a672a3f7c6ef672e55561b72778c6941a09f57156962114b9e47793779728088845fc306c43477ddc645cdb8793ea
   languageName: node
   linkType: hard
 
@@ -3302,13 +3331,12 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"slate-devtools@npm:^0.0.13":
-  version: 0.0.13
-  resolution: "slate-devtools@npm:0.0.13"
+"slate-devtools@npm:^0.0.15":
+  version: 0.0.15
+  resolution: "slate-devtools@npm:0.0.15"
   peerDependencies:
     react: ^17.0.0
-    react-dom: ^17.0.0
-  checksum: fb058aaf06d0df856dfd942a3e4fc2a6a5315c10ce36b77055f1a07b74235afea6c36d1193a5c9a7c0db68f2e1bf71dd1c11090f3bc7100eb8d5f85bbec5b1ee
+  checksum: 24ffd3bbb690f2b6a4aed4cb7f804a519b0c7e94460957aeb2c15c66f3c053d5974ea20bd5524cd91721db62e5d6d4d87e2ee7eef5426260a8b330625c235f12
   languageName: node
   linkType: hard
 
@@ -3856,6 +3884,15 @@ typescript@^4.1.2:
   bin:
     vite: bin/vite.js
   checksum: 2601b4e627d5394467609bd195e17ce10dc1c46ba0c319567b3308533c684d649effebb6f03e633a49ff0ac9b0bb0c768b947c2820ffe015c0d94030bec6f14b
+  languageName: node
+  linkType: hard
+
+"warning@npm:^4.0.2":
+  version: 4.0.3
+  resolution: "warning@npm:4.0.3"
+  dependencies:
+    loose-envify: ^1.0.0
+  checksum: 20ef5d29ff9c20af3060e504914a00d5a90ce346e75e6691efbedb540481cdc82070c966d75195f812de64bb0bd7f1b02315fcb52469db151c0f15e29002781c
   languageName: node
   linkType: hard
 

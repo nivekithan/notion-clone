@@ -1,10 +1,11 @@
 import React, { useCallback, useState } from "react";
-import { createEditor, Node, Transforms } from "slate";
+import { createEditor, Node } from "slate";
 import { Editable, Slate, withReact } from "slate-react";
 import { RenderElement } from "./renderElement";
 import { onKeyDown } from "./onKeyDown";
 import { withDevtools, Devtools } from "slate-devtools";
 import { withCore } from "./plugins";
+import { DropDown } from "./components/dropDown/dropDown";
 type EditorProps = {
   value: Node[];
   onChange: (n: Node[]) => void;
@@ -23,10 +24,13 @@ export const Editor = ({ value, onChange }: EditorProps) => {
   );
 
   return (
-    <div className="flex flex-col min-h-screen bg-hex-2F3437 text-white">
+    <div className="flex flex-col min-h-screen bg-hex-2F3437 text-white ">
       <Slate value={value} onChange={onChange} editor={editor}>
         <Editable renderElement={renderElement} onKeyDown={onEditorKeyDown} />
       </Slate>
+      <div className="my-10 grid place-items-center">
+        <DropDown />
+      </div>
       <Devtools editor={editor} value={value} />
     </div>
   );
