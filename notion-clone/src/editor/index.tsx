@@ -5,7 +5,7 @@ import { RenderElement } from "./renderElement";
 import { onKeyDown } from "./onKeyDown";
 import { withDevtools, Devtools } from "slate-devtools";
 import { withCore } from "./plugins";
-import { DropDown } from "./components/dropDown/dropDown";
+
 type EditorProps = {
   value: Node[];
   onChange: (n: Node[]) => void;
@@ -28,9 +28,6 @@ export const Editor = ({ value, onChange }: EditorProps) => {
       <Slate value={value} onChange={onChange} editor={editor}>
         <Editable renderElement={renderElement} onKeyDown={onEditorKeyDown} />
       </Slate>
-      <div className="my-10 grid place-items-center">
-        <DropDown />
-      </div>
       <Devtools editor={editor} value={value} />
     </div>
   );
